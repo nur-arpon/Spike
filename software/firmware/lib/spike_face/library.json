@@ -1,0 +1,12 @@
+{
+  "name": "spike_face",
+  "version": "1.0.0",
+  "description": "Spike face core: port of face_v2 (renderer, springs, moods, recipes, particles) + AA rasteriser",
+  "frameworks": "*",
+  "platforms": "*",
+  "build": {
+    "flags": [
+      "-O2"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+name: flutter_secure_storage_windows
+description: >-
+  Spike's vendored copy of flutter_secure_storage_windows 4.2.2 (BSD-3-Clause, see LICENSE):
+  the upstream Dart FFI + DPAPI implementation only, without the legacy C++ plugin
+  (it needs the Visual Studio ATL component just to read data written by 3.x, which a new
+  install never has). See software/app/DESIGN.md "Desktop".
+version: 4.2.2+spike.1
+publish_to: none
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.19.0'
+
+dependencies:
+  ffi: ^2.2.0
+  flutter:
+    sdk: flutter
+  flutter_secure_storage_platform_interface: ^2.0.0
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  path_provider_platform_interface: ^2.1.2
+  win32: ^6.0.1
+
+flutter:
+  plugin:
+    implements: flutter_secure_storage
+    platforms:
+      windows:
+        dartPluginClass: FlutterSecureStorageWindows

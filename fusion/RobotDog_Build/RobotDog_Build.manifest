@@ -1,0 +1,8 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "script",
+  "author": "Desk Buddy",
+  "description": {"": "Builds the Desk Buddy v3 robot dog: shell, electronics placeholders, legs with wheel-feet, tail."},
+  "supportedOS": "windows|mac",
+  "editEnabled": true
+}

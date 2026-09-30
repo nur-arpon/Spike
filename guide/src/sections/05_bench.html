@@ -1,0 +1,64 @@
+<section class="chapter" id="ch5">
+  <div class="ch-head"><div class="ch-num">5</div><div><div class="kicker">Chapter 5</div><h1>Bench test</h1></div></div>
+  <p class="lead">Test every servo, board and sensor on the desk before any of it goes inside the robot. A dead sensor found now costs five minutes. The same sensor found after assembly means taking the lid, the side panels and a leg off again.</p>
+
+  <h2><span class="n">5.1</span>Get ready</h2>
+  <p><b>Header pins.</b> Solder the header pins onto every sensor board: the eight laser boards, the motion sensor, the touch board, the gesture sensor and the two microphones. Push the pins into the breadboard to hold them straight, lay the sensor on top, and solder. This is good practice before the harder joints.</p>
+  <p><b>Software.</b> The servo test sketch is in <span class="file">guide/tools/servo_center</span>. PlatformIO is already installed in the laptop project's Python environment. Every command below is typed in a terminal (PowerShell) in that folder:</p>
+  <pre style="font-family:Consolas,monospace;font-size:8pt;background:#f5f5f7;border-radius:2mm;padding:2.5mm 3mm;margin:0 0 3mm;white-space:pre-wrap">cd D:\Claude-Projects\RobotCompanion\guide\tools\servo_center
+$pio = "D:\Claude-Projects\RobotCompanion\software\laptop\.venv\Scripts\pio.exe"
+&amp; $pio run                  # build (checked: builds cleanly, 28 Sep 2026)
+&amp; $pio run -t upload        # upload to the screen board
+&amp; $pio device monitor       # open the Serial Monitor (Ctrl+C to leave)</pre>
+  <p><b>One power source per board:</b> while a board is on the laptop's USB cable, unplug its 5 V lead from the hub (for the screen board, the P1 plug).</p>
+
+  <h2><span class="n">5.2</span>Screen board on its own</h2>
+  <p>Plug the screen board into the laptop with the USB-C cable, and nothing else. It should light up and run the seller's demo. Touch the screen: the demo should react. That proves the screen, the touch chip and the board.</p>
+  <p>Before anything overwrites it, back up the factory firmware, so you can always put the demo back:</p>
+  <pre style="font-family:Consolas,monospace;font-size:8pt;background:#f5f5f7;border-radius:2mm;padding:2.5mm 3mm;margin:0 0 3mm;white-space:pre-wrap">&amp; $pio pkg exec -p tool-esptoolpy -- esptool.py --chip esp32s3 read_flash 0 0x400000 guition_factory_backup.bin</pre>
+  <p>Keep <span class="file">guition_factory_backup.bin</span> somewhere safe. Do the same for the camera board, and test the camera with the seller's example sketch, using the seller's pin map, not the AI-Thinker one.</p>
+
+  <h2><span class="n">5.3</span>Power check with the multimeter</h2>
+  <p>Connect the battery pack and switch you built in 4.3 to the hub, with nothing plugged into the hub's outputs. Put the cells in the right way round (black lead to middle wire first), wake the protection board by plugging the USB-C charger in for a few seconds, and switch on.</p>
+  <table class="t small">
+    <thead><tr><th>Measure (DC volts)</th><th>Should read</th><th>Reading</th></tr></thead>
+    <tbody>
+      <tr><td>BATT-SW to GND on the hub</td><td>6.0 to 8.4 V</td><td></td></tr>
+      <tr><td>Mini560 #1 (servos) OUT+ to OUT-</td><td>4.9 to 5.2 V</td><td></td></tr>
+      <tr><td>Mini560 #2 (boards) OUT+ to OUT-</td><td>4.9 to 5.2 V</td><td></td></tr>
+      <tr><td>The red and black wires at the screen board's P1 plug, red probe on red</td><td>4.9 to 5.2 V, not minus</td><td></td></tr>
+      <tr><td>VBAT pad to GND</td><td>about 0.32 x the battery voltage (1.9 to 2.7 V)</td><td></td></tr>
+    </tbody>
+  </table>
+  <p>Only when every reading is right, switch off and plug in the servo boards' green terminals, the P1 plug and the camera board. Switch on and measure the two module outputs again: they must still read 4.9 to 5.2 V.</p>
+
+  <h2><span class="n">5.4</span>Centre every servo</h2>
+  <p>A servo's horn must go on while the servo sits at its centre, 90 degrees, or the leg will stand crooked. The test sketch does this for all thirteen servos at once, and keeps them there.</p>
+  <p><b>1.</b> Unplug P1. Connect the laptop to the screen board and upload the sketch (<code>&amp; $pio run -t upload</code>). Open the Serial Monitor.</p>
+  <p><b>2.</b> Plug the servos into the servo boards by the channel table (4.9), brown wire on the GND row. For the bench test they can lie loose on the desk, with no horns fitted.</p>
+  <p><b>3.</b> Switch the battery on. Every 180 degree servo moves to its centre and holds; the 360 degree wheel servos stop or creep slowly.</p>
+  <p><b>4.</b> Type <code>n</code> and press Enter. The first servo in the table is selected and wiggles, so you know which one it is. Put its name flag on its lead. Repeat <code>n</code> for all thirteen. Type <code>t</code> to sweep the selected servo from 60 to 120 degrees and back: it should move smoothly without grinding.</p>
+  <p><b>5.</b> Switch off. From now on, do not turn a servo's shaft by hand, or it is no longer centred. If you do, run the sketch again.</p>
+  <p>At start-up the sketch tries SDA on IO17 first and swaps to IO18 if no servo board answers, lists every device on the bus by name, and says "found" or "NOT FOUND" for each servo board. Type <code>h</code> for the list of commands.</p>
+
+  <h2><span class="n">5.5</span>Test the sensors</h2>
+  <p>Plug each sensor into a row of the hub, one at a time at first. After each one, type <code>s</code> in the Serial Monitor and check it appears in the list.</p>
+  <table class="t small">
+    <thead><tr><th>Device</th><th>Address in the scan</th><th>Extra test</th></tr></thead>
+    <tbody>
+      <tr><td>Servo board A / B</td><td>0x40 / 0x41 (0x70 may also show at start-up: ignore it)</td><td>Servos centre at start-up</td></tr>
+      <tr><td>MPU6050 motion sensor</td><td>0x68</td><td></td></tr>
+      <tr><td>MPR121 touch board</td><td>0x5A</td><td></td></tr>
+      <tr><td>APDS-9960 gesture sensor</td><td>0x39</td><td></td></tr>
+      <tr><td>VL53L0X lasers</td><td>none until woken</td><td>Type <code>l</code>: each of the seven must say "OK, answers at 0x29"</td></tr>
+      <tr><td>Battery level</td><td>-</td><td>Type <code>v</code>: within 0.2 V of the multimeter</td></tr>
+    </tbody>
+  </table>
+  <p>Cheap copies of these sensors sometimes report a different chip ID. If a sensor does not appear at all, check its wires first; if it appears at an unexpected address, write the address down rather than calling the part dead. Test the spare laser too, and keep it for later.</p>
+
+  <h2><span class="n">5.6</span>Wheel stop points and a servo strength test</h2>
+  <p><b>Wheel stop points.</b> Select each wheel servo with <code>n</code>, then press <code>+</code> or <code>-</code> until it stops completely. Write the number into the calibration table in chapter 7.</p>
+  <p><b>Strength test (spare servo).</b> The knees work hard. Hang about 450 g (a full water bottle) from the spare 180 degree servo's horn, 25 mm from the shaft, with the servo held at centre by the sketch, for 5 minutes. Feel for heat and listen for buzzing. Warm is fine. Too hot to hold, or a constant loud buzz, means the knees need stronger servos: tell the lead before assembly.</p>
+  <p><b>Afterwards</b>, switch off and take the cells out again. They stay out until chapter 7.</p>
+  <div class="box check keep"><h4>Bench test passed when</h4>All thirteen servos centre and sweep, both servo boards and every sensor show in the scan, all seven lasers answer, the battery reading matches the multimeter, and the camera board streams a picture.</div>
+</section>

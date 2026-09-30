@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Screen Pup logo, "Mix 1" (wink). Single source for the app icon:
+       the owner picked Mix 1 as FINAL on 29 Sep 2026. To change it, edit
+       this file, then run `node tool/make_icons.js` and
+       `dart run flutter_launcher_icons` (see tool/make_icons.js). -->
+  <!-- chocolate squircle -->
+  <path id="bg" fill="#4A3326" d="M1024.0 512.0 L1023.6 684.0 L1022.2 738.8 L1020.0 778.3 L1016.9 810.2 L1013.0 837.2 L1008.0 860.7 L1002.2 881.4 L995.4 900.0 L987.6 916.7 L978.7 931.8 L968.8 945.4 L957.7 957.7 L945.4 968.8 L931.8 978.7 L916.7 987.6 L900.0 995.4 L881.4 1002.2 L860.7 1008.0 L837.2 1013.0 L810.2 1016.9 L778.3 1020.0 L738.8 1022.2 L684.0 1023.6 L512.0 1024.0 L340.0 1023.6 L285.2 1022.2 L245.7 1020.0 L213.8 1016.9 L186.8 1013.0 L163.3 1008.0 L142.6 1002.2 L124.0 995.4 L107.3 987.6 L92.2 978.7 L78.6 968.8 L66.3 957.7 L55.2 945.4 L45.3 931.8 L36.4 916.7 L28.6 900.0 L21.8 881.4 L16.0 860.7 L11.0 837.2 L7.1 810.2 L4.0 778.3 L1.8 738.8 L0.4 684.0 L0.0 512.0 L0.4 340.0 L1.8 285.2 L4.0 245.7 L7.1 213.8 L11.0 186.8 L16.0 163.3 L21.8 142.6 L28.6 124.0 L36.4 107.3 L45.3 92.2 L55.2 78.6 L66.3 66.3 L78.6 55.2 L92.2 45.3 L107.3 36.4 L124.0 28.6 L142.6 21.8 L163.3 16.0 L186.8 11.0 L213.8 7.1 L245.7 4.0 L285.2 1.8 L340.0 0.4 L512.0 0.0 L684.0 0.4 L738.8 1.8 L778.3 4.0 L810.2 7.1 L837.2 11.0 L860.7 16.0 L881.4 21.8 L900.0 28.6 L916.7 36.4 L931.8 45.3 L945.4 55.2 L957.7 66.3 L968.8 78.6 L978.7 92.2 L987.6 107.3 L995.4 124.0 L1002.2 142.6 L1008.0 163.3 L1013.0 186.8 L1016.9 213.8 L1020.0 245.7 L1022.2 285.2 L1023.6 340.0Z"/>
+  <g id="art">
+  <!-- ears: caramel with dark inner triangle -->
+  <path fill="#B97A4F" d="M170 368 L262 132 Q286 98 318 128 L420 280 Z"/>
+  <path fill="#2E1F17" d="M236 318 L286 186 L362 290 Z"/>
+  <path fill="#B97A4F" d="M854 368 L762 132 Q738 98 706 128 L604 280 Z"/>
+  <path fill="#2E1F17" d="M788 318 L738 186 L662 290 Z"/>
+  <!-- cream screen face -->
+  <rect x="150" y="260" width="724" height="560" rx="170" fill="#F3DDBF"/>
+  <!-- brown patch around the viewer's-left eye -->
+  <path fill="#C98A5E" d="M200 470 C196 368 276 318 372 322 C470 326 508 400 496 480 C484 572 412 616 330 606 C246 596 204 548 200 470 Z"/>
+  <!-- open glossy eye (viewer's left) -->
+  <ellipse cx="358" cy="470" rx="74" ry="86" fill="#2E2320"/>
+  <circle cx="332" cy="438" r="24" fill="#FFFFFF"/>
+  <circle cx="384" cy="504" r="11" fill="#FFFFFF" opacity="0.85"/>
+  <!-- winking eye (viewer's right) -->
+  <path d="M592 478 Q666 420 740 478" fill="none" stroke="#2E2320" stroke-width="30" stroke-linecap="round"/>
+  <!-- nose -->
+  <path fill="#2E2320" d="M512 560 C466 560 452 584 468 604 C484 624 500 634 512 634 C524 634 540 624 556 604 C572 584 558 560 512 560 Z"/>
+  <ellipse cx="496" cy="578" rx="12" ry="7" fill="#FFFFFF" opacity="0.5"/>
+  <!-- tongue out to the side -->
+  <path fill="#E0564F" d="M548 676 C556 740 588 772 624 764 C660 756 668 716 650 676 Z"/>
+  <path d="M602 690 L610 740" stroke="#B8403A" stroke-width="8" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M400 648 Q456 704 512 652 Q568 704 660 660" fill="none" stroke="#4A2E24" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

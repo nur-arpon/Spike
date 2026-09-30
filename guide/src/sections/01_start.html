@@ -1,0 +1,84 @@
+<div class="cover">
+  <div class="band"></div>
+  <div class="brand">Build manual</div>
+  <h1>{{TITLE}}</h1>
+  <div class="sub">{{SUBTITLE}}</div>
+  <div class="hero"><img src="{{img:cover}}" alt="Desk Buddy, the finished robot"></div>
+  <div class="meta">
+    <div><div class="ver">{{VERSION}}</div><div>{{EDITION}} &middot; first edition</div></div>
+    <div class="note">A four-legged desk robot dog with wheels on its paws, a 4.3 inch face and a camera. This guide takes you from printed parts and a box of electronics to a robot that stands up.</div>
+  </div>
+</div>
+
+<section class="chapter" id="contents">
+  <div class="ch-head"><div><div class="kicker">Desk Buddy {{VERSION}}</div><h1>Contents</h1></div></div>
+  {{toc}}
+</section>
+
+<section class="chapter" id="ch1">
+  <div class="ch-head"><div class="ch-num">1</div><div><div class="kicker">Chapter 1</div><h1>Before you start</h1></div></div>
+  <p class="lead">Read this chapter once, all the way through, before you touch a soldering iron. It lists the tools, the safety rules for the battery and the iron, and how every step in this guide is laid out.</p>
+
+  <h2><span class="n">1.1</span>What you are building</h2>
+  <div class="cols2">
+    <div>
+      <p>Desk Buddy is a small robot dog about 17 cm wide. Each of its four legs has a hip servo and a knee servo, and each paw has a wheel servo, so it can walk slowly or roll. A tail servo wags. Its face is a 4.3 inch touch screen, its eyes are a camera in the muzzle, and it hears you through two microphones.</p>
+      <p>You will build it in this order: print the parts, check every bought part, build the wiring harness, test everything on the desk, assemble the body, lid, head, legs, tail and ears, and finally switch it on and calibrate it.</p>
+      <p>Plan on roughly two days of printing at the maker space, an evening for the harness, an evening for the bench test and a weekend for the assembly. Nothing here is hard, but almost everything is small, so work slowly and in good light.</p>
+    </div>
+    <figure class="card-img"><img src="{{img:iso_small}}" alt="Desk Buddy"></figure>
+  </div>
+
+  <h2><span class="n">1.2</span>Tools</h2>
+  <p>You already bought most of these. The ones marked <b>get</b> are cheap and worth having before you start: buy them at Jaycar or Bunnings.</p>
+  <table class="t">
+    <thead><tr><th></th><th>Tool</th><th>Used for</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tick"></span></td><td>ES02 soldering kit and digital multimeter</td><td>Every soldered joint; measuring voltages and checking for shorts</td><td>bought (EU plug: use the plug adapter)</td></tr>
+      <tr><td><span class="tick"></span></td><td>Solder, 0.7 to 0.8 mm, rosin core</td><td>Thin solder is easier on small pads</td><td><b>get</b> if the kit has only thick solder</td></tr>
+      <tr><td><span class="tick"></span></td><td>Flux pen</td><td>Makes solder flow onto old or oxidised pads</td><td><b>get</b> (Jaycar)</td></tr>
+      <tr><td><span class="tick"></span></td><td>Small Phillips screwdrivers, PH0 and PH1</td><td>All the M2 screws</td><td>at home</td></tr>
+      <tr><td><span class="tick"></span></td><td>Flush cutters (PLATO 170)</td><td>Trimming wires and cleaning prints</td><td>bought</td></tr>
+      <tr><td><span class="tick"></span></td><td>Wire stripper</td><td>About 40 wire ends; cutters nick the strands and nicked wires snap later</td><td><b>get</b></td></tr>
+      <tr><td><span class="tick"></span></td><td>2.0 mm drill bit (used by hand, no drill)</td><td>Opening the servo horn holes so M2 screws pass</td><td><b>get</b></td></tr>
+      <tr><td><span class="tick"></span></td><td>Digital caliper</td><td>Measuring the servos before printing</td><td>bought</td></tr>
+      <tr><td><span class="tick"></span></td><td>Superglue, cable ties, foam tape, heat-shrink</td><td>Mics, foil pads, slack loops, boards, joints</td><td>bought</td></tr>
+      <tr><td><span class="tick"></span></td><td>Breadboard and jumper wires</td><td>The bench test</td><td>bought</td></tr>
+      <tr><td><span class="tick"></span></td><td>Masking tape and a fine marker</td><td>A name flag on every lead</td><td>at home</td></tr>
+      <tr><td><span class="tick"></span></td><td>Laptop with PlatformIO, a USB-C data cable, a 5 V 2 A phone charger</td><td>Uploading the test sketch; charging</td><td>at home</td></tr>
+      <tr><td><span class="tick"></span></td><td>A mug or small box</td><td>Propping the robot up so its wheels are off the desk</td><td>at home</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="n">1.3</span>Safety</h2>
+  <div class="cols2">
+    <div>
+      <div class="box warn keep"><h4>Soldering and fumes</h4>The iron tip is about 350 degrees C. Always put it back in its stand, never on the bench. Work by an open window or with a small fan pulling the smoke away from your face, not towards it. Wash your hands after soldering and before you eat. Wear glasses when you trim wire ends, because they fly.</div>
+      <div class="box warn keep"><h4>18650 cells</h4>These cells hold a lot of energy. Never let anything metal touch both ends of a cell: no loose cells in a pocket or a bag with keys or coins. Never use a cell with a torn or dented wrapper. Check the + and - marks twice before a cell goes into the holder, every single time. Never mix the Samsung cells with the spare Tinker cells, and always change both cells together.</div>
+    </div>
+    <div>
+      <div class="box warn keep"><h4>Use the fuse</h4>The protection board only cuts off at about 20 A, which is enough to melt thin wire inside a plastic shell. The 7.5 A fuse is what protects the robot. Never bridge it, and never replace it with a bigger one.</div>
+      <div class="box warn keep"><h4>Power off before you touch the wiring</h4>Switch the robot off before you plug or unplug anything. For any work inside the tub, also take the cells out. Keep your fingers away from the legs while the robot is switched on: servos are strong enough to pinch.</div>
+      <div class="box info keep"><h4>Heat</h4>The printed parts are PLA, which softens at about 55 degrees C. Never leave the robot in a car or in direct sun behind a window.</div>
+    </div>
+  </div>
+
+  <h2><span class="n">1.4</span>How to read this guide</h2>
+  <p>Every assembly step looks the same. Here is what each part of a step means.</p>
+  <div class="cols2">
+    <div>
+      <p><span class="step-id" style="font-size:10pt">A2</span> &nbsp;<b>The step number and title.</b> The letter is the section: A Body, B Lid, C Head, D Legs, E Tail, F Ears and G Close up.</p>
+      <p><b>The picture.</b> The part you fit in this step has an <b style="color:#f2781e">orange outline</b>. A bought part it holds, like a servo or a sensor board, has a <b style="color:#1e78dc">blue outline</b>. Everything already built is faded. Orange arrows show which way a part moves to go on.</p>
+      <p><b>You need.</b> The parts and the screws for this step. Screws are colour-coded by length, the same way every time:</p>
+      <ul class="need" style="list-style:none;padding:3mm;margin:0 0 3mm">{{screwkey}}</ul>
+      <p><b>The text.</b> Read it all before you pick anything up. Then do it in order.</p>
+      <p><b>Check</b> tells you how to know the step went right. <b>Common mistake</b> is the thing people most often get wrong at that step.</p>
+    </div>
+    <div>
+      <div class="box info keep"><h4>Left, right, front and back</h4>Left and right always mean the robot's own left and right, as if you were sitting on it facing forward. The front is the end with the head. So when you face the robot, its left side is on your right.</div>
+      <div class="box info keep"><h4>Part names</h4>Printed parts are named by their file, for example <span class="file">Thigh_FrontLeft_Outer</span>. Bought parts use the names in the Parts check chapter.</div>
+      <div class="box info keep"><h4>Colours</h4>Printed parts come in three colours: {{swatch:white}}<b>{{white}}</b>, {{swatch:graphite}}<b>{{graphite}}</b> and {{swatch:black}}<b>{{black}}</b> (the small caps and covers). {{render_note}}</div>
+      <div class="box info keep"><h4>Screws into plastic</h4>All screws are M2 self-tapping: they cut their own thread in the printed hole. Drive each screw in once before the part goes on, then take it out (this is called pre-threading). Tighten until the head touches, then a quarter turn more, and stop. Over-tightening strips the thread.</div>
+    </div>
+  </div>
+</section>

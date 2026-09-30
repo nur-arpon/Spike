@@ -1,0 +1,36 @@
+Third-party software in the built-in brain (the "brain" folder of the Windows app)
+===================================================================================
+
+The brain is built from open-source components. Each keeps its own licence; the
+full licence texts are in the matching *.dist-info folders inside "_internal".
+
+Runtime and libraries
+- Python 3.12 ................ Python Software Foundation License
+- NumPy, SciPy ............... BSD-3-Clause
+- ONNX Runtime ............... MIT
+- CTranslate2 ................ MIT
+- faster-whisper ............. MIT
+- tokenizers, huggingface_hub  Apache-2.0
+- Vosk ....................... Apache-2.0
+- sounddevice ................ MIT; PortAudio ............. MIT
+- websockets ................. BSD-3-Clause
+- python-zeroconf ............ LGPL-2.1-or-later, shipped as plain Python files in
+                               _internal/zeroconf so it can be replaced.
+                               Source: https://github.com/python-zeroconf/python-zeroconf
+- ifaddr ..................... MIT
+- RapidFuzz .................. MIT
+- qrcode ..................... BSD-3-Clause
+- comtypes ................... MIT
+- cffi / pycparser ........... MIT / BSD-3-Clause
+- requests, urllib3, idna, certifi, charset-normalizer, anyio, httpx, httpcore, h11,
+  PyYAML, tqdm, filelock, fsspec, packaging, typing_extensions, protobuf, flatbuffers,
+  srt, click, colorama ....... MIT / BSD / Apache-2.0 / MPL-2.0 (certifi) / PSF
+
+Models
+- Whisper base.en (OpenAI, converted to CTranslate2 by SYSTRAN) ... MIT
+- vosk-model-small-en-us-0.15 (Alpha Cephei) ....................... Apache-2.0
+- Silero VAD (silero_vad.onnx, Silero Team) ........................ MIT
+
+Nothing here sends data anywhere on its own. Speech recognition, wake words and
+voice-activity detection run on this computer; the conversation text and the voice
+requests go to Google's Gemini API only with the key the user pasted.

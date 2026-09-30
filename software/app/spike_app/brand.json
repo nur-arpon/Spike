@@ -1,0 +1,14 @@
+{
+  "_comment": "THE one place for every user-visible product, store and publisher name in the Flutter app, the Windows package, the Android label and the Store kit. After editing: dart run tool/sync_brand.dart (rewrites lib/core/brand.dart). See software/app/RENAMING.md. The characters' names (Spike, Spicy) are NOT here: they are the owner's to edit in the app and live in the personas.",
+  "productName": "Spike",
+  "startMenuName": "Spike",
+  "storeName": "Spike - your personal desktop companion",
+  "tagline": "your personal desktop companion",
+  "publisherDisplayName": "SpaceZ",
+  "developerName": "Nur Ifran Arpon",
+  "copyrightHolder": "Nur Ifran Arpon",
+  "supportEmail": "",
+  "websiteUrl": "https://github.com/nur-arpon/Spike",
+  "privacyPolicyUrl": "https://nur-arpon.github.io/Spike/privacy-policy.html",
+  "internalId": "spikebuddy"
+}

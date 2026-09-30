@@ -1,0 +1,53 @@
+# Spike brain - the Windows desktop app's LIGHT profile (layered over default.toml).
+#
+# Loaded with `--profile desktop` by the desktop app, which starts this brain as a background
+# helper (software/app/DESIGN.md "Desktop"). First Store release = "light": Gemini for chat
+# and voice with the owner's own free key, a small CPU speech recogniser, no graphics card,
+# no Ollama, no Chatterbox, no webcam. The on-device AI pack (local model, Whisper on the
+# graphics card, Chatterbox, Kokoro) comes in a later update and only needs its own profile.
+#
+# The desktop app passes --home <its app-data folder> (data/, logs, the pairing token) and
+# --models <the package's read-only models folder>. The Gemini key arrives in the
+# GEMINI_API_KEY environment variable of this process only (never a file, never logged).
+
+[server]
+host = "0.0.0.0"            # the phone app and the robot reach it on the home Wi-Fi (token required;
+                            # the package's firewall rule opens this port on Private networks only)
+port = 8765                 # the next free one is used when it is taken (the manifest opens 8765-8769)
+
+[llm]
+provider = "gemini"         # the main model is Gemini (mind/llm.py GeminiLLM), not Ollama
+gemini_models = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.5-flash"]
+on_demand = false           # nothing to start or warm: the model lives at Google
+first_token_timeout_s = 12
+total_timeout_s = 25
+
+[cloud]
+enabled = false             # Gemini is already the main model here
+
+[tts]
+engine = "gemini"           # Gemini TTS first (speech/gemini_tts.py), Windows' own voice last
+
+[tts.gemini]
+models = ["gemini-3.8-flash-tts", "gemini-3.8-flash-lite-tts"]
+timeout_s = 12
+rest_min = 15               # a model that answered 429 (free quota used up) rests this long
+local_backups = false       # Kokoro / Piper are not in the light package
+
+[tts.windows]
+enabled = true              # SAPI 5 (speech/windows_tts.py): the voice that is always there
+
+[stt]
+model = "base.en"           # faster-whisper base.en on the processor, int8 (DESIGN.md "Desktop": the most
+cpu_model = "base.en"       # accurate model that stays light: ~140 MB, ~0.5-1 s per request on a laptop CPU)
+device = "cpu"
+compute_type_cpu = "int8"
+
+[vision]
+enabled = false             # no webcam in the light release (no camera permission asked for)
+
+[aruco]
+enabled = false
+
+[memory]
+llm_extraction = true       # facts are picked out by Gemini (one small call after a chat)

@@ -1,0 +1,90 @@
+OK  Torso_Bottom              160.0 x  84.0 x  36.0 mm    82.3 g solid  bodies=1  STL ok
+OK  Side_Panel_Left           160.0 x  36.0 x  10.2 mm    17.0 g solid  bodies=1  STL ok
+OK  Side_Panel_Right          160.0 x  36.0 x  10.2 mm    17.0 g solid  bodies=1  STL ok
+OK  Band_Chest                 72.0 x  26.0 x   5.4 mm     3.5 g solid  bodies=1  STL ok
+OK  Band_Rump                  72.0 x  26.0 x   5.4 mm     3.4 g solid  bodies=1  STL ok
+OK  Battery_Door               80.0 x  52.0 x  20.8 mm    15.4 g solid  bodies=1  STL ok
+OK  Battery_Clamp              52.0 x  10.0 x   3.0 mm     1.9 g solid  bodies=1  STL ok
+OK  Screw_Plugs                70.1 x  50.8 x   1.0 mm     0.1 g solid  bodies=4  STL ok
+OK  Torso_Lid                 160.0 x  84.0 x  21.3 mm    83.1 g solid  bodies=1  STL ok
+OK  Collar                     84.0 x  44.0 x  11.5 mm    13.3 g solid  bodies=1  STL ok
+OK  Head_Front                126.0 x  98.3 x  33.5 mm    52.1 g solid  bodies=1  STL ok
+OK  Head_Back                 126.0 x  98.0 x  16.6 mm    45.2 g solid  bodies=1  STL ok
+OK  Screen_Washers            118.6 x  68.1 x   0.8 mm     0.1 g solid  bodies=4  STL ok
+OK  Port_Door_Head             17.6 x  12.2 x   2.4 mm     0.5 g solid  bodies=1  STL ok
+OK  Port_Blank_Head            17.6 x  12.2 x   2.4 mm     0.5 g solid  bodies=1  STL ok
+OK  Muzzle                     76.0 x  34.0 x  18.3 mm    16.3 g solid  bodies=1  STL ok
+OK  Port_Door_Muzzle           17.6 x  12.2 x   2.4 mm     0.5 g solid  bodies=1  STL ok
+OK  Port_Blank_Muzzle          17.6 x  12.2 x   2.4 mm     0.5 g solid  bodies=1  STL ok
+OK  Ear_Left                   40.0 x  22.4 x  15.7 mm     6.4 g solid  bodies=1  STL ok
+OK  Ear_Right                  40.0 x  22.4 x  15.7 mm     6.4 g solid  bodies=1  STL ok
+OK  Tail_Root                  26.0 x  26.0 x   7.3 mm     1.8 g solid  bodies=1  STL ok
+OK  Tail                       42.8 x  18.1 x   9.4 mm     2.0 g solid  bodies=1  STL ok
+OK  Thigh_FrontLeft_Outer      73.0 x  41.8 x  11.3 mm    12.6 g solid  bodies=1  STL ok
+OK  Thigh_FrontLeft_Cover      40.9 x  40.5 x  28.2 mm    10.5 g solid  bodies=1  STL ok
+OK  Shin_FrontLeft_Outer       70.4 x  40.8 x  13.4 mm    21.0 g solid  bodies=1  STL ok
+OK  Shin_FrontLeft_Cover       70.4 x  40.8 x  28.2 mm    10.4 g solid  bodies=1  STL ok
+OK  Wheel_FrontLeft            30.8 x  30.8 x   8.0 mm     5.7 g solid  bodies=1  STL ok
+OK  Thigh_BackLeft_Outer       73.0 x  41.8 x  11.3 mm    12.6 g solid  bodies=1  STL ok
+OK  Thigh_BackLeft_Cover       40.9 x  40.5 x  28.2 mm    10.5 g solid  bodies=1  STL ok
+OK  Shin_BackLeft_Outer        70.4 x  40.8 x  13.4 mm    21.0 g solid  bodies=1  STL ok
+OK  Shin_BackLeft_Cover        70.4 x  40.9 x  28.2 mm    10.4 g solid  bodies=1  STL ok
+OK  Wheel_BackLeft             30.8 x  30.8 x   8.0 mm     5.7 g solid  bodies=1  STL ok
+OK  Thigh_FrontRight_Outer     73.0 x  41.8 x  11.3 mm    12.6 g solid  bodies=1  STL ok
+OK  Thigh_FrontRight_Cover     40.8 x  40.5 x  28.2 mm    10.5 g solid  bodies=1  STL ok
+OK  Shin_FrontRight_Outer      70.4 x  40.8 x  13.4 mm    21.0 g solid  bodies=1  STL ok
+OK  Shin_FrontRight_Cover      70.4 x  40.8 x  28.2 mm    10.4 g solid  bodies=1  STL ok
+OK  Wheel_FrontRight           30.8 x  30.8 x   8.0 mm     5.7 g solid  bodies=1  STL ok
+OK  Thigh_BackRight_Outer      73.0 x  41.8 x  11.3 mm    12.6 g solid  bodies=1  STL ok
+OK  Thigh_BackRight_Cover      40.8 x  40.5 x  28.2 mm    10.5 g solid  bodies=1  STL ok
+OK  Shin_BackRight_Outer       70.4 x  40.8 x  13.4 mm    21.0 g solid  bodies=1  STL ok
+OK  Shin_BackRight_Cover       70.4 x  40.9 x  28.2 mm    10.4 g solid  bodies=1  STL ok
+OK  Wheel_BackRight            30.8 x  30.8 x   8.0 mm     5.7 g solid  bodies=1  STL ok
+OK  Cap_Hip_FrontLeft          12.0 x  11.9 x   2.8 mm     0.2 g solid  bodies=1  STL ok
+OK  Cap_Knee_FrontLeft         12.0 x  11.9 x   2.8 mm     0.2 g solid  bodies=1  STL ok
+OK  Cap_Wheel_FrontLeft        14.0 x  14.0 x   2.8 mm     0.3 g solid  bodies=1  STL ok
+OK  Cap_Hip_BackLeft           12.0 x  11.9 x   2.8 mm     0.2 g solid  bodies=1  STL ok
+OK  Cap_Knee_BackLeft          12.0 x  11.9 x   2.8 mm     0.2 g solid  bodies=1  STL ok
+OK  Cap_Wheel_BackLeft         14.0 x  14.0 x   2.8 mm     0.3 g solid  bodies=1  STL ok
+OK  Cap_Hip_FrontRight         12.0 x  11.9 x   2.8 mm     0.2 g solid  bodies=1  STL ok
+OK  Cap_Knee_FrontRight        12.0 x  11.9 x   2.8 mm     0.2 g solid  bodies=1  STL ok
+OK  Cap_Wheel_FrontRight       14.0 x  14.0 x   2.8 mm     0.3 g solid  bodies=1  STL ok
+OK  Cap_Hip_BackRight          12.0 x  11.9 x   2.8 mm     0.2 g solid  bodies=1  STL ok
+OK  Cap_Knee_BackRight         12.0 x  11.9 x   2.8 mm     0.2 g solid  bodies=1  STL ok
+OK  Cap_Wheel_BackRight        14.0 x  14.0 x   2.8 mm     0.3 g solid  bodies=1  STL ok
+OK  Cap_Tail                   12.0 x  11.9 x   2.8 mm     0.2 g solid  bodies=1  STL ok
+OK  Coupon_Knee_Thigh          40.8 x  35.0 x   5.5 mm     5.4 g solid  bodies=1  STL ok
+OK  Coupon_Knee_Shin           41.0 x  34.0 x  15.0 mm    13.6 g solid  bodies=1  STL ok
+OK  Coupon_Snap_White          48.0 x  16.0 x   9.2 mm     4.1 g solid  bodies=1  STL ok
+OK  Coupon_Snap_Graphite       12.0 x  12.0 x   6.2 mm     1.1 g solid  bodies=1  STL ok
+OK  Fit_Test_Coupon            95.0 x  60.0 x  10.4 mm    25.9 g solid  bodies=1  STL ok
+    printed total 613 g solid, about 460 g as printed (robot parts only)
+OK  BOUGHT - every purchased part in place  bodies=228
+CLASH CHECK: 289 bodies, 2 clashes
+  CLASH      1.9 mm3  Cap_Tail  <->  Tail - horn arms  
+  CLASH      1.9 mm3  Cap_Tail  <->  Tail - horn arms 2  
+BALANCE: total 1058 g, centre of mass x +0.2  y 24.4 (106 mm above the desk)  z +17.0 mm (feet at z +66 / -52)
+  on 4 wheels: 49.0 mm inside the support area
+  lift front left  foot:   -8.2 mm
+  lift front right foot:   -8.0 mm
+  lift rear right  foot:   +8.2 mm
+  lift rear left   foot:   +8.0 mm
+  v2 for comparison: total 840 g, centre of mass z +17.4, on 4 wheels 48.6 mm inside, lift front left/right -8.3 / -8.5 mm
+ASSEMBLY: 56 of 56 files inserted, each checked to sit at its modelled position (inside picture: 44 shells made see-through)
+LEG CLEARANCE SWEEPS (side view, from the build outlines):
+  knee pod front vs belly (pod): min  3.54 mm over hip +/-30 deg (at -30.0 deg, z +43.1); first touch at none / -38.5 deg
+  knee pod front vs belly (pod + root fillet under the panel): min  2.87 mm over hip +/-30 deg (at -30.0 deg, z +43.1); first touch at none / -37.0 deg
+  knee pod rear  vs belly (pod): min  3.39 mm over hip +/-30 deg (at -30.0 deg, z -76.0); first touch at 38.5 / -48.5 deg
+  knee pod rear  vs belly (pod + root fillet under the panel): min  2.62 mm over hip +/-30 deg (at -30.0 deg, z -76.0); first touch at 37.0 / -43.0 deg
+  paw band (toe/heel, R4) vs desk (y -81.3): min 4.55 mm over shin tilt -9.9..+19.8 deg (at -9.9)
+  paw pod (R4 lower corners) vs desk (y -81.3): min 5.01 mm over shin tilt -9.9..+19.8 deg (at -9.9)
+  paw front vs belly: min 44.9 mm with the shin inside the gait limits; 9.0 mm over the full hip +/-30 x knee +/-50 deg (at hip -30, knee -50)
+  paw rear  vs belly: min 43.4 mm with the shin inside the gait limits; -1.6 mm over the full hip +/-30 x knee +/-50 deg (at hip +30, knee +50)
+  paw vs thigh + knee pod over knee +/-50 deg: min distance 14.6 mm
+  lead corridors (gap for a dia 2.4 bundle): knee 3.48 mm, paw 2.79 mm
+BODY (v3 sections 2-7):
+  lower body width 97.2 (side panels), belly R8 at chest and rump, lid top R6, head R8 face / R10 back / R8 side edges
+  hip leads: panel slot 9 x 5 at y 26.5-31.5, tub-wall notch 9 wide from y 26.5 to the rim, lid comb teeth down to y 29.0
+  USB-C: 13 x 7 pill in the rump band at x 27.5, y 27.58; receptacle face 1.5 behind the band face; charger raised to y 24.35
+  KCD1 at the front belly centre, z 50.0-69.4, flush in a 2.2 recess; battery door x +-26, z -54..26
+  tail: servo under the lid (tabs at y 33.6), root dia 26 in a dia 27.6 socket, tail rises 20 deg

@@ -1,0 +1,15 @@
+# Spike laptop brain - never commit secrets, memories or big models
+.env
+data/
+spike_settings.toml
+.venv/
+models/
+voice_samples/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# desktop light brain build (software/laptop/desktop_build)
+.venv-desktop/
+desktop_build/dist/
+desktop_build/build/

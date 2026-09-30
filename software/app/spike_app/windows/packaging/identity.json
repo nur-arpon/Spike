@@ -1,0 +1,8 @@
+{
+  "_README": "THE ONE PLACE for the Microsoft Store package identity. Copy these two values from Partner Center > your app > Product management > Product identity (Package/Identity/Name and Package/Identity/Publisher), exactly as shown there. They are invisible to users and can never change after the first submission. The publisher's DISPLAY name (SpaceZ) and every other visible name come from spike_app/brand.json (publisherDisplayName must match Partner Center's 'Package/Properties/PublisherDisplayName'). See software/app/store/PARTNER_CENTER_CHECKLIST.md.",
+  "packageName": "SpaceZ.Spike-yourpersonaldesktopcompanion",
+  "publisher": "CN=B8C66D03-1462-4FBC-884C-495CFF205655",
+  "_localTestPublisher": "Used only by build_msix.ps1 -LocalTest: a test package for a PC in Developer Mode, installed from its staged folder with Add-AppxPackage -Register build\\msix\\stage\\AppxManifest.xml (no certificate needed). Never uploaded.",
+  "localTestPackageName": "SpikeBuddy.LocalTest",
+  "localTestPublisher": "CN=SpikeLocalTest"
+}

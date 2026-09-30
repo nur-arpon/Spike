@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "author": "RobotCompanion v1",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-s3-devkitc-1", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-mpu6050", "id": "imu", "top": -140, "left": 180, "attrs": {} },
+    { "type": "wokwi-hc-sr04", "id": "sonar", "top": -150, "left": -200, "attrs": { "distance": "100" } },
+    { "type": "wokwi-led", "id": "ledL", "top": 200, "left": 200, "attrs": { "color": "green", "label": "Motor L" } },
+    { "type": "wokwi-led", "id": "ledR", "top": 200, "left": 260, "attrs": { "color": "green", "label": "Motor R" } },
+    { "type": "wokwi-led", "id": "ledWarn", "top": 200, "left": 320, "attrs": { "color": "red", "label": "Tilt/Obstacle" } }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+
+    [ "imu:VCC", "esp:3V3.1", "red", [] ],
+    [ "imu:GND", "esp:GND.1", "black", [] ],
+    [ "imu:SDA", "esp:8", "blue", [] ],
+    [ "imu:SCL", "esp:9", "yellow", [] ],
+
+    [ "sonar:VCC", "esp:5V", "red", [] ],
+    [ "sonar:GND", "esp:GND.1", "black", [] ],
+    [ "sonar:TRIG", "esp:4", "orange", [] ],
+    [ "sonar:ECHO", "esp:5", "purple", [] ],
+
+    [ "ledL:A", "esp:6", "green", [] ],
+    [ "ledL:C", "esp:GND.2", "black", [] ],
+    [ "ledR:A", "esp:7", "green", [] ],
+    [ "ledR:C", "esp:GND.2", "black", [] ],
+    [ "ledWarn:A", "esp:15", "red", [] ],
+    [ "ledWarn:C", "esp:GND.2", "black", [] ]
+  ],
+  "dependencies": {}
+}

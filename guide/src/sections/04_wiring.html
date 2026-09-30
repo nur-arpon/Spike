@@ -1,0 +1,60 @@
+<section class="chapter" id="ch4">
+  <div class="ch-head"><div class="ch-num">4</div><div><div class="kicker">Chapter 4</div><h1>Wiring</h1></div></div>
+  <p class="lead">You build the whole wiring harness on the desk first: the battery pack, the power switch and fuse, and the hub with its two 5 V modules. The Bench test in chapter 5 then runs on this real harness, and the Assembly chapter only has to plug it in.</p>
+  <p>This chapter comes before the bench test because every test needs the battery and the 5 V modules. Read the ten rules first. They come from the parts audit, and each one prevents a way of destroying a board.</p>
+
+  <h2><span class="n">4.1</span>The ten wiring rules</h2>
+  <div class="cols2">{{rules}}</div>
+
+  <h2><span class="n">4.2</span>The power path</h2>
+  <figure class="keep">{{svg:power}}</figure>
+  <p>Power flows one way. The two cells in series make about 7.4 V. The protection board stops over-charge, over-drain and shorts, and the 7.5 A fuse comes straight after it, before both the charger and the switch. The switch feeds the hub, where two Mini560 modules each make 5 V: module #1 only for the servos, module #2 only for the screen and camera boards. They are kept apart so the servos' current spikes cannot reset the brain. A 1000 uF capacitor across each output smooths the spikes. A 10 k and 4.7 k resistor pair lets the screen board read the battery level on IO5.</p>
+  <p>The charger connects after the fuse and before the switch, so it charges the cells whether the robot is on or off. Switch the robot off to charge.</p>
+
+  <h2><span class="n">4.3</span>Build the battery pack and power leads</h2>
+  <div class="box warn keep"><h4>Cells out</h4>Do all of this with the cells out of the holder. They go in for the first time in the bench test (5.3), and come out again before you assemble the robot.</div>
+  <p><b>1. Middle wire.</b> Inside the cell holder, find the metal link that joins the two cell positions. Put a touch of flux on it, and solder on a 10 cm thin wire. Be quick: the holder's plastic melts. This wire goes to the protection board's BM (middle) pad.</p>
+  <p><b>2. Holder to protection board.</b> Shorten the holder's red and black leads to about 12 cm: long enough for the battery door to come off and sit beside the robot while it is still wired. Solder black to B-, the middle wire to BM, and red to B+.</p>
+  <p><b>3. Fuse.</b> Solder one lead of the fuse holder to P+. Cut two thick red wires: 8 cm for the charger and 12 cm for the switch. Twist both onto the fuse holder's other lead, solder the joint, and cover it with heat-shrink.</p>
+  <p><b>4. Charger.</b> Solder the 8 cm red wire to the charger's BAT+ (sometimes marked OUT+). Solder an 8 cm thick black wire from P- to the charger's BAT-.</p>
+  <p><b>5. Switch.</b> Solder the 12 cm red wire to one switch terminal and a 25 cm thick red wire to the other; that one goes to the hub's BATT-SW pad. Solder a 25 cm thick black wire to P- as well; it goes to the hub's GND.</p>
+  <p><b>6. Finish.</b> Slide heat-shrink over every joint before you solder it, then shrink it. Flag every loose end with tape: CHG+, CHG-, SW, HUB+, HUB-.</p>
+  <div class="box check keep"><h4>Check</h4>With the multimeter on beeper mode, P+ to P- must NOT beep, and CHG+ to CHG- must NOT beep. The two switch wires beep only when the switch is ON.</div>
+
+  <h2><span class="n">4.4</span>The signals</h2>
+  <figure class="keep">{{svg:signals}}</figure>
+  <p>The screen board is the brain. One I2C bus, on its port P4 (IO17 for data, IO18 for clock, plus 3.3 V and GND), goes down through the collar to the hub, and from there a short lead of four wires goes to every sensor and both servo boards. Each device has its own address, shown in the diagram. The seven lasers all start at the same address, 0x29; at start-up the firmware wakes them one at a time with their XSHUT wires (from servo board B) and gives each a new address.</p>
+  <p>IO14 is the wheel stop. It drives the OE pin of both servo boards, and a 2.2 kOhm resistor pulls it up to 3.3 V. While the brain runs, it holds IO14 low and the servos work. If the brain crashes or restarts, the resistor pulls OE high and every servo output stops, so the wheels stop.</p>
+  <p>The two microphones share three wires from port P3. The speaker plugs into the "Speak" port. The camera board only needs 5 V and GND: it talks to the laptop over Wi-Fi.</p>
+
+  <h2><span class="n">4.5</span>Build the hub</h2>
+  <figure class="keep">{{svg:hub}}</figure>
+  <p><b>1. Board.</b> Cut a perfboard to 50 x 35 mm: score both sides along a row of holes with a knife and snap it over the edge of the table.</p>
+  <p><b>2. Modules.</b> Place the two Mini560 modules side by side, pads up. Solder the thick BATT-SW red wire to module #1's IN+ and run a short thick red link on to module #2's IN+. Do the same with the thick GND black wire to both IN- pads. The perfboard only holds the modules; the current runs in the thick wires.</p>
+  <p><b>3. Capacitors.</b> Lay each 1000 uF capacitor on its side, and solder it across one module's OUT+ and OUT-. The stripe on the capacitor marks its minus leg; it goes to OUT-.</p>
+  <p><b>4. Servo power.</b> From module #1's output, solder a 20 cm thick red and black pair for each servo board's green terminal. From module #2's output, make a red and black lead for the screen board (on an MX1.25 plug: use only its 5 V and GND wires, and cut and insulate the other two) and a Dupont red and black pair for the camera board.</p>
+  <p><b>5. Resistors.</b> Solder the 10 k from BATT-SW to a spare pad (VBAT), and the 4.7 k from VBAT to GND; add the white wire from VBAT, for IO5. Solder the 2.2 k from another pad (OE) to the 3V3 rail, and the green wires from OE: one to IO14, one to each servo board.</p>
+  <p><b>6. Sensor rails.</b> Run four bare wires along the rest of the board as rails: 3V3, GND, SDA and SCL. Solder a row of four header pins across the rails for each device (use the loose header strips that came with the sensor boards). The input from the screen board's P4 lead lands on one of these rows.</p>
+  <div class="box check keep"><h4>Check before it ever sees power</h4>Beeper mode: BATT-SW to GND must not beep. Each module's OUT+ to OUT- must not beep. The 3V3 rail to GND must not beep. SDA to SCL must not beep.</div>
+
+  <h2><span class="n">4.6</span>Servo boards: address and leads</h2>
+  <p><b>Board B's address.</b> Each servo board has six small solder pads marked A0 to A5. On the board that will go on the robot's <b>right</b> wall, bridge the A0 pad with a blob of solder across its two halves. That board is now "board B", address 0x41. Leave board A (left wall) as it came, address 0x40. Mark both boards with tape.</p>
+  <p><b>Leads.</b> On the six-pin header at the side of each board, connect GND (black), OE (green), SCL (yellow), SDA (blue) and VCC (orange, 3.3 V). Leave the header's V+ pin empty: servo power goes only on the green screw terminal, V+ and GND.</p>
+  <div class="box warn keep"><h4>VCC is 3.3 V</h4>VCC is the chip's own supply, 3.3 V from the hub rail. Putting 5 V on VCC makes the board's data pins 5 V and can damage the screen board.</div>
+
+  <h2><span class="n">4.7</span>Wire colours and lengths</h2>
+  <p>Use one colour for one job everywhere. When a colour is missing from the jumper kit, use any colour and flag both ends with tape. Lengths are estimated from the 3D model, with slack for the lid to stand beside the tub while you work. Cut long, then trim; never cut a servo lead.</p>
+  {{table:wirekey}}
+
+  <h2><span class="n">4.8</span>Every connection</h2>
+  <p>Tick each row when it is soldered, and again when it is plugged in during Close up (step G1).</p>
+  <h3>Power</h3>
+  {{table:power}}
+  <h3>Signals</h3>
+  {{table:signal}}
+
+  <h2><span class="n">4.9</span>Servo and laser channels</h2>
+  <p>Each servo plugs into the servo board on its own side of the robot, so no lead has to cross the tub. Board A is on the left wall and board B on the right wall. The laser on/off (XSHUT) wires all go to board B. The same map is written into the servo test sketch, and the robot firmware must use it too. Every pin and channel is also listed in one table in the Appendix (9.4).</p>
+  {{table:servo}}
+  {{table:laser}}
+</section>

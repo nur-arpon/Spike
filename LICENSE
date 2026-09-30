@@ -1,0 +1,33 @@
+Copyright (c) 2026 Nur Ifran Arpon (SpaceZ). All rights reserved.
+
+This repository and everything in it (source code, firmware, CAD models and
+drawings, 3D previews, images, documentation, the assembly guide, and the
+character designs, names and artwork of Spike, Spicy and Desk Buddy) are the
+exclusive property of the copyright holder, except for the third-party
+components listed in THIRD_PARTY_NOTICES.md, which remain under their own
+licences.
+
+NO LICENCE IS GRANTED.
+
+The contents are published on GitHub for viewing only. GitHub's Terms of
+Service allow you to view this repository and fork it within GitHub; nothing
+beyond that is permitted. Without prior written permission from the copyright
+holder you may not:
+
+  - copy, download for reuse, or reproduce any part of it, in whole or in part;
+  - modify, adapt, translate, or create derivative works from it;
+  - distribute, publish, sublicense, sell, or otherwise make it available;
+  - use it, build it, print it, flash it, or run it, for any purpose,
+    commercial or non-commercial;
+  - use it, or any part of it, to train or evaluate machine-learning models.
+
+Publishing this repository does not place any of it in the public domain and
+does not grant any patent, trademark, or design right.
+
+For licensing enquiries, open an issue at https://github.com/nur-arpon/Spike
+or contact the copyright holder through GitHub (@nur-arpon).
+
+THE CONTENTS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE
+CONTENTS OR ANY USE OF THEM.

@@ -1,0 +1,70 @@
+<section class="chapter" id="ch2">
+  <div class="ch-head"><div class="ch-num">2</div><div><div class="kicker">Chapter 2</div><h1>Printing</h1></div></div>
+  <p class="lead">The robot is 55 printed parts on nine print jobs, about 386 g of PLA and about $43 at the Deer Park Library maker space. Print the small test plate first, check the fits with the real parts, and only then print the rest.</p>
+
+  <h2><span class="n">2.1</span>Measure one servo first</h2>
+  <p>The printed parts are designed around a few servo measurements the sellers do not publish. When the servos arrive, measure one MG90S with the caliper and compare it with the table. If any number is off by more than about 0.2 mm, stop: the numbers go into the CAD script (<span class="file">cad/build_print_parts_v3_1.py</span>), the parts are rebuilt, and you print from the new files.</p>
+  <table class="t small">
+    <thead><tr><th>Measure on the servo</th><th class="num">Design value</th><th>Your value</th></tr></thead>
+    <tbody>
+      <tr><td>Underside of the mounting tabs to the top of the rectangular gear case</td><td class="num">4.5 mm</td><td></td></tr>
+      <tr><td>Underside of the tabs to the top of the round boss the spline comes out of (boss diameter 11.8)</td><td class="num">7.5 mm</td><td></td></tr>
+      <tr><td>Case bottom to the tab underside</td><td class="num">21.0 mm</td><td></td></tr>
+      <tr><td>Tab underside to the spline top</td><td class="num">14.4 mm</td><td></td></tr>
+      <tr><td>Tab thickness</td><td class="num">2.8 mm</td><td></td></tr>
+      <tr><td>Distance between the two tab holes</td><td class="num">28.15 mm</td><td></td></tr>
+      <tr><td>Tab ear corners: round (R1.1 or more) or square? If square, file the two corners that face down to 1 x 45 degrees</td><td class="num">round</td><td></td></tr>
+      <tr><td>The three servo wires twisted into a round bundle: must pass a 2.6 mm hole</td><td class="num">2.4 mm</td><td></td></tr>
+      <tr><td>Cross horn from the servo bag: centre to tip / arm thickness / arm width / how far its top sits above the spline</td><td class="num">11.5 / 1.8 / 6.6 / 1.0</td><td></td></tr>
+      <tr><td>The tyre O-ring's thickness (the 31 mm OD ring from the assortment)</td><td class="num">2.4 mm</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="n">2.2</span>What to ask at the maker space</h2>
+  <p>Book the UltiMaker 2+ Connect (0.4 mm nozzle, PLA) and take the STL files from <span class="file">cad/print_v3_1_stl</span> on a USB stick. You can read this out to the staff:</p>
+  <div class="box info keep"><h4>The request</h4>"I'd like to print nine small PLA jobs for a robot, plus one test plate first. The settings are 0.2 mm layers, 2 walls, 0.8 mm top and bottom, 15 percent gyroid infill and no supports. Please use a 5 mm brim on the two long flat plates, G1 and W1, and a skirt on the rest. The colours are {{white}}, {{graphite}} and {{black}} PLA. Every plate is under 60 grams and fits the bed; Cura's Arrange All lays each one out. Could you tell me which filaments you have in those colours, and whether the 60 gram price band applies per job?"</div>
+  <div class="cols2">
+    <div>
+      <h3>Slicer settings (UltiMaker Cura)</h3>
+      <table class="t small">
+        <tbody>
+          <tr><td>Layer height</td><td><b>0.2 mm</b></td></tr>
+          <tr><td>Line width</td><td>0.4 mm</td></tr>
+          <tr><td>Wall line count</td><td><b>2</b> (0.8 mm)</td></tr>
+          <tr><td>Top / bottom thickness</td><td><b>0.8 mm</b> (4 layers)</td></tr>
+          <tr><td>Infill</td><td><b>15 %, gyroid</b></td></tr>
+          <tr><td>Supports</td><td>none (see note A)</td></tr>
+          <tr><td>Adhesion</td><td>brim 5 mm on G1 and W1, skirt on the rest</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:8.6pt">Why 2 walls: the hidden walls are 1.6 mm, exactly four lines of a 0.4 mm nozzle, so two walls per side print them solid. Three walls would add about 37 g and take the robot over its 400 g print budget.</p>
+    </div>
+    <div>
+      <div class="box mistake keep"><h4>Note A - round edges on the bed</h4>The lid, the head front and the head back print with their visible rounded face on the bed, so the first 1 to 2 mm of that edge grows outward over nothing. PLA usually prints this with a slightly soft first millimetre. If the first lid shows a drooping edge, reprint that plate with "Support: touching build plate" at 60 degrees, and sand the edge lightly.</div>
+      <div class="box info keep"><h4>Order of printing</h4>Print T1 first and test it (2.3). If a fit is wrong, the design is corrected and T1 is reprinted before anything else. Then print B1 (cheap, and the caps are needed early), then the body plates, then the legs.</div>
+    </div>
+  </div>
+
+  <h2><span class="n">2.3</span>The test plate, T1</h2>
+  <p>T1 costs about $4 and checks every fit that matters with the real parts, before you spend $43 on the robot. Test each coupon like this, and write down anything that does not fit.</p>
+  <div class="cols2">
+    <div>
+      <p><b>Fit_Test_Coupon.</b> Push an MG90S into the servo slot: it should slide in with light finger pressure and not rattle. Clip the power switch into its cut-out. Press a screen screw into the boss. Hold a laser board behind the windows. Stretch a 26 mm O-ring into the groove. Lay a cross horn in the horn pocket.</p>
+      <p><b>Coupon_Knee_Thigh and Coupon_Knee_Shin.</b> Screw a real MG90S to the thigh coupon with two M2x6. Fit a horn into the shin coupon, press it onto the spline, and press a 12 mm cap into its seat. Thread a servo lead through the lead chamber and swing the joint back and forth 500 times: the lead must not rub through or jam.</p>
+      <p><b>Coupon_Snap_White and Coupon_Snap_Graphite.</b> Click the hook into the catch: it should click in firmly and release with a thumbnail. Press a 12 mm and a 14 mm cap into the two seats: snug, and removable with a fingernail in the notch.</p>
+    </div>
+    <div>{{testgrid}}</div>
+  </div>
+
+  <h2><span class="n">2.4</span>The print jobs</h2>
+  <p>One filament colour per plate. Both price columns are shown: the maker space's price bands ($1 up to 10 g, $2 up to 20 g, $4 up to 40 g, $6 up to 60 g) and the $1.10 per 10 g rate. Skirts and brims add a gram or two, so G1, W1 and W4 may land just over 60 g.</p>
+  {{table:plates}}
+
+  <h2><span class="n">2.5</span>Every printed part</h2>
+  <p>The 26 kinds of printed part, with their colour and what each one holds. Parts marked x4 are one per leg. The front-left and back-right thighs are the same shape turned round, and so are the front-right and back-left. The two left shins match, the two right shins match, and all four wheels match.</p>
+  {{partsgrid}}
+
+  <h2><span class="n">2.6</span>Printed parts checklist</h2>
+  <p>Tick each part as it comes off the printer and passes a quick look: no drooping edges, no strings in the slots, every snap hook whole.</p>
+  {{table:checklist}}
+</section>

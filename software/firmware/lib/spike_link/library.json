@@ -1,0 +1,7 @@
+{
+  "name": "spike_link",
+  "version": "1.0.0",
+  "description": "Spike robot link core (PROTOCOL.md v1.3): BLE framing codec, one-brain-at-a-time policy and routing, hotspot_join checks, ESP-NOW hand-over packet (AES-256-GCM behind an interface). Platform-free except spike_aead_mbedtls.cpp (ESP32 only).",
+  "frameworks": "*",
+  "platforms": "*"
+}

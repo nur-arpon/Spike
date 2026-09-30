@@ -1,0 +1,34 @@
+OK  Torso_Bottom        160.0 x  84.0 x  36.0 mm    98.6 g solid  bodies=1
+OK  Battery_Clamp        52.0 x  10.0 x   3.0 mm     1.9 g solid  bodies=1
+OK  Torso_Lid           160.0 x  84.0 x  20.5 mm    80.1 g solid  bodies=1
+OK  Neck                 40.0 x  28.0 x  10.0 mm     5.9 g solid  bodies=1
+OK  Head_Front          126.0 x  98.0 x  41.6 mm    68.8 g solid  bodies=1
+OK  Head_Back           126.0 x  98.0 x   8.3 mm    42.4 g solid  bodies=1
+OK  Screen_Washers      118.6 x  68.1 x   0.8 mm     0.1 g solid  bodies=4
+ERR Muzzle             extrude failed
+OK  Ear_Left             38.0 x  22.0 x  10.0 mm     9.0 g solid  bodies=1
+OK  Ear_Right            38.0 x  22.0 x  10.0 mm     9.0 g solid  bodies=1
+OK  Tail                 60.5 x  26.0 x  18.0 mm     3.7 g solid  bodies=1
+OK  Thigh_FrontLeft      68.0 x  39.0 x   4.0 mm     5.0 g solid  bodies=1
+OK  Shin_FrontLeft       72.5 x  39.0 x   4.0 mm     4.6 g solid  bodies=1
+OK  Wheel_FrontLeft      26.4 x  26.4 x   8.0 mm     4.0 g solid  bodies=1
+OK  Thigh_BackLeft       68.0 x  39.0 x   4.0 mm     5.0 g solid  bodies=1
+OK  Shin_BackLeft        72.5 x  39.0 x   4.0 mm     4.6 g solid  bodies=1
+OK  Wheel_BackLeft       26.4 x  26.4 x   8.0 mm     4.0 g solid  bodies=1
+OK  Thigh_FrontRight     68.0 x  39.0 x   4.0 mm     5.0 g solid  bodies=1
+OK  Shin_FrontRight      72.5 x  39.0 x   4.0 mm     4.6 g solid  bodies=1
+OK  Wheel_FrontRight     26.4 x  26.4 x   8.0 mm     4.0 g solid  bodies=1
+OK  Thigh_BackRight      68.0 x  39.0 x   4.0 mm     5.0 g solid  bodies=1
+OK  Shin_BackRight       72.5 x  39.0 x   4.0 mm     4.6 g solid  bodies=1
+OK  Wheel_BackRight      26.4 x  26.4 x   8.0 mm     4.0 g solid  bodies=1
+OK  Fit_Test_Coupon      95.0 x  60.0 x  10.4 mm    24.0 g solid  bodies=1
+    printed total 374 g solid, about 280 g as printed
+OK  BOUGHT - every purchased part in place  bodies=132
+CLASH CHECK: 157 bodies, 0 clashes
+BALANCE: total 840 g, centre of mass x -0.2  y 36.6 (116 mm above the desk)  z +17.4 mm (feet at z +66 / -52)
+  on 4 wheels: 48.6 mm inside the support area
+  lift front left  foot:   -8.3 mm
+  lift front right foot:   -8.5 mm
+  lift rear right  foot:   +8.3 mm
+  lift rear left   foot:   +8.5 mm
+ASSEMBLY: 23 of 23 files inserted, each checked to sit at its modelled position

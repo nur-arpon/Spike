@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The Windows package manifest (software/app/DESIGN.md "Desktop"). build_msix.ps1 fills the
+  double-brace tokens: identity from windows/packaging/identity.json, names from spike_app/brand.json, the
+  version from pubspec.yaml (1.0.0+N -> 1.0.0.0). Do not put names or ids here by hand.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2"
+  IgnorableNamespaces="uap rescap desktop desktop2">
+
+  <Identity Name="{{PACKAGE_NAME}}" Publisher="{{PUBLISHER}}" Version="{{VERSION}}" ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>{{STORE_NAME}}</DisplayName>
+    <PublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <Description>{{DESCRIPTION}}</Description>
+  </Properties>
+
+  <Dependencies>
+    <!-- Windows 10 2004 or later (WebView2, C++/WinRT StartupTask and activation used by the runner) -->
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application Id="Spike" Executable="spike_app.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="{{START_MENU_NAME}}"
+        Description="{{DESCRIPTION}}"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile
+          Wide310x150Logo="Assets\Wide310x150Logo.png"
+          Square71x71Logo="Assets\Square71x71Logo.png"
+          Square310x310Logo="Assets\Square310x310Logo.png"
+          ShortName="{{START_MENU_NAME}}">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#4A3326" />
+      </uap:VisualElements>
+      <Extensions>
+        <!-- "Start with Windows": OFF until the owner switches it on in Settings or the tray menu -->
+        <desktop:Extension Category="windows.startupTask" Executable="spike_app.exe" EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="SpikeStartup" Enabled="false" DisplayName="{{START_MENU_NAME}}" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Extensions>
+    <!-- The built-in brain accepts the phone app and the robot on the home Wi-Fi: its ports (8765-8769,
+         the first free one is used) and mDNS (5353) are opened on PRIVATE networks only, by Windows,
+         while the app is installed. Public networks stay closed. -->
+    <desktop2:Extension Category="windows.firewallRules">
+      <desktop2:FirewallRules Executable="brain\spike_brain.exe">
+        <desktop2:Rule Direction="in" IPProtocol="TCP" LocalPortMin="8765" LocalPortMax="8769" Profile="private" />
+        <desktop2:Rule Direction="in" IPProtocol="UDP" LocalPortMin="5353" LocalPortMax="5353" Profile="private" />
+      </desktop2:FirewallRules>
+    </desktop2:Extension>
+  </Extensions>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <Capability Name="privateNetworkClientServer" />
+    <rescap:Capability Name="runFullTrust" />
+    <DeviceCapability Name="microphone" />
+  </Capabilities>
+</Package>

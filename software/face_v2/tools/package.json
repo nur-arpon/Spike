@@ -1,0 +1,14 @@
+{
+  "name": "spike-face-v2-tools",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Dev-only render/export tools for Spike face v2 (not loaded by index.html)",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "dependencies": {
+    "@napi-rs/canvas": "^1.0.9"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.1"
+  }
+}

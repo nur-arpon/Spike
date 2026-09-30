@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Spike face</title>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+    background: transparent; -webkit-tap-highlight-color: transparent; user-select: none;
+    -webkit-user-select: none; touch-action: none; }
+  #wrap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  canvas { display: block; width: 100%; height: auto; }
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="face" width="480" height="272"></canvas></div>
+<!-- face_v2 engine, copied unchanged from software/face_v2 (classic scripts, dependency order) -->
+<script src="config.js"></script>
+<script src="params.js"></script>
+<script src="gfx.js"></script>
+<script src="recipe.js"></script>
+<script src="face_draw.js"></script>
+<script src="moods.js"></script>
+<script src="extras.js"></script>
+<script src="sounds.js"></script>
+<script src="captions.js"></script>
+<script src="games.js"></script>
+<script src="behaviour.js"></script>
+<script src="actions.js"></script>
+<script src="music.js"></script>
+<!-- the app's bridge (Flutter <-> face) -->
+<script src="face_host.js"></script>
+</body>
+</html>

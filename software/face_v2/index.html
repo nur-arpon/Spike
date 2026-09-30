@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spike Face Simulator</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><b id="brand-name">Spike</b><span>face v2 &middot; 480 &times; 272 simulator</span></div>
+    <div class="seg" role="group" aria-label="Who is on screen">
+      <button id="mode-dog" aria-pressed="true">Spike</button>
+      <button id="mode-cat" aria-pressed="false">Spicy</button>
+    </div>
+    <label class="toggle"><input type="checkbox" id="mute"> Mute</label>
+    <label class="toggle"><input type="checkbox" id="true-size"> True size</label>
+  </header>
+
+  <main class="layout">
+    <section class="stage" id="stage" aria-label="Robot screen">
+      <div class="screen">
+        <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+        <!-- scrolls sideways only in true-size mode when 480 px doesn't fit -->
+        <div class="device-scroll" id="device-scroll">
+          <div class="device" id="device">
+            <canvas id="face-canvas" width="480" height="272" aria-label="Spike's face. Click to pat, click the nose to boop."></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="status">
+        <span class="pill live"><span class="dot"></span>Mood <b id="st-mood">Neutral</b></span>
+        <span class="pill"><span class="dot" id="st-body-dot"></span>Body <b id="st-body">idle</b></span>
+        <span class="pill">Battery <b id="st-batt">80%</b></span>
+        <span class="pill">Wake words <b id="st-wake">Spike</b></span>
+      </div>
+      <div class="hint">Click the face for a head pat &middot; click the nose to boop &middot; move the mouse and the eyes follow you</div>
+    </section>
+
+    <aside class="panel">
+      <nav class="tabs">
+        <div class="seg" role="tablist" aria-label="Controls">
+          <button role="tab" aria-selected="true" data-tab="moods">Moods</button>
+          <button role="tab" aria-selected="false" data-tab="actions">Actions</button>
+          <button role="tab" aria-selected="false" data-tab="life">Life</button>
+          <button role="tab" aria-selected="false" data-tab="studio">Face Studio</button>
+        </div>
+      </nav>
+
+      <!-- MOODS -->
+      <div class="tabpane" data-pane="moods">
+        <div class="card">
+          <h3>Moods <small id="mood-count"></small></h3>
+          <div class="grid scroll" id="mood-grid"></div>
+          <div class="row" style="margin-top:10px"><button class="btn primary" id="demo-btn" aria-pressed="false">Play all moods</button></div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="tabpane" data-pane="actions" hidden>
+        <div class="card">
+          <h3>Physical actions <small>face + sound + a body label for the legs</small></h3>
+          <div class="grid" id="action-grid"></div>
+          <div class="meta" id="action-meta">The body label appears here while an action plays.</div>
+        </div>
+      </div>
+
+      <!-- LIFE -->
+      <div class="tabpane" data-pane="life" hidden>
+        <div class="card">
+          <h3>Say hi</h3>
+          <div class="row"><button class="btn" id="say-hi">Say hi</button><button class="btn" id="greet-time">Greet me (time of day)</button></div>
+        </div>
+        <div class="card">
+          <h3>Events</h3>
+          <div class="grid">
+            <button class="btn" data-event="comeHome">Owner comes home</button>
+            <button class="btn" data-event="ownerLooksSad">Owner looks sad</button>
+            <button class="btn" data-event="pickedUp">Picked up / lap</button>
+            <button class="btn" data-event="fellOver">Fell over</button>
+            <button class="btn" data-event="ignoredNudge">Ignored for ages</button>
+            <button class="btn" data-event="talk">Talk</button>
+            <button class="btn" data-event="alarmStart" id="alarm-btn">Alarm</button>
+            <button class="btn" data-event="imUp" id="imup-btn" disabled>I'm up!</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Battery <small>hungry = low battery</small></h3>
+          <div class="row"><input type="range" id="battery" min="0" max="100" value="80" aria-label="Battery level"><span class="readout" id="battery-readout">80%</span></div>
+          <div class="row" style="margin-top:8px"><label class="toggle"><input type="checkbox" id="charging"> Charging (eating)</label></div>
+        </div>
+        <div class="card">
+          <h3>Music</h3>
+          <div class="row"><button class="btn" id="play-song">Play a song</button><label class="toggle"><input type="checkbox" id="sing-along" checked> Sing along</label></div>
+        </div>
+        <div class="card">
+          <h3>Rock, paper, scissors <small>keys R / P / S</small></h3>
+          <div class="row"><button class="btn" data-rps="rock">Rock</button><button class="btn" data-rps="paper">Paper</button><button class="btn" data-rps="scissors">Scissors</button></div>
+          <div class="meta" id="rps-line">Play a round to begin.</div>
+        </div>
+      </div>
+
+      <!-- FACE STUDIO -->
+      <div class="tabpane" data-pane="studio" hidden>
+        <div class="card">
+          <h3>Presets <small id="studio-for">for Spike</small></h3>
+          <div class="presets" id="preset-grid"></div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn accent" id="dice-btn">Roll the dice</button>
+            <button class="btn" id="reset-btn">Back to default</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Features</h3>
+          <div class="slots" id="slot-fields"></div>
+        </div>
+        <div class="card">
+          <h3>Colours</h3>
+          <div class="colors" id="color-fields"></div>
+        </div>
+        <div class="card">
+          <h3>Sizes</h3>
+          <div class="sliders" id="number-fields"></div>
+        </div>
+        <div class="card">
+          <h3>Save slots <small>kept in this browser</small></h3>
+          <div class="saveslots" id="save-slots"></div>
+        </div>
+        <div class="card">
+          <h3>Share code</h3>
+          <div class="row"><input class="code" id="share-code" spellcheck="false" aria-label="Share code"><button class="btn" id="copy-code">Copy</button><button class="btn primary" id="load-code">Load</button></div>
+          <div class="toast" id="studio-toast"></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+  <footer>Fully offline &middot; every sound is synthesized live &middot; the face uses only shapes the robot's screen library can draw</footer>
+
+  <!-- Classic scripts in dependency order (no modules, so it opens from file://). -->
+  <script src="config.js"></script>
+  <script src="params.js"></script>
+  <script src="gfx.js"></script>
+  <script src="recipe.js"></script>
+  <script src="face_draw.js"></script>
+  <script src="moods.js"></script>
+  <script src="extras.js"></script>
+  <script src="sounds.js"></script>
+  <script src="captions.js"></script>
+  <script src="games.js"></script>
+  <script src="behaviour.js"></script>
+  <script src="actions.js"></script>
+  <script src="music.js"></script>
+  <script src="studio.js"></script>
+  <script src="brain_link.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

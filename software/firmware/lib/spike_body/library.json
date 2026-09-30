@@ -1,0 +1,7 @@
+{
+  "name": "spike_body",
+  "version": "1.0.0",
+  "description": "Spike body control core: joint model + limits, poses, action motion sequences, safety monitor (edge, fall, battery, watchdog). Platform-free.",
+  "frameworks": "*",
+  "platforms": "*"
+}

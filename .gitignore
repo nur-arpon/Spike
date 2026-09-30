@@ -1,0 +1,143 @@
+# Spike / Desk Buddy - public repository ignore rules.
+# The working folder is ~32 GB; only source, docs, CAD and previews are published.
+
+# ---- Python environments, caches -----------------------------------------
+.venv*/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# ---- Voice lab, models, weights, voice clips -------------------------------
+software/laptop/voice_lab/
+models/
+voice_samples/
+voice_cache/
+*.onnx
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.gguf
+*.litertlm
+*.tflite
+*.npz
+*.wav
+*.mp3
+*.ogg
+*.flac
+*.m4a
+
+# ---- Build outputs ----------------------------------------------------------
+build/
+dist/
+.dart_tool/
+.gradle/
+.kotlin/
+.pio/
+node_modules/
+local_install/
+*.apk
+*.aab
+*.msix
+*.msixbundle
+*.appx
+*.exe
+*.dll
+*.pdb
+*.obj
+*.o
+**/flutter/ephemeral/
+.flutter-plugins
+.flutter-plugins-dependencies
+software/app/tools/nuget/
+software/firmware/test/out/
+software/face_v2/tools/out/
+software/laptop/spike_brain/tools/out/
+guide/check/
+
+# ---- IDE --------------------------------------------------------------------
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# ---- Logs, runtime data, secrets --------------------------------------------
+*.log
+logs/
+data/
+pairing_token.txt
+*.sqlite
+*.sqlite-*
+*.db
+.env
+.env.*
+!.env.example
+spike_settings.toml
+local.properties
+key.properties
+*.jks
+*.keystore
+*.pfx
+*.p12
+*.pem
+*.key
+
+# ---- Private: shopping, working notes, research, unreleased ideas -----------
+shopping/
+software/research/
+FUTURE_IDEAS.md
+PARTS_LIST.md
+**/BRIEF.md
+**/*_BRIEF.md
+**/PROGRESS*.md
+**/*_PROGRESS.md
+**/OPEN_QUESTIONS.md
+guide/REBUILD.md
+# Design notes written as conversation (owner decisions / agent authorship)
+software/app/DESIGN.md
+software/laptop/spike_brain/DESIGN.md
+software/laptop/spike_brain/README.md
+software/face_v2/DESIGN.md
+software/firmware/DESIGN.md
+software/face/README.md
+software/face_v2/references/
+# Store submission working notes (the privacy policy is published from docs/)
+software/app/store/*.md
+software/app/store/templates/
+# Advisory reviews / critiques addressed to the owner
+cad/walk_plan_critique.md
+cad/stability_research_review.md
+cad/stability_max_research.md
+cad/servo_load_check_v3_1.md
+cad/servo_load_check_v3_1_walk_options.md
+cad/walk_with_mg90s_design_options.md
+cad/stability_scripts/review/
+
+# ---- OS ---------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Privacy: screenshots showing network addresses / pairing QR ------------
+software/app/screens/desktop/phone_*.png
+software/app/screens/20_v12_connect_mdns_found_a50.png
+software/app/screens/21_v12_wifi_needs_token_a50.png
+# ---- Privacy: test fixtures containing personal details ---------------------
+software/app/spike_app/test/away_reply_intents_test.dart
+software/laptop/spike_brain/tests/test_applink.py
+software/laptop/spike_brain/tests/test_memory_scheduler.py
+cad/v3_covered_design_proposal.md
+# ---- Privacy: out-of-date Settings screenshots, kept locally until re-captured ----
+software/app/screens/27_v12_settings_wifi_after_usb_failover_a50.png
+software/app/screens/28_v12_settings_face_sounds_captions_a50.png
+software/app/screens/desktop/settings_1280x800.png
+software/app/screens/desktop/settings_1366x768.png
+software/app/screens/desktop/settings_1920x1080.png
+software/app/screens/desktop/settings_2400x1300.png
+software/app/store/screenshots/05_settings_1920x1080.png

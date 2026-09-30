@@ -1,0 +1,84 @@
+<!doctype html>
+<!-- GENERATED from store/templates/privacy-policy.html by store/render_store_kit.ps1. Edit the template. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spike privacy policy</title>
+<style>
+  :root { --bg: #fffaf3; --ink: #2b1d14; --muted: #6b5646; --accent: #b86f45; --line: #eadccd; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1b1410; --ink: #f6eadb; --muted: #c2ab97; --accent: #d9956a; --line: #3a2c22; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 32px; margin: 0 0 4px; }
+  h2 { font-size: 20px; margin: 32px 0 8px; }
+  p, li { color: var(--ink); }
+  .muted { color: var(--muted); font-size: 14px; }
+  a { color: var(--accent); }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px; border-bottom: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<main>
+<h1>Spike privacy policy</h1>
+<p class="muted">Spike - your personal desktop companion, by SpaceZ. Version 1.0.0. Last updated 30 September 2026.</p>
+
+<p>Spike is a desktop companion. This policy explains what the Windows app (and the Spike phone app and robot
+when you pair them) does with your information. The short version: his brain runs on your own computer, the
+words of your conversation go to Google's Gemini so he can think and speak, and nothing else leaves your
+devices. There is no account, no advertising and no tracking.</p>
+
+<h2>What stays on your computer</h2>
+<ul>
+  <li>What Spike remembers about you (facts you tell him), your alarms and reminders, your faces from the Face
+      Studio, your settings, the recent conversation he needs to keep talking, and a diagnostic log (which can
+      include what was said) that stays on your computer. These are stored in your
+      Windows user folder and are removed when you uninstall the app.</li>
+  <li>Your Gemini API key, encrypted with Windows' data protection for your user account. It is never written
+      to a file in plain text and never logged.</li>
+  <li>Speech recognition: when the microphone is on, your voice is turned into text on your computer. Audio is
+      not recorded, stored or sent anywhere. You can switch the microphone off in Settings and only type.</li>
+  <li>Pictures from the Spike robot's camera are shown live and never saved.</li>
+</ul>
+
+<h2>What is sent to Google</h2>
+<p>Spike uses Google's Gemini API with <strong>your own</strong> API key. To answer you, the app sends Google the
+words of your conversation with some context (his personality, relevant things he remembers about you, the
+time). To speak with a natural voice, it sends the text of his reply to Gemini's speech service. After a chat
+he may send the conversation once more to pick out facts worth remembering. Google processes this under the
+<a href="https://ai.google.dev/gemini-api/terms">Gemini API Terms</a> and
+<a href="https://policies.google.com/privacy">Google's Privacy Policy</a>; on the free tier Google may use
+the data to improve its products. SpaceZ does not receive or see any of it.</p>
+<p>If you tell Spike something that sounds like you are in danger or thinking of hurting yourself, that message
+is answered on your computer with help-line information and is not sent to Google.</p>
+
+<h2>Your phone and the robot</h2>
+<p>When you pair the Spike phone app or robot, they talk to the brain on your computer over your home network,
+protected by a pairing code. If you choose to use Tailscale to reach him away from home, that connection runs
+through your own Tailscale account under Tailscale's privacy policy.</p>
+
+<h2>What we collect</h2>
+<p>Nothing. SpaceZ runs no servers for this app, collects no analytics, crash reports, identifiers or
+usage data, and shows no ads. Microsoft may collect data about the installation under its own privacy
+statement.</p>
+
+<h2>Your choices</h2>
+<ul>
+  <li>See everything Spike remembers in Life, and make him forget one thing or everything.</li>
+  <li>Turn the microphone off in Settings.</li>
+  <li>Remove your Gemini key in Settings; without it Spike cannot chat and nothing is sent to Google.</li>
+  <li>Uninstall the app to delete all of its data from your computer.</li>
+</ul>
+
+<h2>Children</h2>
+<p>Spike is not directed at children under 13. Google's Gemini API requires its users to be 18 or older (or
+the age of majority where they live) to create an API key.</p>
+
+<h2>Changes and contact</h2>
+<p>If this policy changes, the new version will be posted at this address with a new date.
+Questions: <a href="https://github.com/nur-arpon/Spike/issues">github.com/nur-arpon/Spike/issues</a>.</p>
+<p class="muted">(c) 2026 Nur Ifran Arpon &middot; SpaceZ</p>
+</main>
+</body>
+</html>

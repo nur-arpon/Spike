@@ -1,0 +1,12 @@
+{
+  "name": "spike_life",
+  "version": "1.0.0",
+  "description": "Spike behaviour engine + actions (port of face_v2 behaviour.js / actions.js) + sound synth",
+  "frameworks": "*",
+  "platforms": "*",
+  "dependencies": [
+    {
+      "name": "spike_face"
+    }
+  ]
+}
