@@ -15,14 +15,14 @@
     "store": "https://apps.microsoft.com/detail/9N9TG975NJ6N",
     "github": "https://github.com/nur-arpon/Spike",
     "issues": "https://github.com/nur-arpon/Spike/issues",
-    "android": "https://github.com/nur-arpon/Spike/releases/download/android-v1.0.3/Spike_1.0.3_android_arm64.apk",
+    "android": "https://github.com/nur-arpon/Spike/releases/download/android-v1.0.4/Spike_1.0.4_android_arm64.apk",
     "releases": "https://github.com/nur-arpon/Spike/releases",
     "privacy": "privacy-policy.html"
   },
 
   "status": {
     "windows": { "label": "On the Microsoft Store", "state": "live", "version": "1.0.1" },
-    "android": { "label": "Android: download the app", "state": "live", "version": "1.0.3", "size": "96 MB", "sha256": "f6dfbdacb085be0418d3be5e400493fd590e82b1c10b9a26a9da9297f43d16dd" },
+    "android": { "label": "Android: download the app", "state": "live", "version": "1.0.4", "size": "96 MB", "sha256": "61664c1dc928207d71642dd32779b57528bf88f26937d16d31ba53575220eac2" },
     "robot": { "label": "Prototype, building now", "state": "build" }
   },
 

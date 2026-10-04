@@ -2,6 +2,14 @@
   "_readme": "The Updates page and the 'Latest' cards on Home read this list. Add a new entry at the TOP. Fields: date (YYYY-MM-DD), tag (App, Robot, Brain, Face, Design, Website), title, text, and optional link + linkText. See docs/UPDATING.md.",
   "updates": [
     {
+      "date": "2026-10-05",
+      "tag": "App",
+      "title": "Android 1.0.4: meet the robot, join the waitlist",
+      "text": "The Android app now shows what Spike is becoming: a preview banner on Home, an Our story page with the robot renders, what he will do on your desk and how far the build has got, and a waitlist so you hear first when you can get one.",
+      "link": "robot.html#build-title",
+      "linkText": "Join the waitlist"
+    },
+    {
       "date": "2026-10-04",
       "tag": "App",
       "title": "Spike is on Android",
