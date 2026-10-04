@@ -1,0 +1,138 @@
+OK  Torso_Bottom              160.0 x  84.0 x  36.0 mm    68.7 g solid    56.1 g printed (fill 0.82, bed axis y; 2 walls 50.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Side_Panel_Left           160.0 x  36.0 x   9.4 mm    17.0 g solid    15.7 g printed (fill 0.92, bed axis x; 2 walls 14.9 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Side_Panel_Right          160.0 x  36.0 x   9.4 mm    17.0 g solid    15.7 g printed (fill 0.92, bed axis x; 2 walls 14.9 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Band_Chest                 72.0 x  26.0 x   5.4 mm     3.2 g solid     3.2 g printed (fill 1.00, bed axis z; 2 walls 3.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Band_Rump                  72.0 x  26.0 x   5.4 mm     3.4 g solid     3.4 g printed (fill 1.00, bed axis z; 2 walls 3.4 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Battery_Door               80.0 x  52.0 x  20.8 mm    15.4 g solid    11.6 g printed (fill 0.76, bed axis y; 2 walls 11.1 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Battery_Clamp              52.0 x  10.0 x   3.0 mm     1.9 g solid     1.4 g printed (fill 0.74, bed axis y; 2 walls 1.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Ballast_Cover_Left         25.6 x  16.8 x   2.4 mm     1.2 g solid     0.9 g printed (fill 0.78, bed axis y; 2 walls 0.9 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Ballast_Cover_Right        25.6 x  16.8 x   2.4 mm     1.2 g solid     0.9 g printed (fill 0.78, bed axis y; 2 walls 0.9 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Screw_Plugs                70.1 x  50.9 x   1.0 mm     0.1 g solid     0.1 g printed (fill 1.00, bed axis y; 2 walls 0.1 g)  bodies=4 STL shells=4  STL size+volume ok
+OK  Torso_Lid                 160.0 x  84.0 x  21.3 mm    59.8 g solid    48.9 g printed (fill 0.82, bed axis y; 2 walls 46.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Collar                     84.0 x  46.9 x  11.5 mm    13.0 g solid    12.8 g printed (fill 0.99, bed axis y; 2 walls 12.4 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Head_Front                126.0 x  98.3 x  33.5 mm    41.6 g solid    39.6 g printed (fill 0.95, bed axis z; 2 walls 37.9 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Head_Back                 126.0 x  98.0 x  19.8 mm    33.3 g solid    32.6 g printed (fill 0.98, bed axis z; 2 walls 31.4 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Screen_Washers            118.6 x  68.1 x   0.8 mm     0.1 g solid     0.1 g printed (fill 1.00, bed axis z; 2 walls 0.1 g)  bodies=4 STL shells=4  STL size+volume ok
+OK  Port_Door_Head             17.6 x  12.2 x   1.6 mm     0.3 g solid     0.3 g printed (fill 1.00, bed axis x; 2 walls 0.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Port_Blank_Head            17.6 x  12.2 x   1.6 mm     0.3 g solid     0.3 g printed (fill 1.00, bed axis x; 2 walls 0.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Tuft                       25.6 x  15.2 x   7.2 mm     1.2 g solid     0.9 g printed (fill 0.74, bed axis y; 2 walls 0.7 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Collar_Tag                 30.2 x  22.0 x   2.4 mm     1.2 g solid     1.1 g printed (fill 0.89, bed axis z; 2 walls 1.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Ear_Left                   40.0 x  22.4 x  15.7 mm     6.4 g solid     3.2 g printed (fill 0.50, bed axis y; 2 walls 2.5 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Ear_Right                  40.0 x  22.4 x  15.7 mm     6.4 g solid     3.2 g printed (fill 0.50, bed axis y; 2 walls 2.5 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Tail_Root                  26.0 x  26.0 x   7.9 mm     2.2 g solid     1.7 g printed (fill 0.78, bed axis y; 2 walls 1.6 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Tail                       42.8 x  18.1 x   9.5 mm     2.0 g solid     1.3 g printed (fill 0.62, bed axis y; 2 walls 1.1 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Thigh_FrontLeft_Outer      73.0 x  41.8 x  11.2 mm    12.6 g solid     7.9 g printed (fill 0.63, bed axis x; 2 walls 7.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Thigh_FrontLeft_Cover      40.8 x  40.5 x  28.2 mm    10.5 g solid     8.6 g printed (fill 0.81, bed axis x; 2 walls 7.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Shin_FrontLeft_Outer       70.4 x  40.8 x  13.4 mm    21.0 g solid    10.6 g printed (fill 0.50, bed axis x; 2 walls 9.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Shin_FrontLeft_Cover       70.4 x  40.8 x  28.2 mm    10.4 g solid     9.0 g printed (fill 0.86, bed axis x; 2 walls 8.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Wheel_FrontLeft            33.9 x  33.9 x   8.0 mm     7.2 g solid     3.9 g printed (fill 0.54, bed axis x; 2 walls 3.5 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Thigh_BackLeft_Outer       73.0 x  41.8 x  11.2 mm    12.6 g solid     7.9 g printed (fill 0.63, bed axis x; 2 walls 7.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Thigh_BackLeft_Cover       40.8 x  40.5 x  28.2 mm    10.5 g solid     8.6 g printed (fill 0.82, bed axis x; 2 walls 7.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Shin_BackLeft_Outer        70.4 x  40.8 x  13.4 mm    21.0 g solid    10.6 g printed (fill 0.50, bed axis x; 2 walls 9.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Shin_BackLeft_Cover        70.4 x  40.9 x  28.2 mm    10.4 g solid     9.0 g printed (fill 0.86, bed axis x; 2 walls 8.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Wheel_BackLeft             33.9 x  33.9 x   8.0 mm     7.2 g solid     3.9 g printed (fill 0.54, bed axis x; 2 walls 3.5 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Thigh_FrontRight_Outer     73.0 x  41.8 x  11.2 mm    12.6 g solid     7.9 g printed (fill 0.63, bed axis x; 2 walls 7.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Thigh_FrontRight_Cover     40.8 x  40.5 x  28.2 mm    10.5 g solid     8.6 g printed (fill 0.82, bed axis x; 2 walls 7.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Shin_FrontRight_Outer      70.4 x  40.8 x  13.4 mm    21.0 g solid    10.5 g printed (fill 0.50, bed axis x; 2 walls 9.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Shin_FrontRight_Cover      70.4 x  40.8 x  28.2 mm    10.4 g solid     9.0 g printed (fill 0.87, bed axis x; 2 walls 8.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Wheel_FrontRight           33.9 x  33.9 x   8.0 mm     7.2 g solid     3.9 g printed (fill 0.54, bed axis x; 2 walls 3.5 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Thigh_BackRight_Outer      73.0 x  41.8 x  11.2 mm    12.6 g solid     7.9 g printed (fill 0.63, bed axis x; 2 walls 7.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Thigh_BackRight_Cover      40.8 x  40.5 x  28.2 mm    10.5 g solid     8.6 g printed (fill 0.82, bed axis x; 2 walls 7.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Shin_BackRight_Outer       70.4 x  40.8 x  13.4 mm    21.0 g solid    10.5 g printed (fill 0.50, bed axis x; 2 walls 9.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Shin_BackRight_Cover       70.4 x  40.9 x  28.2 mm    10.4 g solid     9.0 g printed (fill 0.87, bed axis x; 2 walls 8.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Wheel_BackRight            33.9 x  33.9 x   8.0 mm     7.2 g solid     3.9 g printed (fill 0.54, bed axis x; 2 walls 3.5 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Hip_FrontLeft          12.0 x  11.9 x   2.8 mm     0.2 g solid     0.2 g printed (fill 0.97, bed axis x; 2 walls 0.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Knee_FrontLeft         12.0 x  11.9 x   2.8 mm     0.2 g solid     0.2 g printed (fill 0.97, bed axis x; 2 walls 0.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Wheel_FrontLeft        14.0 x  14.0 x   2.8 mm     0.3 g solid     0.3 g printed (fill 0.97, bed axis x; 2 walls 0.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Hip_BackLeft           12.0 x  11.9 x   2.8 mm     0.2 g solid     0.2 g printed (fill 0.97, bed axis x; 2 walls 0.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Knee_BackLeft          12.0 x  11.9 x   2.8 mm     0.2 g solid     0.2 g printed (fill 0.97, bed axis x; 2 walls 0.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Wheel_BackLeft         14.0 x  14.0 x   2.8 mm     0.3 g solid     0.3 g printed (fill 0.97, bed axis x; 2 walls 0.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Hip_FrontRight         12.0 x  11.9 x   2.8 mm     0.2 g solid     0.2 g printed (fill 0.97, bed axis x; 2 walls 0.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Knee_FrontRight        12.0 x  11.9 x   2.8 mm     0.2 g solid     0.2 g printed (fill 0.97, bed axis x; 2 walls 0.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Wheel_FrontRight       14.0 x  14.0 x   2.8 mm     0.3 g solid     0.3 g printed (fill 0.98, bed axis x; 2 walls 0.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Hip_BackRight          12.0 x  11.9 x   2.8 mm     0.2 g solid     0.2 g printed (fill 0.97, bed axis x; 2 walls 0.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Knee_BackRight         12.0 x  11.9 x   2.8 mm     0.2 g solid     0.2 g printed (fill 0.97, bed axis x; 2 walls 0.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Wheel_BackRight        14.0 x  14.0 x   2.8 mm     0.3 g solid     0.3 g printed (fill 0.98, bed axis x; 2 walls 0.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Cap_Tail                   12.0 x  11.9 x   2.6 mm     0.2 g solid     0.2 g printed (fill 0.97, bed axis y; 2 walls 0.2 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Coupon_Knee_Thigh          40.8 x  35.0 x   5.5 mm     5.4 g solid     3.4 g printed (fill 0.62, bed axis x; 2 walls 3.0 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Coupon_Knee_Shin           41.0 x  34.0 x  15.0 mm    13.6 g solid     6.5 g printed (fill 0.47, bed axis x; 2 walls 5.6 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Coupon_Snap_White          48.0 x  16.0 x   9.2 mm     4.1 g solid     2.6 g printed (fill 0.64, bed axis x; 2 walls 2.3 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Coupon_Snap_Graphite       12.0 x  12.0 x   6.2 mm     1.1 g solid     0.7 g printed (fill 0.69, bed axis x; 2 walls 0.6 g)  bodies=1 STL shells=1  STL size+volume ok
+OK  Fit_Test_Coupon            95.0 x  60.0 x  10.4 mm    27.4 g solid    16.0 g printed (fill 0.58, bed axis y; 2 walls 14.8 g)  bodies=1 STL shells=1  STL size+volume ok
+    printed total 547 g solid, 418 g as printed (robot parts only; sliced from the exported STLs: 3 walls x 0.4 mm, 0.8 mm top/bottom, 15 % gyroid, 0.2 mm layers; overall fill 0.764)
+    with 2 walls instead: 382 g as printed
+SLICER PROFILE (grams as printed, all 55 robot parts, from the exported STLs):
+  3 walls everywhere: 417.8 g | 2 walls everywhere: 381.7 g | 2 walls + 3 walls on the 8 leg outer halves: 390.3 g
+  CHOSEN: 2 walls for every part -> 381.7 g (limit 400 g); 0.8 mm top/bottom, 15 % gyroid, 0.2 mm layers, 0.4 mm lines. Skirts, brims and supports come on top (about 1-3 %).
+OK  BOUGHT - every purchased part in place  bodies=235
+CLASH CHECK: 297 bodies, 0 clashes
+BALANCE: total 1025 g, centre of mass x +0.3  y 25.6 (108 mm above the desk)  z +12.4 mm (feet at z +66 / -52)
+  on 4 wheels: 53.6 mm inside the support area
+  lift front left  foot:   -4.5 mm
+  lift front right foot:   -4.2 mm
+  lift rear right  foot:   +4.5 mm
+  lift rear left   foot:   +4.2 mm
+  WITHOUT the 2 ballast slugs:
+  BALANCE: total 981 g, centre of mass x +0.3  y 26.5 (109 mm above the desk)  z +15.8 mm (feet at z +66 / -52)
+    on 4 wheels: 50.2 mm inside the support area
+    lift front left  foot:   -7.3 mm
+    lift front right foot:   -7.0 mm
+    lift rear right  foot:   +7.3 mm
+    lift rear left   foot:   +7.0 mm
+  v2 for comparison: total 840 g, centre of mass z +17.4, on 4 wheels 48.6 mm inside, lift front left/right -8.3 / -8.5 mm
+  v3 for comparison: total 1058 g, centre of mass z +17.0, on 4 wheels 49.0 mm inside, lift front left/right -8.2 / -8.0 mm, lift rear right/left +8.2 / +8.0 mm (printed parts at FILL 0.75 = 460 g)
+  v3 measured the same way as v3.1 (its own STLs through the same slicer model, 2 walls = 393 g, same bought parts): total 991 g, centre of mass z +17.4, on 4 wheels 48.6 mm inside, lift front left/right -8.5 / -8.3 mm, lift rear right/left +8.5 / +8.3 mm (with 3 walls: 48.3 mm). FILL 0.75 on every part over-weighted the legs (they print at 50-60 % fill), which put the v3 report's centre of mass 0.4 mm too far back.
+  v3.1 report for comparison: total 983 g, centre of mass x +0.2 y 25.5 (107 mm above the desk) z +17.2, on 4 wheels 48.8 mm inside, lift front left/right -8.4 / -8.2 mm, lift rear right/left +8.4 / +8.2 mm
+ASSEMBLY: 57 of 57 files inserted, each checked to sit at its modelled position (inside picture: 45 shells made see-through; GDI objects at the end 1893)
+SECTION PICTURES (exploded; labels anchored on each part's own pixels):
+  section 1 Body: "ballast steel slug (x2) (bought)" not visible in this view (0 px) - no label
+  section 1 Body: 17 labels -> Desk Buddy v3.2 - full assembly - section 1 Body (exploded, labelled).png
+  section 2 Lid: 9 labels -> Desk Buddy v3.2 - full assembly - section 2 Lid (exploded, labelled).png
+  section 3 Head: 15 labels -> Desk Buddy v3.2 - full assembly - section 3 Head (exploded, labelled).png
+  section 4 Leg: 12 labels -> Desk Buddy v3.2 - full assembly - section 4 Leg (exploded, labelled).png
+LEG CLEARANCE SWEEPS (side view, from the build outlines):
+  knee pod front vs belly (pod): min  3.54 mm over hip +/-30 deg (at -30.0 deg, z +43.1); first touch at none / -38.5 deg
+  knee pod front vs belly (pod + root fillet under the panel): min  2.87 mm over hip +/-30 deg (at -30.0 deg, z +43.1); first touch at none / -37.0 deg
+  knee pod rear  vs belly (pod): min  3.39 mm over hip +/-30 deg (at -30.0 deg, z -76.0); first touch at 38.5 / -48.5 deg
+  knee pod rear  vs belly (pod + root fillet under the panel): min  2.62 mm over hip +/-30 deg (at -30.0 deg, z -76.0); first touch at 37.0 / -43.0 deg
+  paw band (toe/heel, R4) vs desk (y -82.7): min 5.95 mm over shin tilt -9.9..+19.8 deg (at -9.9)
+  paw pod (R4 lower corners) vs desk (y -82.7): min 6.41 mm over shin tilt -9.9..+19.8 deg (at -9.9)
+  paw front vs belly: min 44.9 mm with the shin inside the gait limits; 9.0 mm over the full hip +/-30 x knee +/-50 deg (at hip -30, knee -50)
+  paw rear  vs belly: min 43.4 mm with the shin inside the gait limits; -1.6 mm over the full hip +/-30 x knee +/-50 deg (at hip +30, knee +50)
+  paw vs thigh + knee pod over knee +/-50 deg: min distance 14.6 mm
+  lead corridors (gap for a dia 2.4 bundle): knee 3.48 mm, paw 2.79 mm
+JOINT LIMITS for the firmware (paw pod >= 2.0 mm under the belly; + = foot forward, - = foot back; servo range assumed +/-50):
+  front legs: paw pod vs belly 11.5 mm at worst (hip -30, knee -50); the v3 whole-paw outline gives 9.0 mm (it counts the toe, which is outboard of the body)
+  front legs: no limit needed inside hip +/-30 x knee +/-50
+  rear legs : paw pod vs belly 0.9 mm at worst (hip +30, knee +50); the v3 whole-paw outline gives -1.6 mm (it counts the toe, which is outboard of the body)
+  rear legs : hip +29: knee -50..+49; hip +30: knee -50..+48
+  rear legs : SIMPLE RULE: when hip >= +29 deg, keep knee <= +48 deg
+  gait limits (shin tilt = hip + knee between -9.9 and +19.8 deg) never reach these limits
+BODY (v3 sections 2-7):
+  lower body width 97.2 (side panels), belly R8 at chest and rump, lid top R6, head R8 face / R10 back / R8 side edges
+  hip leads: panel slot 9 x 5 at y 26.5-31.5, tub-wall notch 9 wide from y 26.5 to the rim, lid comb teeth down to y 29.0
+  USB-C: 13 x 7 pill in the rump band at x 27.5, y 27.58; receptacle face 1.5 behind the band face; charger raised to y 24.35
+  KCD1 at the front belly centre, z 50.0-69.4, flush in a 2.2 recess; battery door x +-26, z -54..26
+  tail: servo under the lid (tabs at y 33.6), root dia 26 in a dia 27.6 socket, tail rises 20 deg
+v3.2 CHANGES:
+  one face: muzzle, its port door + blank and the 4 face screws removed; the face below the screen is plain shell
+  forehead camera: OV5640 lens centred at y 149.25 (brow, 5.8 above the screen glass), behind a dia 6.2 hole (0.6 chamfer) just under the tuft; module 8.5 sq x 6.9 deep in a collar inside the head front, lens 1.0 behind the wall (no notch needed); tuft kept out of a 70 deg cone
+  camera flex route: module top edge -> up to y 155.8 -> back under the roof to z 58.5 -> down into the board connector: 16.5 mm of path + ~3 mm in the connector = needs >= 19 mm of flex from the module edge (MEASURE the delivered module; firmware turns the image 180 deg: vflip + hmirror)
+  ESP32-S3 CAM board: upright in 2 rails behind the screen, |x| <= 14.0, y 97.5-154.5, PCB z 56.0-57.6 (screen back parts start at z 63.5); USB-C end down, reached with the head back off (no pin headers)
+  APDS-9960 (GY-9960-3.3, 21 x 15.5): behind the CHEST band at x +24.1 (the robot left side), chip face 77.8 behind a 0.6 skin with a 5 x 3.4 aperture, looking out through a 10 x 8 window matching the laser window; a blank twin window at x -24.1. (In the tuft it needed a 31 x 35 mm slab: the board is 21 x 15.5.)
+  tuft (Plush, preview v7.1): caramel, 5 plump locks (sphere chains, dia >= 2.2 at the tips) on a 1.6 base plate on a flat 45 deg seat cut 0.4 into the head R8 round; x -12.2..13.4, top at y 168.6 (10.6 above the head top, 15.5 tall; the ears reach 192); glued on the seat, 2 dia 2 locating pins at x +-9.0, z 77.4; head openings under it |x| <= 4.2 (y >= 151.0, the notch above the lens) and 5.6 (y >= 153.8)
+  touch pad moved to z 53.3 (v3.1 58); centre top head-back hook moved to x -12; 2 head-back posts hold the CAM board
+  collar tag: 22 x 21 R5, keyhole on a dia 3.4 peg (head dia 4.8) at y 56.0; bottom 29.0 vs the chest laser window top 26.25
+  paw pods: 3.5 x 45 deg inboard lower chamfer (lead gap filled, 1.6 wall); tyre groove r 15.5 (v3.1 13.9) with the SAME 26 x 2.4 O-ring: stretch 19.2 % (v3.1 6.9 %), tyre r 17.7 (v3.1 16.3), desk y -82.7
+  ballast: 2 pockets x 24.8 x 16.0 x 7.7 (x, z, height) at |x| 14.4-39.2, z -72.0..-56.0; steel slug 24.0 x 7.5 x 15.8 = 22.3 g each. Coins do not fit: the largest free round is 16 mm (AU 5c = 19.4, $2 = 20.5, 20c = 28.65)
+DESK-EDGE LASERS (front pair; reading along the beam to a flat desk, pitched nose-up about the rear wheels; edge alarm 110 mm):
+  v3.2 (15 deg ahead of straight down, tyre r 17.7): chip 87.0 mm above the desk, spot 23 mm ahead of the chip; +0.0 deg 90 mm, +3.5 deg 99 mm, +8.0 deg 111 mm, +12.0 deg 122 mm
+  v3.1 (25 deg, tyre r 16.3): chip 86.5 mm above the desk, spot 40 mm ahead of the chip; +0.0 deg 95 mm, +3.5 deg 106 mm, +8.0 deg 121 mm, +12.0 deg 136 mm
+  v3.2 edge spot 21 mm ahead of the front wheel contacts (stopping from the 60 mm/s glide at 0.24 m/s2 takes ~8 mm + one 33 ms reading)
+v3.1 CHANGES (all inside the parts; outside surfaces as v3):
+  walls: head 1.6 (face 2.4 round the screen), tub sides/ends 1.6 (floor 2.4), lid walls 1.6 above a 1.8 lip (top 2.4), muzzle sides/top 1.8, collar 1.6; side panels as v3 (1.8 skin); tub side windows |z| <= 23, y 7-29 behind the panels
+  balance: perfboard hub (22 g) moved 9 mm rearward under the lid (fences and tie anchors with it)
+  tail cap: peg 1.0 long, its bottom at y 49.6 vs the tail horn top at y 49.0: 0.6 mm clear (v3 report: 1.9 mm3 overlap from an older run)
+  head: collar screws on 0.8 pads (2.4 clamped, no counterbores), head-back lip notched |x| <= 9.8 over them; muzzle screws on 0.8 pads; screen frame plate 0.8; ears on 1.4 pads; snap detent pockets 0.4 deep (1.2 skin behind them - the one place under 1.6)
+  battery door lugs 9.4 high (v3 8.6) so the door takes M2 x 6; touch-pad screws M2 x 4 (the v3 note said M2 x 6, which would pierce the lid top)
+  ribs: 2 stiffening ribs 1.2 x 3 inside the head back at y 75 and 140 (the widest thin flat panel); the lid top keeps its 2.4 plate and ceiling fences, the side panels their 3 ribs

@@ -141,3 +141,6 @@ software/app/screens/desktop/settings_1366x768.png
 software/app/screens/desktop/settings_1920x1080.png
 software/app/screens/desktop/settings_2400x1300.png
 software/app/store/screenshots/05_settings_1920x1080.png
+
+# ---- Stale design: old Tuft_Mask parts superseded by the v3.2 Tuft ---------
+cad/**/Tuft_Mask*

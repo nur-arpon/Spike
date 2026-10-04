@@ -1,0 +1,151 @@
+Desk Buddy v3.2 servo load check   mass 1025 g (W = 10.06 N)
+  leg below the hip 67.6 g x 4, body 755 g, body CoM z +14.0 y 46.8
+  MG90S stall 1.8 kg.cm at 4.8 V (2.2 at 6.0 V); hold limit 35% of stall = 0.63 kg.cm; dynamic factor 1.5
+  columns: static / x1.5 dynamic torque (kg.cm), stall margin = stall / dynamic, hold margin = hold limit / static
+
+FIRMWARE POSES (body attitude at the end pose; foot loads in N)
+  stand         pitch  -0.0 deg roll  -0.0 deg  CoM z +12.4  FL 2.75  FR 2.73  BL 2.29  BR 2.27
+  sit           pitch  +4.0 deg roll  -0.0 deg  CoM z +11.1  FL 2.75  FR 2.73  BL 2.55  BR 2.53
+  lie / park    pitch  -0.0 deg roll  +0.0 deg  CoM z +12.4  FL 2.76  FR 2.75  BL 2.29  BR 2.27
+  play bow      pitch  -3.9 deg roll  +0.0 deg  CoM z +13.2  FL 3.11  FR 3.10  BL 2.29  BR 2.27
+  lean left     pitch  -0.0 deg roll  -0.9 deg  CoM z +12.4  FL 2.80  FR 2.73  BL 2.34  BR 2.27
+  lean right    pitch  -0.0 deg roll  +0.9 deg  CoM z +12.4  FL 2.75  FR 2.78  BL 2.29  BR 2.32
+  lean forward  pitch  -1.2 deg roll  -0.0 deg  CoM z +12.9  FL 2.90  FR 2.88  BL 2.29  BR 2.27
+
+ONE PAW LIFTED (stand pose, three legs carry the robot)
+  lift FL: FR 5.49 N  BL 5.05 N  BR -0.48 N   TIPS OVER (CoM outside the triangle)
+  lift FR: FL 5.49 N  BL -0.44 N  BR 5.01 N   TIPS OVER (CoM outside the triangle)
+  lift BL: FL 5.05 N  FR 0.44 N  BR 4.57 N   stable
+  lift BR: FL 0.48 N  FR 5.01 N  BL 4.57 N   stable
+
+case                         joint      foot N static    dyn stall x hold x  verdict
+stand                        hip FL       2.75   0.01   0.02   82.89  43.52  OK
+stand                        knee FL      2.75   0.01   0.01   99.00  87.03  OK
+stand                        hip FR       2.73   0.01   0.02   82.89  43.52  OK
+stand                        knee FR      2.73   0.01   0.01   99.00  87.03  OK
+stand                        hip BL       2.29   0.00   0.00   99.00  99.00  OK
+stand                        knee BL      2.29   0.01   0.01   99.00  87.03  OK
+stand                        hip BR       2.27   0.00   0.00   99.00  99.00  OK
+stand                        knee BR      2.27   0.01   0.01   99.00  87.03  OK
+sit                          hip FL       2.75   0.05   0.07   24.33  12.77  OK
+sit                          knee FL      2.75   0.03   0.04   43.94  23.07  OK
+sit                          hip FR       2.73   0.05   0.07   24.47  12.85  OK
+sit                          knee FR      2.73   0.03   0.04   44.18  23.20  OK
+sit                          hip BL       2.55   0.23   0.35    5.15   2.70  OK
+sit                          knee BL      2.55   0.50   0.75    2.40   1.26  OK
+sit                          hip BR       2.53   0.23   0.35    5.18   2.72  OK
+sit                          knee BR      2.53   0.50   0.74    2.42   1.27  OK
+lie / park                   hip FL       2.76   0.14   0.21    8.61   4.52  OK
+lie / park                   knee FL      2.76   0.49   0.74    2.45   1.28  OK
+lie / park                   hip FR       2.75   0.14   0.21    8.64   4.54  OK
+lie / park                   knee FR      2.75   0.49   0.73    2.47   1.29  OK
+lie / park                   hip BL       2.29   0.11   0.17   10.74   5.64  OK
+lie / park                   knee BL      2.29   0.38   0.58    3.13   1.64  OK
+lie / park                   hip BR       2.27   0.11   0.17   10.80   5.67  OK
+lie / park                   knee BR      2.27   0.38   0.57    3.16   1.66  OK
+play bow                     hip FL       3.11   0.29   0.43    4.15   2.18  OK
+play bow                     knee FL      3.11   0.64   0.95    1.89   0.99  MARGINAL
+play bow                     hip FR       3.10   0.29   0.43    4.17   2.19  OK
+play bow                     knee FR      3.10   0.63   0.95    1.90   1.00  MARGINAL
+play bow                     hip BL       2.29   0.09   0.13   13.84   7.26  OK
+play bow                     knee BL      2.29   0.06   0.09   20.46  10.74  OK
+play bow                     hip BR       2.27   0.09   0.13   14.01   7.35  OK
+play bow                     knee BR      2.27   0.06   0.09   20.66  10.85  OK
+lean left                    hip FL       2.80   0.09   0.13   13.82   7.25  OK
+lean left                    knee FL      2.80   0.29   0.43    4.18   2.19  OK
+lean left                    hip FR       2.73   0.01   0.02   82.89  43.52  OK
+lean left                    knee FR      2.73   0.01   0.01   99.00  87.03  OK
+lean left                    hip BL       2.34   0.06   0.10   18.50   9.71  OK
+lean left                    knee BL      2.34   0.22   0.33    5.40   2.83  OK
+lean left                    hip BR       2.27   0.00   0.00   99.00  99.00  OK
+lean left                    knee BR      2.27   0.01   0.01   99.00  87.03  OK
+lean right                   hip FL       2.75   0.01   0.02   82.89  43.52  OK
+lean right                   knee FL      2.75   0.01   0.01   99.00  87.03  OK
+lean right                   hip FR       2.78   0.09   0.13   13.87   7.28  OK
+lean right                   knee FR      2.78   0.29   0.43    4.21   2.21  OK
+lean right                   hip BL       2.29   0.00   0.00   99.00  99.00  OK
+lean right                   knee BL      2.29   0.01   0.01   99.00  87.03  OK
+lean right                   hip BR       2.32   0.06   0.10   18.59   9.76  OK
+lean right                   knee BR      2.32   0.22   0.33    5.45   2.86  OK
+lean forward                 hip FL       2.90   0.13   0.20    9.11   4.78  OK
+lean forward                 knee FL      2.90   0.32   0.48    3.71   1.95  OK
+lean forward                 hip FR       2.88   0.13   0.20    9.15   4.80  OK
+lean forward                 knee FR      2.88   0.32   0.48    3.74   1.96  OK
+lean forward                 hip BL       2.29   0.03   0.05   38.48  20.20  OK
+lean forward                 knee BL      2.29   0.03   0.04   47.00  24.68  OK
+lean forward                 hip BR       2.27   0.03   0.05   38.90  20.42  OK
+lean forward                 knee BR      2.27   0.03   0.04   47.34  24.85  OK
+lift BL (stand)              hip FL       5.05   0.01   0.02   82.89  43.52  OK
+lift BL (stand)              knee FL      5.05   0.01   0.01   99.00  87.03  OK
+lift BL (stand)              hip FR       0.44   0.01   0.02   82.89  43.52  OK
+lift BL (stand)              knee FR      0.44   0.01   0.01   99.00  87.03  OK
+lift BL (stand)              hip BR       4.57   0.00   0.00   99.00  99.00  OK
+lift BL (stand)              knee BR      4.57   0.01   0.01   99.00  87.03  OK
+lift BR (stand)              hip FL       0.48   0.01   0.02   82.89  43.52  OK
+lift BR (stand)              knee FL      0.48   0.01   0.01   99.00  87.03  OK
+lift BR (stand)              hip FR       5.01   0.01   0.02   82.89  43.52  OK
+lift BR (stand)              knee FR      5.01   0.01   0.01   99.00  87.03  OK
+lift BR (stand)              hip BL       4.57   0.00   0.00   99.00  99.00  OK
+lift BR (stand)              knee BL      4.57   0.01   0.01   99.00  87.03  OK
+crawl, stride hip +-10       front hip    5.14   1.07   1.60    1.12   0.59  OVERLOAD
+crawl, stride hip +-10       front knee   5.16   0.77   1.16    1.55   0.82  MARGINAL
+crawl, stride hip +-10       rear hip     5.04   1.14   1.71    1.05   0.55  OVERLOAD
+crawl, stride hip +-10       rear knee    5.04   0.79   1.18    1.52   0.80  MARGINAL
+crawl, stride hip +-20       front hip    5.14   1.36   2.04    0.88   0.46  OVERLOAD
+crawl, stride hip +-20       front knee   5.21   0.81   1.21    1.49   0.78  MARGINAL
+crawl, stride hip +-20       rear hip     5.00   1.42   2.12    0.85   0.44  OVERLOAD
+crawl, stride hip +-20       rear knee    5.01   0.82   1.23    1.47   0.77  MARGINAL
+spin in place (mu 0.6)       hip FL       2.75   1.10   1.65    1.09   0.57  OVERLOAD
+spin in place (mu 0.6)       knee FL      2.75   0.69   1.03    1.75   0.92  MARGINAL
+spin in place (mu 0.6)       hip FR       2.73   1.13   1.70    1.06   0.56  OVERLOAD
+spin in place (mu 0.6)       knee FR      2.73   0.70   1.05    1.71   0.90  MARGINAL
+spin in place (mu 0.6)       hip BL       2.29   1.12   1.67    1.08   0.56  OVERLOAD
+spin in place (mu 0.6)       knee BL      2.29   0.69   1.03    1.75   0.92  MARGINAL
+spin in place (mu 0.6)       hip BR       2.27   1.12   1.67    1.08   0.56  OVERLOAD
+spin in place (mu 0.6)       knee BR      2.27   0.70   1.05    1.71   0.90  MARGINAL
+instant wheel stop (skid)    hip FL       2.75   1.71   2.57    0.70   0.37  OVERLOAD
+instant wheel stop (skid)    knee FL      2.75   1.06   1.60    1.13   0.59  OVERLOAD
+instant wheel stop (skid)    hip FR       2.73   1.70   2.55    0.71   0.37  OVERLOAD
+instant wheel stop (skid)    knee FR      2.73   1.06   1.58    1.14   0.60  OVERLOAD
+instant wheel stop (skid)    hip BL       2.29   1.41   2.12    0.85   0.45  OVERLOAD
+instant wheel stop (skid)    knee BL      2.29   0.89   1.33    1.35   0.71  MARGINAL
+instant wheel stop (skid)    hip BR       2.27   1.40   2.10    0.86   0.45  OVERLOAD
+instant wheel stop (skid)    knee BR      2.27   0.88   1.32    1.36   0.72  MARGINAL
+ramped stop 1.5 m/s2         hip FL       2.75   0.45   0.67    2.69   1.41  OK
+ramped stop 1.5 m/s2         knee FL      2.75   0.28   0.41    4.34   2.28  OK
+ramped stop 1.5 m/s2         hip FR       2.73   0.44   0.67    2.70   1.42  OK
+ramped stop 1.5 m/s2         knee FR      2.73   0.27   0.41    4.37   2.29  OK
+ramped stop 1.5 m/s2         hip BL       2.29   0.36   0.54    3.33   1.75  OK
+ramped stop 1.5 m/s2         knee BL      2.29   0.23   0.35    5.19   2.72  OK
+ramped stop 1.5 m/s2         hip BR       2.27   0.36   0.54    3.36   1.76  OK
+ramped stop 1.5 m/s2         knee BR      2.27   0.23   0.34    5.23   2.74  OK
+
+WORST: instant wheel stop (skid) / hip FL: static 1.71, dynamic 2.57 kg.cm -> stall margin 0.70x at 4.8 V, 0.86x at 6.0 V
+
+WHEELS (MG90S 360, stall ~1.8 kg.cm)
+  rolling resistance 0.075 N per tyre -> 0.014 kg.cm
+  accelerate 0.5 m/s2: 0.128 N per tyre -> 0.023 kg.cm
+  spin in place: 1.09 N per tyre -> 0.196 kg.cm (11% of stall)
+  traction limit per tyre (mu 0.6): front 1.65 N, rear 1.38 N -> a max ~5.9 m/s2
+  top speed (no load, 4.8 V) ~0.17 m/s
+
+TAIL (shaft vertical: gravity gives no torque)
+  wag 3.0 Hz +-30 deg: inertia torque 0.0018 kg.cm, peak speed 565 deg/s (servo max ~600 at 4.8 V) -> OK
+  wag 3.0 Hz +-35 deg: inertia torque 0.0020 kg.cm, peak speed 660 deg/s (servo max ~600 at 4.8 V) -> too fast, amplitude will shrink
+  wag 4.0 Hz +-40 deg: inertia torque 0.0041 kg.cm, peak speed 1005 deg/s (servo max ~600 at 4.8 V) -> too fast, amplitude will shrink
+  wag 1.0 Hz +-15 deg: inertia torque 0.0001 kg.cm, peak speed 94 deg/s (servo max ~600 at 4.8 V) -> OK
+
+POWER (servo rail = Mini560 #1, 5 V, sold as 5 A)
+  holding stand         ~0.16 A
+  holding sit           ~0.80 A
+  holding lie / park    ~1.13 A
+  holding play bow      ~1.08 A
+  holding lean left     ~0.44 A
+  holding lean right    ~0.43 A
+  holding lean forward  ~0.58 A
+  pose change while driving (all moving, 0.25 A each) ~3.2 A
+  8 leg servos starting in the same 20 ms (stall-current inrush) ~7.6 A
+  all 13 stalled at 1.0 A (jam, fall) 13 A
+  3.2 A at 5 V -> 2.5 A from the pack at 7.2 V; sag at ~0.12 ohm pack+wiring 0.30 V
+  5.0 A at 5 V -> 3.9 A from the pack at 7.2 V; sag at ~0.12 ohm pack+wiring 0.46 V
+  7.6 A at 5 V -> 5.9 A from the pack at 7.2 V; sag at ~0.12 ohm pack+wiring 0.70 V
