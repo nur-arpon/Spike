@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../away/ai/key_store.dart';
 import '../../away/ai/llm.dart';
@@ -10,7 +11,9 @@ import '../../away/ai/offline_brain.dart';
 import '../../away/download/bundle.dart';
 import '../../away/download/bundle_downloader.dart';
 import '../../away/download/downloads.dart';
+import '../../away/voice/kokoro_addon.dart';
 import '../../away/voice/speaker.dart';
+import '../../core/brand.dart';
 import '../../core/haptics.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
@@ -60,8 +63,9 @@ class AwaySettings extends ConsumerWidget {
       const _OfflineCard(),
       const SectionHeader('His voice on the phone'),
       const GeminiVoiceCard(), // Gemini natural voice + "Hear Spike's voices" (voice_preview_screen.dart)
-      const SizedBox(height: 12),
-      const _VoiceCard(),
+      // the optional Kokoro add-on (Android only): the owner fetches the engine from the sherpa-onnx release
+      // himself; nothing of it is in the APK (lib/away/voice/kokoro_addon.dart, speaker.dart kokoroVoiceAvailable)
+      if (kokoroVoiceAvailable) ...const [SizedBox(height: 12), KokoroAddonCard()],
       const SectionHeader('Camera away from home', subtitle: 'His camera needs Wi-Fi: the phone makes a hotspot for it'),
       const _HotspotCard(),
     ]);
@@ -343,21 +347,33 @@ class _OfflineCardState extends ConsumerState<_OfflineCard> {
   }
 }
 
-// ---------------------------------------------------------------- the voice pack
+// ---------------------------------------------------------------- the Kokoro add-on (offline backup voice)
 
-class _VoiceCard extends ConsumerStatefulWidget {
-  const _VoiceCard();
+/// "Offline backup voice (Kokoro)": an OPTIONAL add-on the owner fetches himself (Android only,
+/// collapsed by default). Step 1 is the speech engine, the official sherpa-onnx Android libraries
+/// from the project's own GitHub release (SHA-256 checked, then loaded once as a test); step 2 is
+/// the voice files from their own upstream pages. Nothing of it is in the APK or hosted by the publisher
+/// (lib/away/voice/kokoro_addon.dart). Kokoro joins the voice chain only when both are in place.
+class KokoroAddonCard extends ConsumerStatefulWidget {
+  const KokoroAddonCard({super.key});
   @override
-  ConsumerState<_VoiceCard> createState() => _VoiceCardState();
+  ConsumerState<KokoroAddonCard> createState() => _KokoroAddonCardState();
 }
 
-class _VoiceCardState extends ConsumerState<_VoiceCard> {
+/// What the add-on downloads and keeps, for the card (decimal MB, like Android's storage screen).
+int get kokoroAddonDownloadBytes => kokoroEngineArchive.size + kokoroApproxMb * 1000000;
+int get kokoroAddonInstalledBytes => kokoroEngineInstalledBytes + kokoroApproxMb * 1000000;
+
+class _KokoroAddonCardState extends ConsumerState<KokoroAddonCard> {
   KokoroPack? _pack;
   BundleDownloader? _dl;
   StreamSubscription<DlStatus>? _sub;
   DlStatus? _st; // null = nothing in progress
-  bool _partial = false; // part-downloaded before, file list not cached: progress unknown
+  bool _engineStage = true; // which part the progress is about: engine (step 1) or voice files (step 2)
+  bool _partial = false; // part-downloaded before, progress unknown
   bool _preparing = false;
+  bool _installing = false; // unpacking, checking and test-loading the engine
+  bool _open = false;
   String? _error;
 
   @override
@@ -367,7 +383,7 @@ class _VoiceCardState extends ConsumerState<_VoiceCard> {
       if (!mounted) return;
       setState(() => _pack = p);
       await _restore(p);
-    }));
+    }).catchError((Object _) {}));
   }
 
   @override
@@ -376,14 +392,23 @@ class _VoiceCardState extends ConsumerState<_VoiceCard> {
     super.dispose();
   }
 
-  /// A download from before: follow it if it is still running, else show it paused.
+  /// A download from before: show it paused (Resume carries on where it stopped).
   Future<void> _restore(KokoroPack p) async {
-    if (p.installed || !await p.dir.exists()) return;
+    if (p.ready) return;
     try {
-      final dl = _attach(await p.bundle(listIfMissing: false));
-      if (dl.current.phase != DlPhase.idle) return; // already known in this app run
+      if (!p.engine.ready) {
+        if (!await p.engine.dir.exists()) return;
+        final dl = _attach(p.engine.bundle, engine: true);
+        if (dl.current.phase != DlPhase.idle) return;
+        final left = await dl.remainingBytes();
+        if (mounted) setState(() => _st = DlStatus(DlPhase.paused, done: dl.bundle.totalBytes - left, total: dl.bundle.totalBytes));
+        return;
+      }
+      if (!await p.dir.exists()) return;
+      final dl = _attach(await p.bundle(listIfMissing: false), engine: false);
+      if (dl.current.phase != DlPhase.idle) return;
       if (await dl.runningInBackground()) {
-        unawaited(_run(dl));
+        unawaited(_runVoice(dl));
         return;
       }
       final left = await dl.remainingBytes();
@@ -394,117 +419,211 @@ class _VoiceCardState extends ConsumerState<_VoiceCard> {
     }
   }
 
-  BundleDownloader _attach(Bundle b) {
-    final dl = _dl = BundleDownloader.forBundle(b);
-    _sub ??= dl.status.listen((s) {
-      if (mounted) setState(() => _st = s.phase == DlPhase.idle ? null : s);
-    });
-    if (dl.current.phase != DlPhase.idle) _st = dl.current;
+  BundleDownloader _attach(Bundle b, {required bool engine}) {
+    final dl = BundleDownloader.forBundle(b);
+    if (!identical(dl, _dl)) {
+      _sub?.cancel();
+      _sub = dl.status.listen((s) {
+        if (mounted) setState(() => _st = s.phase == DlPhase.idle ? null : s);
+      });
+    }
+    _dl = dl;
+    _engineStage = engine;
+    _st = dl.current.phase == DlPhase.idle ? _st : dl.current;
     return dl;
   }
 
-  /// Download, or resume: files already fetched (and checked) are kept.
-  Future<void> _download() async {
+  /// Download and install, or resume: parts already fetched (and checked) are kept.
+  Future<void> _install() async {
     final pack = _pack;
     if (pack == null) return;
     Haptics.confirm();
     setState(() {
       _error = null;
       _preparing = true;
-    });
-    try {
-      final dl = _attach(await pack.bundle());
       _partial = false;
+    });
+    final away = ref.read(awayProvider.notifier); // read before the long wait (the card may be gone)
+    try {
+      final engine = pack.engine;
+      if (!engine.ready) {
+        final dl = _attach(engine.bundle, engine: true);
+        final need = await dl.remainingBytes() + (pack.installed ? 0 : kokoroApproxMb * 1000000);
+        final problem = await spaceProblem(need);
+        if (problem != null) {
+          if (mounted) setState(() => _error = problem);
+          return;
+        }
+        await askNotificationPermission();
+        if (mounted) setState(() => _preparing = false);
+        final s = await downloadAndInstallEngine(engine, dl, onInstalling: () {
+          if (mounted) setState(() => _installing = true);
+        });
+        if (mounted) setState(() => _installing = false);
+        if (s.phase != DlPhase.installed) return; // paused or failed: the card shows it
+      }
+      if (mounted) setState(() => _preparing = true);
+      final Bundle bundle;
+      try {
+        bundle = await pack.bundle();
+      } catch (_) {
+        if (mounted) setState(() => _error = 'Couldn\'t reach Hugging Face to list the voice files. Check the internet and try again.');
+        return;
+      }
+      final dl = _attach(bundle, engine: false);
       final problem = await spaceProblem(await dl.remainingBytes());
       if (problem != null) {
         if (mounted) setState(() => _error = problem);
         return;
       }
-      await askNotificationPermission();
       if (mounted) setState(() => _preparing = false);
-      await _run(dl);
+      await _runVoice(dl, away: away);
+    } on KokoroAddonError catch (e) {
+      debugPrint('kokoro add-on: $e');
+      if (mounted) {
+        setState(() {
+          _st = null;
+          _error = e.integrity
+              ? 'The speech engine that arrived did not match the official sherpa-onnx file, so it was refused and removed. '
+                  'Nothing was installed. Try again later.'
+              : 'The speech engine downloaded but would not start on this phone, so it was removed. '
+                  'Spike keeps using his other voices.';
+        });
+      }
     } catch (e) {
-      if (mounted) setState(() => _error = 'Couldn\'t reach Hugging Face to list the voice files. Check the internet and try again.');
+      debugPrint('kokoro add-on: $e');
+      if (mounted) setState(() => _error = 'Something went wrong while installing. Nothing changed: Spike keeps using his other voices.');
     } finally {
-      if (mounted) setState(() => _preparing = false);
+      if (mounted) {
+        setState(() {
+          _preparing = false;
+          _installing = false;
+        });
+      }
     }
   }
 
-  Future<void> _run(BundleDownloader dl) async {
-    // read before the long wait: the card may be gone when the download ends
-    // (phone log 30 Sep 08:34: "Using ref when a widget ... has been unmounted")
-    final away = ref.read(awayProvider.notifier);
+  Future<void> _runVoice(BundleDownloader dl, {AwayController? away}) async {
+    final AwayController a = away ?? ref.read(awayProvider.notifier);
     final s = await dl.start();
-    if (s.phase == DlPhase.installed) {
-      await away.voiceChanged();
+    if (s.phase == DlPhase.installed && (_pack?.ready ?? false)) {
+      await a.voiceChanged(); // Kokoro joins the voice chain in its old place
       Haptics.success();
       if (mounted) setState(() => _st = null);
     }
   }
 
+  /// Cancel = nothing installed: the part in progress and the part already fetched are both removed.
   Future<void> _cancel() async {
     Haptics.tap();
-    final dl = _dl;
-    if (dl != null) {
-      await dl.cancel();
-    } else {
-      await _pack?.delete();
-    }
+    await _dl?.cancel();
+    await _removeAll();
+  }
+
+  Future<void> _removeAll() async {
+    final pack = _pack;
+    await pack?.engine.delete();
+    await pack?.delete();
+    await ref.read(awayProvider.notifier).voiceChanged();
     if (mounted) {
       setState(() {
         _st = null;
         _partial = false;
+        _error = null;
       });
     }
+  }
+
+  Future<void> _openLink(String url) async {
+    try {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } catch (_) {}
   }
 
   @override
   Widget build(BuildContext context) {
     final p = context.sp;
-    final installed = _pack?.installed ?? false;
+    final ready = _pack?.ready ?? false;
     final st = _st;
-    final busy = _preparing || (st?.busy ?? false);
+    final busy = _preparing || _installing || (st?.busy ?? false);
     final stopped = !busy && (_partial || (st?.resumable ?? false));
+    final step = _engineStage ? 'Step 1 of 2: speech engine' : 'Step 2 of 2: voice files';
+    final pill = ready
+        ? const StatusPill(label: 'Installed', dot: Brand.ok)
+        : busy
+            ? const StatusPill(label: 'Installing')
+            : stopped
+                ? const StatusPill(label: 'Paused')
+                : null;
     return SpikeCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Row(children: [
-          Icon(Icons.record_voice_over_rounded, color: installed ? Brand.ok : p.accent),
-          const SizedBox(width: 10),
-          Expanded(child: Text(installed ? 'Spike\'s own voice (on the phone)' : 'Phone voice', style: context.tt.titleMedium)),
-          if (installed) const StatusPill(label: 'Installed', dot: Brand.ok),
-        ]),
-        const SizedBox(height: 6),
-        Text(
-            installed
-                ? 'Kokoro voices chosen for Spike and Spicy, made on the phone. Android\'s voice steps in if needed.'
-                : 'Now: Android\'s own voice. Download Spike\'s and Spicy\'s natural voices (Kokoro, about $kokoroApproxMb MB) to hear them away from home.',
-            style: context.tt.bodySmall),
-        if (busy || stopped) _DownloadProgress(_partial && st == null ? null : (st ?? const DlStatus(DlPhase.starting))),
+        InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => setState(() => _open = !_open),
+          child: Row(children: [
+            Icon(Icons.record_voice_over_rounded, color: ready ? Brand.ok : p.accent),
+            const SizedBox(width: 10),
+            Expanded(child: Text('Offline backup voice (Kokoro)', style: context.tt.titleMedium)),
+            ?pill,
+            Icon(_open ? Icons.expand_less_rounded : Icons.expand_more_rounded),
+          ]),
+        ),
+        if (_open) ...[
+          const SizedBox(height: 8),
+          Text(
+              'An optional natural voice for Spike and Spicy, made on this phone with no internet. '
+              'It is used when the laptop\'s voice and the Gemini voice can\'t be reached; Android\'s own voice stays as the last backup.',
+              style: context.tt.bodySmall),
+          const SizedBox(height: 6),
+          Text('Size: about ${mb(kokoroAddonDownloadBytes)} to download, about ${mb(kokoroAddonInstalledBytes)} on the phone.',
+              style: context.tt.bodySmall),
+          const SizedBox(height: 6),
+          Text(
+              'It does not come from ${AppBrand.publisherDisplayName}. Your phone downloads it straight from the open-source projects: the speech engine '
+              'from the sherpa-onnx project\'s official release on GitHub (checked against the official file\'s fingerprint '
+              'before it is used), and the voice files from the Kokoro model\'s own pages.',
+              style: context.tt.bodySmall),
+          const SizedBox(height: 6),
+          Text('These parts are not part of Spike and keep their own open-source licences:', style: context.tt.bodySmall),
+          for (final (what, licence, url) in kokoroAddonSources)
+            InkWell(
+              onTap: () => _openLink(url),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Text('$what: $licence',
+                    style: context.tt.bodySmall?.copyWith(color: p.accent, decoration: TextDecoration.underline)),
+              ),
+            ),
+        ],
+        if (busy || stopped) ...[
+          const SizedBox(height: 6),
+          Text(_installing ? 'Checking and installing the speech engine...' : step, style: context.tt.labelMedium),
+          if (!_installing) _DownloadProgress(_partial && st == null ? null : (st ?? const DlStatus(DlPhase.starting))),
+        ],
         if (st?.phase == DlPhase.failed) _warnLine(context, downloadProblem(st!)),
         if (_error != null) _warnLine(context, _error!),
-        if (!installed && !busy && !stopped) _SizeLine(kokoroApproxMb * 1000000),
-        const SizedBox(height: 12),
-        Wrap(spacing: 8, runSpacing: 8, children: [
-          if (busy) ...[
-            PillButton(label: 'Pause', icon: Icons.pause_rounded, onTap: _preparing ? null : () => _dl?.pause()),
-            PillButton(label: 'Cancel', icon: Icons.close_rounded, onTap: _preparing ? null : _cancel),
-          ] else if (stopped) ...[
-            PillButton(label: 'Resume', icon: Icons.play_arrow_rounded, filled: true, onTap: _pack == null ? null : _download),
-            PillButton(label: 'Cancel', icon: Icons.close_rounded, onTap: _cancel),
-          ] else if (installed)
-            PillButton(
-              label: 'Delete voice (~$kokoroApproxMb MB)',
-              icon: Icons.delete_outline_rounded,
-              onTap: () async {
-                Haptics.confirm();
-                await _pack?.delete();
-                await ref.read(awayProvider.notifier).voiceChanged();
-                if (mounted) setState(() {});
-              },
-            )
-          else
-            PillButton(label: 'Download voice (~$kokoroApproxMb MB)', icon: Icons.download_rounded, onTap: _pack == null ? null : _download),
-        ]),
+        if (_open || busy || stopped) ...[
+          const SizedBox(height: 12),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            if (busy) ...[
+              PillButton(label: 'Pause', icon: Icons.pause_rounded, onTap: _preparing || _installing ? null : () => _dl?.pause()),
+              PillButton(label: 'Cancel', icon: Icons.close_rounded, onTap: _preparing || _installing ? null : _cancel),
+            ] else if (stopped) ...[
+              PillButton(label: 'Resume', icon: Icons.play_arrow_rounded, filled: true, onTap: _pack == null ? null : _install),
+              PillButton(label: 'Cancel', icon: Icons.close_rounded, onTap: _cancel),
+            ] else if (ready)
+              PillButton(
+                label: 'Remove',
+                icon: Icons.delete_outline_rounded,
+                onTap: () async {
+                  Haptics.confirm();
+                  await _removeAll();
+                },
+              )
+            else
+              PillButton(label: 'Download and install', icon: Icons.download_rounded, filled: true, onTap: _pack == null ? null : _install),
+          ]),
+        ],
       ]),
     );
   }

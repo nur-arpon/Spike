@@ -29,6 +29,10 @@ class AppBrand {
   static const websiteUrl = 'https://github.com/nur-arpon/Spike';
   static const privacyPolicyUrl = 'https://nur-arpon.github.io/Spike/privacy-policy.html';
 
+  /// The Google Form people join to be told when the robot body is ready ("I want one"). Empty until the
+  /// owner makes the form: the robot story then offers "Follow the build" instead (features/story/).
+  static const robotWaitlistUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSdHBPoQ0okTReg6TyZJXWS4jZxNhieg2j1iQoSBMr1pQx5sJA/viewform';
+
   /// PERMANENT internal id: data folders and anything that must survive a rename. Never shown,
   /// never changed (RENAMING.md "never change").
   static const internalId = 'spikebuddy';

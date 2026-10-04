@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.1+2
+version: 1.0.4+5
 
 environment:
   sdk: ^3.13.4
@@ -50,7 +50,11 @@ dependencies:
   http: ^1.6.0
   speech_to_text: ^7.5.0
   flutter_tts: ^4.2.5
-  sherpa_onnx: ^1.13.8
+  # sherpa_onnx (the Flutter plugin) is NOT a dependency: it bundles native libraries that link espeak-ng (GPL-3.0).
+  # Only its Apache-2.0 Dart FFI bindings are vendored (pure Dart, no native code); the owner fetches the native
+  # libraries himself from the upstream release as an optional add-on (lib/away/voice/kokoro_addon.dart).
+  sherpa_onnx_ffi:
+    path: third_party/sherpa_onnx_ffi
   flutter_gemma: ^1.11.2
   archive: ^4.3.0
   path_provider: ^2.1.6
@@ -98,6 +102,8 @@ flutter:
     - assets/brain/
     - assets/icon/spike_icon.svg
     - assets/icon/tray.ico
+    - assets/robot/
+    - assets/story/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

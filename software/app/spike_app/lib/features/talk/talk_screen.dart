@@ -12,7 +12,10 @@ import '../../protocol/names.dart';
 import '../../state/link.dart';
 import '../../state/settings.dart';
 import '../../state/voice.dart';
+import '../connect/brain_needed.dart';
 import 'voice_pill.dart';
+import '../story/push_copy.dart';
+import '../story/push_widgets.dart';
 
 class TalkScreen extends ConsumerStatefulWidget {
   const TalkScreen({super.key});
@@ -41,13 +44,15 @@ class _TalkScreenState extends ConsumerState<TalkScreen> {
     super.dispose();
   }
 
-  void _send([String? preset]) {
+  Future<void> _send([String? preset]) async {
     final t = (preset ?? _text.text).trim();
     if (t.isEmpty) return;
+    // no brain yet: the one friendly ask; when it succeeds the message goes on its way
+    if (!await ensureBrain(context, ref, reason: BrainReason.talk) || !mounted) return;
     final cmds = ref.read(commandsProvider);
     if (!cmds.connected) {
       Haptics.error();
-      showToast(context, 'Spike isn\'t connected. Connect him from Home.', icon: Icons.wifi_off_rounded);
+      showToast(context, 'Spike is still waking up. Try again in a moment.', icon: Icons.hourglass_top_rounded);
       return;
     }
     Haptics.confirm();
@@ -201,7 +206,10 @@ class ChatIdeas extends StatelessWidget {
       ]),
     ];
     if (embedded) return Column(mainAxisSize: MainAxisSize.min, children: children);
-    return ListView(padding: const EdgeInsets.fromLTRB(20, 30, 20, 20), children: children);
+    return ListView(padding: const EdgeInsets.fromLTRB(20, 30, 20, 20), children: [
+      ...children,
+      if (pushVisible) ...[const SizedBox(height: 28), const RobotCard(tab: PushTab.talk)],
+    ]);
   }
 }
 
@@ -344,7 +352,11 @@ class MicButton extends ConsumerWidget {
       haptic: false, // start and stop have their own haptics (Haptics.voiceOn / voiceOff)
       scale: 0.9,
       semanticLabel: on ? 'Stop listening' : 'Start listening',
-      onTap: () => ref.read(voiceProvider.notifier).toggle(),
+      onTap: () async {
+        // turning the mic ON needs a brain to listen to; turning it off never does
+        if (!v.on && !await ensureBrain(context, ref, reason: BrainReason.talk)) return;
+        ref.read(voiceProvider.notifier).toggle();
+      },
       child: AnimatedScale(
         scale: on ? 1.08 : 1,
         duration: const Duration(milliseconds: 420),

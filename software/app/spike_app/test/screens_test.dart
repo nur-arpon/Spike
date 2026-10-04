@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spike_app/away/ai/key_store.dart';
 import 'package:spike_app/core/theme.dart';
+import 'package:spike_app/state/away.dart';
 import 'package:spike_app/features/life/life_screen.dart';
 import 'package:spike_app/features/life/memories_screen.dart';
 import 'package:spike_app/features/remote/remote_screen.dart';
@@ -22,7 +24,7 @@ Future<void> _pump(WidgetTester t, Widget screen, SharedPreferences prefs, {Brig
   t.view.devicePixelRatio = 3;
   addTearDown(t.view.reset);
   await t.pumpWidget(ProviderScope(
-    overrides: [prefsProvider.overrideWithValue(prefs)],
+    overrides: [prefsProvider.overrideWithValue(prefs), secretStoreProvider.overrideWithValue(MemorySecretStore())],
     child: MaterialApp(theme: buildTheme(b), home: screen),
   ));
   // let the spring entrances settle (they never loop, but pumpAndSettle would
@@ -33,7 +35,7 @@ Future<void> _pump(WidgetTester t, Widget screen, SharedPreferences prefs, {Brig
 }
 
 void main() {
-  testWidgets('Talk: empty state offers ideas; sending while offline explains why', (t) async {
+  testWidgets('Talk: empty state offers ideas; sending with no brain asks for one (onboarding v2)', (t) async {
     await _pump(t, const TalkScreen(), await _prefs());
     expect(find.text('Talk to Spike'), findsOneWidget);
     expect(find.text("What's the time?"), findsOneWidget);
@@ -41,7 +43,7 @@ void main() {
     for (var i = 0; i < 10; i++) {
       await t.pump(const Duration(milliseconds: 60));
     }
-    expect(find.textContaining("isn't connected"), findsOneWidget);
+    expect(find.text('Spike needs his brain'), findsOneWidget);
     // nothing was added to the chat, because nothing was sent
     expect(find.text('Say hi to Spike'), findsOneWidget);
   });
@@ -60,11 +62,13 @@ void main() {
     expect(find.text('Connect Spike first.'), findsOneWidget);
   });
 
-  testWidgets('Play: tapping Walk while offline asks to connect first, like any other trick', (t) async {
+  testWidgets('Play: tapping Walk with no brain asks for one, like any other trick', (t) async {
     await _pump(t, const RemoteScreen(), await _prefs());
     await t.tap(find.text('Walk'));
-    await t.pump();
-    expect(find.textContaining('Connect Spike first'), findsOneWidget);
+    for (var i = 0; i < 10; i++) {
+      await t.pump(const Duration(milliseconds: 60));
+    }
+    expect(find.text('Spike needs his brain'), findsOneWidget);
   });
 
   testWidgets('Memories: offline, the list says to connect (nothing is kept on the phone)', (t) async {

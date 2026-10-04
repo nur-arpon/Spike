@@ -1,0 +1,29 @@
+{
+ "robotBuild": [
+  {
+   "title": "Designed",
+   "text": "Body v3.2 modelled and checked: 56 printed parts, every servo and wire hidden, no clashes.",
+   "state": "done"
+  },
+  {
+   "title": "Firmware",
+   "text": "Both ESP32-S3 boards: face, body control, gait, sensors and the link to his brain.",
+   "state": "done"
+  },
+  {
+   "title": "Parts and printing",
+   "text": "Gathering the electronics and printing the first full shell.",
+   "state": "now"
+  },
+  {
+   "title": "First assembly",
+   "text": "Putting the first Spike together and running the day-one tests.",
+   "state": "next"
+  },
+  {
+   "title": "First steps",
+   "text": "Tuning the walk and give paw on the real body.",
+   "state": "next"
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 /// DEBUG builds only: a Gemini Live / TTS check that a developer can start on
 /// a real phone without touching it, by creating an empty file named
 /// `selftest.live` in the app's own files folder
-/// (`adb shell run-as com.spikebuddy.spike_app touch files/selftest.live`).
+/// (`adb shell run-as com.spacez.spike touch files/selftest.live`).
 /// It runs the app's own Live and TTS code with the owner's saved key and
 /// writes what Google answered to the log (`gemini selftest: ...`). The key is
 /// never logged (only [cleanReason] text). Nothing is played out loud: the

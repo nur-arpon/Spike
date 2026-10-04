@@ -67,6 +67,10 @@ class AppBrand {
   static const websiteUrl = ${_q(j['websiteUrl'])};
   static const privacyPolicyUrl = ${_q(j['privacyPolicyUrl'])};
 
+  /// The Google Form people join to be told when the robot body is ready ("I want one"). Empty until the
+  /// owner makes the form: the robot story then offers "Follow the build" instead (features/story/).
+  static const robotWaitlistUrl = ${_q(j['robotWaitlistUrl'])};
+
   /// PERMANENT internal id: data folders and anything that must survive a rename. Never shown,
   /// never changed (RENAMING.md "never change").
   static const internalId = ${_q(j['internalId'])};

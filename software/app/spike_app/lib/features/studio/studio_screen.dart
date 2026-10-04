@@ -17,6 +17,8 @@ import '../../state/settings.dart';
 import '../face/face_view.dart';
 import 'studio_state.dart';
 import 'studio_widgets.dart';
+import '../story/push_copy.dart';
+import '../story/push_widgets.dart';
 
 /// The face_v2 Face Studio, rebuilt as native Flutter controls around the
 /// real face engine (a WebView preview). Every option list comes from the
@@ -427,6 +429,7 @@ class _StudioScreenState extends ConsumerState<StudioScreen> with SingleTickerPr
                         filled: true,
                         onTap: _wear,
                       ),
+                      if (pushVisible) ...[const SizedBox(height: 22), const RobotCard(tab: PushTab.studio)],
                     ],
                   ),
                   ),

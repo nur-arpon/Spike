@@ -35,3 +35,23 @@ const _offerWords = {'paw': 'give paw', 'playBow': 'a play bow', 'tailWagDance':
   }
   return ("[sad] Aww, I can't $trick yet, my legs are not that clever. Want to see $what instead?", offer);
 }
+
+/// What the real body can do on a desk, in plain words, for the robot story and the "imagine this on
+/// your desk" cards (features/story/). ONE list so the sales copy can never promise more than the body
+/// does: every entry is a real ability from the list at the top of this file; [inDevelopment] marks the
+/// two the body is still being taught (walk, give paw). Never add an action that is in [hiddenActions].
+typedef BodyAbility = ({String label, String action, bool inDevelopment});
+
+const bodyAbilities = <BodyAbility>[
+  (label: 'Drive around your desk', action: 'drive', inDevelopment: false),
+  (label: 'Sit', action: 'sit', inDevelopment: false),
+  (label: 'Lie down', action: 'lieDown', inDevelopment: false),
+  (label: 'Bow', action: 'playBow', inDevelopment: false),
+  (label: 'Tilt his head', action: 'headTilt', inDevelopment: false),
+  (label: 'Snuggle', action: 'snuggle', inDevelopment: false),
+  (label: 'Wag his tail', action: 'tailWagDance', inDevelopment: false),
+  (label: 'Quick happy spins', action: 'zoomies', inDevelopment: false),
+  (label: 'Lift a back paw', action: 'backPaw', inDevelopment: false),
+  (label: 'Walk', action: 'walk', inDevelopment: true),
+  (label: 'Give paw', action: 'paw', inDevelopment: true),
+];

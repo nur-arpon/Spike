@@ -1,4 +1,4 @@
-package com.spikebuddy.spike_app
+package com.spacez.spike
 
 import android.Manifest
 import android.content.Context

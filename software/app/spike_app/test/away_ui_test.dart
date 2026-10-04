@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spike_app/away/ai/key_store.dart';
+import 'package:spike_app/away/voice/speaker.dart';
 import 'package:spike_app/core/theme.dart';
 import 'package:spike_app/features/connect/nearby_robot.dart';
 import 'package:spike_app/features/settings/away_settings.dart';
@@ -50,8 +51,22 @@ void main() {
     expect(find.text('Spike talks on this phone'), findsOneWidget);
     expect(find.textContaining('aistudio.google.com/apikey'), findsOneWidget);
     expect(find.textContaining('Download offline brain (345 MB)'), findsOneWidget);
-    expect(find.textContaining('Download voice (~380 MB)'), findsOneWidget);
+    // the Kokoro add-on is Android-only (the owner fetches the engine himself): not on this test host
+    expect(kokoroAddonSupported, isFalse);
+    expect(kokoroVoiceAvailable, isFalse);
+    expect(find.text('Offline backup voice (Kokoro)'), findsNothing);
     expect(find.text('Phone hotspot'), findsOneWidget);
+  });
+
+  testWidgets('Settings away: on Android the Kokoro add-on card is in the voice section (no engine = hidden)', (t) async {
+    debugKokoroAddonSupported = true;
+    addTearDown(() => debugKokoroAddonSupported = null);
+    await pump(t, const AwaySettings(), const AwayState(active: BrainHost.phone));
+    expect(find.text('Offline backup voice (Kokoro)'), findsOneWidget);
+    final engine = kokoroEngine;
+    kokoroEngine = null;
+    addTearDown(() => kokoroEngine = engine);
+    expect(kokoroVoiceAvailable, isFalse);
   });
 
   testWidgets('Hear the voices: a Spike | Spicy switch; each has its styles; a tap picks and saves', (t) async {

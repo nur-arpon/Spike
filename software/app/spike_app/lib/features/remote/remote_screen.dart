@@ -15,10 +15,15 @@ import '../../core/widgets.dart';
 import '../../protocol/messages.dart';
 import '../../state/hub.dart';
 import '../../state/away.dart';
+import '../../state/brain_ready.dart';
+import '../connect/brain_needed.dart';
 import '../../state/link.dart';
 import '../settings/away_settings.dart' show hotspotProblem;
 import '../../state/settings.dart';
 import '../../desktop/desktop_page.dart';
+import '../story/push_copy.dart';
+import '../story/push_sheets.dart';
+import '../story/push_widgets.dart';
 import 'joystick.dart';
 
 /// A trick button: the face_v2 action it plays (protocol v1.2 `action`).
@@ -92,11 +97,24 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> with WidgetsBinding
     super.dispose();
   }
 
-  void _trick(Trick t) {
+  bool _asking = false;
+
+  /// No brain yet: the one friendly ask (features/connect/brain_needed.dart). One sheet at a time.
+  Future<bool> _brainReady() async {
+    if (brainReadyNow(ref)) return true;
+    if (_asking) return false;
+    _asking = true;
+    final ok = await ensureBrain(context, ref, reason: BrainReason.play);
+    _asking = false;
+    return ok;
+  }
+
+  Future<void> _trick(Trick t) async {
+    if (!await _brainReady() || !mounted) return;
     final cmds = ref.read(commandsProvider);
     if (!cmds.connected) {
       Haptics.error();
-      showToast(context, 'Connect Spike first, then he can do tricks', icon: Icons.wifi_off_rounded);
+      showToast(context, 'Spike is still waking up. Try again in a moment.', icon: Icons.hourglass_top_rounded);
       return;
     }
     Haptics.confirm();
@@ -105,6 +123,8 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> with WidgetsBinding
     } else {
       cmds.action(t.id);
     }
+    // first trick ever: a short "imagine this on your desk" (features/story/), once
+    maybePeek(context, ref, t.id == 'tailWagDance' || t.id == 'slowWag' ? PeekFeature.wag : PeekFeature.trick);
     setState(() => _busy = t.id);
     _busyTimer?.cancel();
     _busyTimer = Timer(const Duration(milliseconds: 2400), () {
@@ -118,6 +138,12 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> with WidgetsBinding
 
   void _stick(double x, double y) {
     final centred = x.abs() <= 0.02 && y.abs() <= 0.02;
+    if (!centred && !brainReadyNow(ref)) {
+      // steering needs a brain: ask once, and ignore this drag until the stick is let go
+      _springingHome = true;
+      _brainReady();
+      return;
+    }
     if (_springingHome) {
       if (centred) _springingHome = false;
       return;
@@ -247,7 +273,14 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> with WidgetsBinding
                   ),
                 ]),
                 const SizedBox(height: 18),
-                SpringJoystick(onChanged: _stick, onStart: () => _springingHome = false, onRelease: _stopDrive),
+                SpringJoystick(
+                    onChanged: _stick,
+                    onStart: () => _springingHome = false,
+                    // the first drive ever: the peek comes once the thumb is lifted, never mid-drag
+                    onRelease: () {
+                      _stopDrive();
+                      maybePeek(context, ref, PeekFeature.drive);
+                    }),
                 const SizedBox(height: 12),
                 Text(
                   _jx == 0 && _jy == 0
@@ -269,6 +302,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> with WidgetsBinding
                 ),
               ]),
             ),
+            if (pushVisible) ...[const SizedBox(height: 18), const RobotCard(tab: PushTab.play)],
           ],
         ),
       ),

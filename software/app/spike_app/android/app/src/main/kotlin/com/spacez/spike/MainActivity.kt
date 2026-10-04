@@ -1,4 +1,4 @@
-package com.spikebuddy.spike_app
+package com.spacez.spike
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine

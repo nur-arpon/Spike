@@ -1,11 +1,29 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// android/key.properties: storePassword, keyPassword, keyAlias, storeFile (relative to android/app).
+val releaseKeyFile = rootProject.file("key.properties")
+val releaseKey = Properties().apply { if (releaseKeyFile.exists()) releaseKeyFile.inputStream().use { load(it) } }
+
+// Fail any release build loudly when the key is missing, instead of signing with the debug key.
+gradle.taskGraph.whenReady {
+    val wantsRelease = allTasks.any { it.project == project && it.name.contains("Release") }
+    if (wantsRelease && !releaseKeyFile.exists()) {
+        throw GradleException(
+            "Release build refused: android/key.properties (and the keystore it names) is missing. " +
+                "Restore them from the backup (software/app/ANDROID-RELEASE.md). Never generate a new key."
+        )
+    }
+}
+
 android {
-    namespace = "com.spikebuddy.spike_app"
+    // PERMANENT (software/app/ANDROID-RELEASE.md): the public app id. Never change it after release.
+    namespace = "com.spacez.spike"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,8 +33,9 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.spikebuddy.spike_app"
+        // PERMANENT: the Android application ID every installed copy is known by. Changing it makes a
+        // different app (no updates, no data carried over). See software/app/ANDROID-RELEASE.md.
+        applicationId = "com.spacez.spike"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -40,12 +59,36 @@ android {
         }
     }
 
+    // The PERMANENT release key (software/app/ANDROID-RELEASE.md "The release signing key"). Both files are
+    // gitignored and backed up outside the repo. There is NO fallback to the debug key: a release APK signed
+    // with any other key could never update the copies people already have installed.
+    signingConfigs {
+        if (releaseKeyFile.exists()) {
+            create("release") {
+                keyAlias = releaseKey.getProperty("keyAlias")
+                keyPassword = releaseKey.getProperty("keyPassword")
+                storeFile = file(releaseKey.getProperty("storeFile"))
+                storePassword = releaseKey.getProperty("storePassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            if (releaseKeyFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
+    }
+}
+
+// The public APK is arm64-v8a only (`flutter build apk --release --target-platform android-arm64`). The plugins'
+// own native libraries for armeabi-v7a, x86 and x86_64 would otherwise still ship (~20 MB), and a 32-bit phone
+// would install an APK with no libflutter.so for it and crash on start. Release only: debug builds keep every ABI
+// (emulators). `ndk.abiFilters` does not work here: the Flutter plugin's own ABI list is merged with it.
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        variant.packaging.jniLibs.excludes.addAll(listOf("lib/armeabi-v7a/**", "lib/x86/**", "lib/x86_64/**"))
     }
 }
 

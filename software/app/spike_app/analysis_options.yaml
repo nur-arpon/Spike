@@ -15,6 +15,7 @@ analyzer:
     - android/**
     - windows/**
     - third_party/**
+    - optional/**  # kept, unbuilt code (optional/kokoro_sherpa: needs sherpa_onnx, not a dependency)
 
 linter:
   # The lint rules applied to this project can be customized in the

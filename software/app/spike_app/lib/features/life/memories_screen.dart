@@ -9,6 +9,7 @@ import '../../desktop/desktop_page.dart';
 import '../../protocol/messages.dart';
 import '../../state/link.dart';
 import '../../state/settings.dart';
+import '../connect/brain_needed.dart';
 
 /// What Spike remembers, with a forget button per fact (protocol v1.2
 /// `memory` / `memory_forget` / `memory_forget_all`). The list is never
@@ -41,17 +42,18 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
     super.dispose();
   }
 
-  bool _ready() {
+  Future<bool> _ready() async {
+    if (!await ensureBrain(context, ref, reason: BrainReason.remember) || !mounted) return false;
     if (ref.read(commandsProvider).connected) return true;
     Haptics.error();
-    showToast(context, 'Connect Spike first. His memory lives on the laptop.', icon: Icons.wifi_off_rounded);
+    showToast(context, 'Spike is still waking up. Try again in a moment.', icon: Icons.hourglass_top_rounded);
     return false;
   }
 
   String get _name => ref.read(settingsProvider).nameFor(ref.read(spikeStateProvider).mode);
 
   Future<void> _forgetOne(MemoryItem m) async {
-    if (!_ready()) return;
+    if (!await _ready() || !mounted) return;
     final ok = await showDialog<bool>(
       context: context,
       builder: (c) => AlertDialog(
@@ -89,7 +91,7 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
         ],
       ),
     );
-    if (ok != true || !mounted || !_ready()) return;
+    if (ok != true || !mounted || !await _ready()) return;
     final cmds = ref.read(commandsProvider);
     if (cmds.legacy) {
       // a v1.1 brain: the spoken way ("forget everything", then "yes" within 30 s)
@@ -170,9 +172,9 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
             PillButton(
               label: 'Remember',
               dense: true,
-              onTap: () {
+              onTap: () async {
                 final t = _remember.text.trim();
-                if (t.isEmpty || !_ready()) return;
+                if (t.isEmpty || !await _ready()) return;
                 Haptics.confirm();
                 ref.read(commandsProvider).say('remember that $t');
                 _remember.clear();

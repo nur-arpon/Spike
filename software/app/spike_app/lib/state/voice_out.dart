@@ -44,10 +44,12 @@ final laptopVoiceProvider = Provider<LaptopVoicePlayer>((ref) {
     // owner order 30 Sep: laptop voice -> Gemini natural voice (with a key) -> Kokoro -> Android (voice_chain.dart)
     final gemini = ref.read(awayProvider.notifier).geminiVoice;
     try {
+      // Kokoro only once the owner installed the add-on (speaker.dart KokoroPack.ready, kokoro_addon.dart)
+      final engine = kokoroEngine;
       final pack = await ref.read(awayProvider.notifier).voicePack();
-      if (pack.installed) {
+      if (engine != null && pack.ready) {
         player ??= AudioPlayer();
-        kokoro ??= KokoroVoice(pack, player!);
+        kokoro ??= engine(pack, player!);
         return gemini == null ? _KokoroThenAndroid(kokoro!, android!) : VoiceChain([gemini, kokoro!, android!]);
       }
       kokoro?.dispose();

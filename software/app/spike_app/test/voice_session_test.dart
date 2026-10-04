@@ -606,6 +606,8 @@ void main() {
     testWidgets('hidden while off; on every screen while on; the stop button ends it', (t) async {
       final r = await pumpApp(t, const TalkScreen());
       expect(find.byKey(const ValueKey('voicePill')), findsNothing);
+      // Spike has a brain here (a bonded robot): without one the mic asks for it first (onboarding v2)
+      r.c.read(settingsProvider.notifier).update((s) => s.copyWith(robotId: 'AA:BB'));
       // the Talk screen's mic: one tap starts it (no holding)
       await t.tap(find.bySemanticsLabel('Start listening'));
       await t.runAsync(() => settle(50));

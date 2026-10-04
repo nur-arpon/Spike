@@ -13,9 +13,14 @@ import '../../protocol/client.dart';
 import '../../protocol/names.dart';
 import '../../away/ai/offline_brain.dart';
 import '../../state/away.dart';
+import '../../state/brain_ready.dart';
+import '../connect/brain_needed.dart';
 import '../../state/link.dart';
 import '../../state/settings.dart';
 import '../face/face_view.dart';
+import '../story/push_copy.dart';
+import '../story/push_sheets.dart';
+import '../story/push_widgets.dart';
 import 'home_desktop.dart';
 import 'mode_switch.dart';
 
@@ -38,12 +43,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool get _connected => ref.read(brainClientProvider).current.isConnected;
 
   void _offlineNote() {
-    if (_connected || _toldOffline) return;
+    // exploring with no brain yet: the face answering by itself is plain to see, and anything that needs
+    // his brain asks for it (features/connect/brain_needed.dart), so no extra note then
+    if (_connected || _toldOffline || !brainReadyNow(ref)) return;
     _toldOffline = true;
     showToast(context, 'Spike isn\'t connected, so only the phone face reacts', icon: Icons.wifi_off_rounded);
   }
 
-  void _quick(String what) {
+  Future<void> _quick(String what) async {
     final cmds = ref.read(commandsProvider);
     switch (what) {
       case 'pat':
@@ -59,16 +66,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         // the body cannot beg (core/capabilities.dart): a happy wag and a delighted face instead
         _face.setMood('delight');
         _face.playAction('tailWagDance');
+        // the face reacted by itself; the spoken treat needs his brain
+        if (!await ensureBrain(context, ref, reason: BrainReason.talk) || !mounted) return;
         if (_connected) cmds.action('tailWagDance', quiet: true);
         cmds.say('here is a treat for you, good ${ref.read(spikeStateProvider).mode == 'cat' ? 'girl' : 'boy'}');
+        if (mounted) maybePeek(context, ref, PeekFeature.wag); // first time only, ever (features/story/)
       case 'play':
         Haptics.confirm();
         if (!_connected) _face.playAction('playBow');
+        if (!await ensureBrain(context, ref, reason: BrainReason.talk) || !mounted) return;
         cmds.say("let's play rock paper scissors");
       case 'sleep':
         Haptics.confirm();
         if (!_connected) _face.playAction('fallAsleep');
         cmds.sleep(); // v1.2 action fallAsleep (words on an older brain)
+        maybePeek(context, ref, PeekFeature.sleep); // first time only, ever (features/story/)
     }
     _offlineNote();
   }
@@ -121,6 +133,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ]),
               ),
             ),
+            // the robot preview banner (features/story/): a classy line near the top, opens the story
+            if (pushVisible)
+              const SliverPadding(
+                padding: EdgeInsets.fromLTRB(20, 12, 20, 0),
+                sliver: SliverToBoxAdapter(child: PreviewBanner()),
+              ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
               sliver: SliverToBoxAdapter(
@@ -196,7 +214,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
-            if (away.away && (settings.robotId == null || (!away.hasKey && ref.watch(offlineStatusProvider).value?.state != OfflineState.installed)))
+            // exploring with no brain yet: one gentle card that opens the same ask the first brain-needing action does
+            if (!AppPlatform.desktop && !ref.watch(brainReadyProvider))
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: SpikeCard(
+                    onTap: () => ensureBrain(context, ref),
+                    child: Row(children: [
+                      Icon(Icons.auto_awesome_rounded, color: p.accent, size: 30), // a sparkle: the old head-with-"?" read like an error
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text('Give $name his brain', style: context.tt.titleMedium),
+                          Text('A free Gemini key, or the code on your computer', style: context.tt.bodySmall),
+                        ]),
+                      ),
+                      Icon(Icons.chevron_right_rounded, color: p.muted),
+                    ]),
+                  ),
+                ),
+              )
+            else if (away.away && (settings.robotId == null || (!away.hasKey && ref.watch(offlineStatusProvider).value?.state != OfflineState.installed)))
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
                 sliver: SliverToBoxAdapter(
@@ -266,6 +305,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
+            if (pushVisible)
+              const SliverPadding(
+                padding: EdgeInsets.fromLTRB(20, 14, 20, 0),
+                sliver: SliverToBoxAdapter(child: RobotCard(tab: PushTab.home)),
+              ),
             SliverToBoxAdapter(child: SizedBox(height: bottom)),
           ],
         ),
@@ -301,11 +345,15 @@ class _RoundIcon extends StatelessWidget {
       );
 }
 
-class LinkPill extends StatelessWidget {
+class LinkPill extends ConsumerWidget {
   const LinkPill({super.key, required this.status});
   final LinkStatus status;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // exploring: nothing is linked and no key is saved yet (onboarding v2)
+    if (!ref.watch(brainReadyProvider)) {
+      return StatusPill(label: 'Exploring', icon: Icons.explore_rounded, dot: context.sp.muted);
+    }
     if (status.brain == BrainHost.phone && status.isConnected) {
       return const StatusPill(label: 'Away · phone brain', icon: Icons.smartphone_rounded, dot: Brand.ok);
     }

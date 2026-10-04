@@ -1,9 +1,12 @@
 /// Spike's voice on the phone while away (the robot has no audio link over
 /// Bluetooth, so the phone speaks and the robot moves its mouth to it).
 ///
-/// 1. Kokoro-82M on the phone (sherpa_onnx), the same voices the owner picked
-///    for the laptop's Kokoro fallback: Spike = am_puck, Spicy = af_heart. The
-///    voice pack (~380 MB) is downloaded only when the owner asks.
+/// 1. Kokoro-82M on the phone, ONLY once the owner installed the optional
+///    add-on (kokoro_addon.dart): the APK carries no sherpa-onnx native code
+///    (it links GPL-3.0 espeak-ng); the phone fetches the official libraries
+///    from the sherpa-onnx release and the voice files (~380 MB) from their
+///    upstream pages, only when asked. Same voices as the laptop's Kokoro:
+///    Spike = am_puck, Spicy = af_heart.
 /// 2. Android's own text-to-speech (flutter_tts) otherwise, or if Kokoro fails.
 ///
 /// Numbers the voice must say a certain way are spoken as the laptop does
@@ -12,7 +15,6 @@ library;
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -20,8 +22,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:sherpa_onnx/sherpa_onnx.dart' as sherpa;
 
+import '../../core/platform.dart';
+import 'kokoro_addon.dart';
+import 'kokoro_voice_addon.dart';
 import '../download/bundle.dart';
 import '../download/downloads.dart' show hfTree;
 import 'level_match.dart';
@@ -49,7 +53,7 @@ abstract class PreparedSpeech {
   Future<void> play();
 }
 
-// ------------------------------------------------------------------ Kokoro (sherpa_onnx)
+// ------------------------------------------------------------------ Kokoro (an optional add-on the owner installs)
 
 const kokoroRepo = 'csukuangfj/kokoro-multi-lang-v1_0';
 const kokoroApproxMb = 380;
@@ -78,7 +82,15 @@ const espeakArchive = BundleArchive(
 class KokoroPack {
   KokoroPack(this.dir);
   final Directory dir;
+
+  /// The voice files are all here (the engine is separate: [engine]).
   bool get installed => Bundle.isCompleteDir(dir);
+
+  /// The add-on's engine (sherpa-onnx libraries), beside the voice files: `<app support>/kokoro_engine`.
+  KokoroEngineFiles get engine => KokoroEngineFiles(Directory('${dir.parent.path}/kokoro_engine'));
+
+  /// Kokoro can speak: voice files AND the engine, proven to load.
+  bool get ready => installed && engine.ready;
 
   /// Where the file list is kept once fetched (beside the pack, so a resume
   /// after a restart needs no new listing).
@@ -136,128 +148,29 @@ class KokoroPack {
   }
 }
 
-/// The Kokoro engine lives in its own isolate: synthesis is a blocking native
-/// call that would otherwise freeze the UI.
-class KokoroVoice implements SpikeVoice {
-  KokoroVoice(this.pack, this._player);
-  final KokoroPack pack;
-  final AudioPlayer _player;
-  SendPort? _send;
-  Isolate? _iso;
-  final _replies = <int, Completer<(Float32List, int)>>{};
-  int _next = 0;
-  ReceivePort? _rx;
-
-  @override
-  String get name => 'Kokoro';
-
-  Future<void> _start() async {
-    if (_send != null) return;
-    final rx = _rx = ReceivePort();
-    final ready = Completer<SendPort>();
-    rx.listen((msg) {
-      if (msg is SendPort) {
-        ready.complete(msg);
-      } else if (msg is List && msg.length == 3) {
-        final c = _replies.remove(msg[0] as int);
-        final data = msg[1];
-        if (data is TransferableTypedData) {
-          c?.complete((data.materialize().asFloat32List(), msg[2] as int));
-        } else {
-          c?.completeError(StateError('kokoro: ${msg[1]}'));
-        }
-      }
-    });
-    _iso = await Isolate.spawn(_kokoroMain, [rx.sendPort, pack.dir.path]);
-    _send = await ready.future.timeout(const Duration(seconds: 60));
-  }
-
-  @override
-  Future<PreparedSpeech> prepare(String text, {required String mode, bool soft = false}) async {
-    await _start();
-    final id = _next++;
-    final c = _replies[id] = Completer<(Float32List, int)>();
-    _send!.send([id, text, kokoroSid[mode] ?? 18, soft ? 0.92 : 1.0]);
-    final (raw, rate) = await c.future.timeout(const Duration(seconds: 25));
-    final samples = levelMatch(raw, rate); // to the laptop voice's -21 dBFS (level_match.dart)
-    final wav = await _writeWav(samples, rate);
-    return _KokoroSpeech(_player, wav, SpokenClip(durationMs: samples.length * 1000 ~/ rate, mouth: mouthEnvelope(samples, rate)));
-  }
-
-  static Future<File> _writeWav(Float32List samples, int rate) async {
-    final f = File('${Directory.systemTemp.path}/spike_say_${DateTime.now().microsecondsSinceEpoch}.wav');
-    await f.writeAsBytes(wavBytes(samples, rate), flush: true);
-    return f;
-  }
-
-  @override
-  Future<void> stop() => _player.stop();
-
-  void dispose() {
-    _iso?.kill(priority: Isolate.immediate);
-    _rx?.close();
-    _send = null;
-  }
+/// A Kokoro voice on the phone. The engine's native code (sherpa-onnx) is NOT in the app: it
+/// links espeak-ng (GPL-3.0), which cannot ship under Spike's all-rights-reserved licence. The
+/// owner installs it as an add-on from the upstream release (kokoro_addon.dart).
+abstract class KokoroVoice implements SpikeVoice {
+  void dispose();
 }
 
-class _KokoroSpeech implements PreparedSpeech {
-  _KokoroSpeech(this._player, this._file, this.clip);
-  final AudioPlayer _player;
-  final File _file;
-  @override
-  final SpokenClip clip;
+typedef KokoroEngine = KokoroVoice Function(KokoroPack pack, AudioPlayer player);
 
-  @override
-  Future<void> play() async {
-    final done = Completer<void>();
-    final sub = _player.onPlayerStateChanged.listen((s) {
-      if ((s == PlayerState.completed || s == PlayerState.stopped) && !done.isCompleted) done.complete();
-    });
-    try {
-      await _player.play(DeviceFileSource(_file.path));
-      await done.future.timeout(Duration(milliseconds: clip.durationMs + 3000), onTimeout: () {});
-    } finally {
-      await sub.cancel();
-      if (await _file.exists()) await _file.delete();
-    }
-  }
-}
+/// The Kokoro engine: the add-on one (opens the owner-installed libraries by path). It is only
+/// ever used once [KokoroPack.ready]. Tests swap it for a fake.
+KokoroEngine? kokoroEngine = AddonKokoroVoice.new;
 
-void _kokoroMain(List<dynamic> args) {
-  final reply = args[0] as SendPort;
-  final dir = args[1] as String;
-  final rx = ReceivePort();
-  sherpa.OfflineTts? tts;
-  reply.send(rx.sendPort);
-  rx.listen((msg) {
-    final m = msg as List;
-    final id = m[0] as int;
-    try {
-      if (tts == null) {
-        sherpa.initBindings();
-        tts = sherpa.OfflineTts(sherpa.OfflineTtsConfig(
-          model: sherpa.OfflineTtsModelConfig(
-            kokoro: sherpa.OfflineTtsKokoroModelConfig(
-              model: '$dir/model.onnx',
-              voices: '$dir/voices.bin',
-              tokens: '$dir/tokens.txt',
-              dataDir: '$dir/espeak-ng-data',
-              lexicon: '$dir/lexicon-us-en.txt',
-              lang: 'en-us',
-            ),
-            numThreads: 2,
-            debug: false,
-          ),
-          maxNumSenetences: 1,
-        ));
-      }
-      final audio = tts!.generate(text: m[1] as String, sid: m[2] as int, speed: (m[3] as num).toDouble());
-      reply.send([id, TransferableTypedData.fromList([audio.samples]), audio.sampleRate]);
-    } catch (e) {
-      reply.send([id, e.toString(), 0]);
-    }
-  });
-}
+/// Null = the real platform; tests set true to show the add-on card on their host.
+bool? debugKokoroAddonSupported;
+
+/// The add-on exists for Android phones only (the libraries fetched are Android arm64 ones).
+bool get kokoroAddonSupported =>
+    debugKokoroAddonSupported ?? (AppPlatform.onDeviceAiPack && Platform.isAndroid);
+
+/// The Settings card "Offline backup voice (Kokoro)" and the Kokoro step of the voice chain are
+/// hidden, not deleted, while this is false.
+bool get kokoroVoiceAvailable => kokoroAddonSupported && kokoroEngine != null;
 
 /// 16-bit mono WAV.
 Uint8List wavBytes(Float32List samples, int rate) {

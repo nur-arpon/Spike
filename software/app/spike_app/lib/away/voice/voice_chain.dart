@@ -2,7 +2,7 @@
 ///   1. the laptop's voice (Chatterbox, streamed from the laptop) - slot kept
 ///      for the laptop-voice work; null until it lands
 ///   2. Gemini natural voice (Gemini TTS with the owner's key and voice pick)
-///   3. Kokoro on the phone (only when the voice pack is downloaded)
+///   3. Kokoro on the phone (only once the owner installed the optional add-on: kokoro_addon.dart)
 ///   4. Android's text-to-speech, the last resort
 /// Each sentence goes to the first voice that can make it; a voice that fails
 /// (no network, free quota used up, not installed) is skipped quietly for that

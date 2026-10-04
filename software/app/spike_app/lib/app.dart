@@ -23,6 +23,8 @@ import 'features/life/life_screen.dart';
 import 'features/life/memories_screen.dart';
 import 'features/remote/remote_screen.dart';
 import 'features/settings/settings_screen.dart';
+import 'features/story/push_sheets.dart';
+import 'features/story/story_screen.dart';
 import 'features/studio/studio_screen.dart';
 import 'features/talk/talk_screen.dart';
 import 'features/talk/voice_pill.dart';
@@ -44,7 +46,7 @@ String? startRouteFrom(List<String> args) {
   for (final a in args) {
     if (a.startsWith('--route=')) {
       final r = a.substring(8);
-      if (const {'/home', '/play', '/talk', '/studio', '/life', '/settings', '/phone', '/memories', '/viewer'}.contains(r)) return r;
+      if (const {'/home', '/play', '/talk', '/studio', '/life', '/settings', '/phone', '/memories', '/viewer', '/story'}.contains(r)) return r;
     }
   }
   return null;
@@ -54,16 +56,20 @@ String? startRouteFrom(List<String> args) {
 String? _startRoute;
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final onboarded = ref.read(settingsProvider).onboarded;
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    // the desktop app IS the brain's home: no pairing step, straight to Spike
-    initialLocation: _startRoute ?? (AppPlatform.desktop || onboarded ? '/home' : '/connect'),
+    // Onboarding v2 (4 Oct 2026): always straight into the app, exploring. There is no setup gate: the
+    // moment something needs Spike's brain the app asks (features/connect/brain_needed.dart). The old
+    // connect screen stays at /connect, reachable from Settings > Connect to Spike. (The desktop app is
+    // the brain's home and never asks.)
+    initialLocation: _startRoute ?? '/home',
     // the desktop has no separate Talk page: the conversation is on Home
     redirect: (context, state) => AppPlatform.desktop && state.matchedLocation == '/talk' ? '/home' : null,
     routes: [
       GoRoute(path: '/connect', pageBuilder: (c, s) => _fade(s, const ConnectScreen())),
       GoRoute(path: '/viewer', pageBuilder: (c, s) => _slideUp(s, const ViewerScreen())),
+      // the robot story (features/story/): from the Home banner, the robot cards, the sheets and Settings
+      GoRoute(path: '/story', builder: (c, s) => const StoryScreen()),
       // the phone: Settings and Memories are pushed pages; the desktop keeps them inside the shell, next to
       // the sidebar (below), and shows what he remembers in Life
       if (!AppPlatform.desktop) GoRoute(path: '/settings', builder: (c, s) => const SettingsScreen()),
@@ -207,7 +213,7 @@ class AppShell extends ConsumerWidget {
           .copyWith(systemNavigationBarColor: Colors.transparent, statusBarColor: Colors.transparent),
       child: Scaffold(
         extendBody: true,
-        body: shell,
+        body: ReminderHost(child: shell), // the 3-day robot reminder, on app open (features/story/push_sheets.dart)
         bottomNavigationBar: Padding(
           padding: EdgeInsets.fromLTRB(16, 0, 16, bottom + 10),
           child: _NavBar(index: shell.currentIndex, items: items, onTap: _go),

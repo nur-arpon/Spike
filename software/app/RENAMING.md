@@ -8,7 +8,7 @@ Renaming the product never touches them, and renaming a character never touches 
 
 | Codebase | File | What it holds |
 |---|---|---|
-| Flutter app (phone + desktop), Windows package, Android label, Store kit | `spike_app/brand.json` | productName, startMenuName, storeName, tagline, publisherDisplayName, copyrightHolder, supportEmail, websiteUrl, privacyPolicyUrl, internalId |
+| Flutter app (phone + desktop), Windows package, Android label, Store kit | `spike_app/brand.json` | productName, startMenuName, storeName, tagline, publisherDisplayName, copyrightHolder, supportEmail, websiteUrl, privacyPolicyUrl, robotWaitlistUrl (the "I want one" Google Form), internalId |
 | Laptop brain | `software/laptop/spike_brain/config/default.toml`, section `[brand]` (`product_name`) | the name in the pairing text and logs |
 | Microsoft Store identity (invisible, permanent) | `spike_app/windows/packaging/identity.json` | Package/Identity/Name and Publisher, copied from Partner Center |
 
@@ -38,7 +38,7 @@ Everything else reads these:
 ## Never rename (permanent identifiers)
 
 Listed in `DESIGN.md` > Desktop > PERMANENT identifiers: the MSIX Package/Identity Name and Publisher, the Android
-applicationId `com.spikebuddy.spike_app`, the internal id `spikebuddy` (data folders, the single-instance mutex,
+applicationId `com.spacez.spike` (and its release signing key, see `ANDROID-RELEASE.md`), the internal id `spikebuddy` (data folders, the single-instance mutex,
 the `spikebuddy/desktop` channel), the Windows app-data folder `com.spikebuddy\spike_app`, the stored-key names
 `spike.ai.<provider>.key` and the other `spike.*` preference keys, and the StartupTask id `SpikeStartup`.
 Changing any of them would make the Store treat it as a different app, or lose every user's saved settings and keys.

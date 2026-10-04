@@ -19,6 +19,7 @@ import '../../state/settings.dart';
 import '../../desktop/desktop_page.dart';
 import '../../desktop/desktop_settings.dart';
 import 'away_settings.dart';
+import '../story/push_copy.dart' show storyTitle;
 
 
 class SettingsScreen extends ConsumerWidget {
@@ -74,7 +75,9 @@ class SettingsScreen extends ConsumerWidget {
               Divider(height: 1, color: p.line),
               ListTile(
                 leading: Icon(Icons.wifi_find_rounded, color: p.accent),
-                title: const Text('Change or pair again'),
+                // the full connect screen (kept from before onboarding v2, which opens straight into exploring)
+                title: Text(s.endpoint == null ? 'Connect to Spike' : 'Connect to Spike, or pair again'),
+                subtitle: const Text('Find his brain on your Wi-Fi, scan a code, or type an address'),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () => context.push('/connect'),
               ),
@@ -195,6 +198,22 @@ class SettingsScreen extends ConsumerWidget {
                   ]),
                 ),
               PillButton(label: 'See or erase what he remembers', icon: Icons.auto_stories_rounded, onTap: () => openPage(context, '/memories')),
+            ]),
+          ),
+          // ------------------------------------------------ the robot story (every size)
+          const SectionHeader("Spike's robot", subtitle: 'The body he is getting'),
+          SpikeCard(
+            onTap: () => context.push('/story'),
+            child: Row(children: [
+              Icon(Icons.smart_toy_rounded, color: p.accent, size: 30),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(storyTitle, style: context.tt.titleMedium),
+                  Text('Who is building him, how it is going, and how to get one', style: context.tt.bodySmall),
+                ]),
+              ),
+              Icon(Icons.chevron_right_rounded, color: p.muted),
             ]),
           ),
           // ------------------------------------------------ about

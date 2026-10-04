@@ -256,7 +256,7 @@ class AwayController extends Notifier<AwayState> {
   }
 
   /// The phone's voice chain (voice_chain.dart): [laptop voice], Gemini natural
-  /// voice when a key is saved, Kokoro when the voice pack is installed, Android's.
+  /// voice when a key is saved, Kokoro when the owner installed the add-on (engine + voice files), Android's.
   Future<void> _applyVoice() async {
     final b = _brain;
     if (b == null) return;
@@ -264,12 +264,15 @@ class AwayController extends Notifier<AwayState> {
       b.voice = SilentVoice();
       return;
     }
+    // Kokoro only once the owner installed the add-on (speaker.dart KokoroPack.ready, kokoro_addon.dart)
+    final engine = kokoroEngine;
     final pack = await voicePack();
-    if (pack.installed) {
+    final useKokoro = engine != null && pack.ready; // voice files AND the add-on engine
+    if (useKokoro) {
       _player ??= AudioPlayer();
-      _kokoro ??= KokoroVoice(pack, _player!);
+      _kokoro ??= engine(pack, _player!);
     }
-    b.voice = VoiceChain.ordered(gemini: _gtts, kokoro: pack.installed ? _kokoro : null, android: AndroidVoice());
+    b.voice = VoiceChain.ordered(gemini: _gtts, kokoro: useKokoro ? _kokoro : null, android: AndroidVoice());
   }
 
   /// Gemini natural voice (step 2 of the owner's voice order), or null with no key.

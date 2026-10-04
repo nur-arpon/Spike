@@ -12,3 +12,6 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+# Spike's PERMANENT release key and its passwords (software/app/ANDROID-RELEASE.md): never committed.
+/keystore/
+/key.properties

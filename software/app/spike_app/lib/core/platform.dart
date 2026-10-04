@@ -35,5 +35,5 @@ class AppPlatform {
   static bool get awayFromHome => phone;
   static bool get qrScanner => phone;
   static bool get haptics => phone;
-  static bool get onDeviceAiPack => phone; // offline brain + Kokoro voice pack (desktop: a later update)
+  static bool get onDeviceAiPack => phone; // offline brain (+ the optional Kokoro add-on, Android only: speaker.dart kokoroVoiceAvailable)
 }

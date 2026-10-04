@@ -19,6 +19,7 @@ import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import '../../state/link.dart';
 import '../../state/settings.dart';
+import '../connect/brain_needed.dart';
 import 'talk_screen.dart' show ChatBubble, ChatIdeas, MicButton, TypingDots;
 
 class ChatPanel extends ConsumerStatefulWidget {
@@ -70,9 +71,10 @@ class _ChatPanelState extends ConsumerState<ChatPanel> {
     super.dispose();
   }
 
-  void _send([String? preset]) {
+  Future<void> _send([String? preset]) async {
     final t = (preset ?? _text.text).trim();
     if (t.isEmpty) return;
+    if (!await ensureBrain(context, ref, reason: BrainReason.talk) || !mounted) return;
     final cmds = ref.read(commandsProvider);
     if (!cmds.connected) {
       showToast(context, 'Spike\'s brain is still starting. Try again in a moment.', icon: Icons.hourglass_top_rounded);

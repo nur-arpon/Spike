@@ -11,29 +11,35 @@ import '../../core/widgets.dart';
 import '../../protocol/messages.dart';
 import '../../protocol/client.dart';
 import '../../state/link.dart';
+import '../connect/brain_needed.dart';
 import '../../state/settings.dart';
 import '../home/mode_switch.dart';
 import '../../desktop/desktop_page.dart';
 import 'memories_screen.dart';
 import 'timers_state.dart';
+import '../story/push_copy.dart';
+import '../story/push_widgets.dart';
 
 class LifeScreen extends ConsumerWidget {
   const LifeScreen({super.key});
 
-  bool _ready(BuildContext context, WidgetRef ref) {
-    if (ref.read(brainClientProvider).away) {
+  /// Alarms are kept by the computer's brain only. Paired but away from it: say so. Never paired (or
+  /// still exploring): the one friendly ask (features/connect/brain_needed.dart) to link a computer.
+  Future<bool> _ready(BuildContext context, WidgetRef ref) async {
+    if (ref.read(brainClientProvider).away && ref.read(settingsProvider).endpoint != null) {
       Haptics.error();
       showToast(context, 'Alarms live on his home brain. Set them when you are home.', icon: Icons.home_rounded);
       return false;
     }
+    if (!await ensureBrain(context, ref, reason: BrainReason.alarms) || !context.mounted) return false;
     if (ref.read(commandsProvider).connected) return true;
     Haptics.error();
-    showToast(context, 'Connect Spike first. His brain keeps the alarms.', icon: Icons.wifi_off_rounded);
+    showToast(context, 'Spike is still waking up. Try again in a moment.', icon: Icons.hourglass_top_rounded);
     return false;
   }
 
   Future<void> _addAlarm(BuildContext context, WidgetRef ref) async {
-    if (!_ready(context, ref)) return;
+    if (!await _ready(context, ref) || !context.mounted) return;
     final now = DateTime.now();
     final t = await showTimePicker(
       context: context,
@@ -52,7 +58,7 @@ class LifeScreen extends ConsumerWidget {
   }
 
   Future<void> _addReminder(BuildContext context, WidgetRef ref) async {
-    if (!_ready(context, ref)) return;
+    if (!await _ready(context, ref) || !context.mounted) return;
     // desktop: a dialog in the middle of the window (a bottom sheet is a phone idiom)
     final r = AppPlatform.desktop
         ? await showDialog<(String, DateTime)>(
@@ -87,8 +93,8 @@ class LifeScreen extends ConsumerWidget {
     final timers = ref.watch(timersProvider);
     final connected = ref.watch(linkStatusProvider.select((s) => s.value?.isConnected ?? false));
     final name = settings.nameFor(spike.mode);
-    void quick(bool alarm, Duration? inTime, TimeOfDay? at, String label) {
-      if (!_ready(context, ref)) return;
+    Future<void> quick(bool alarm, Duration? inTime, TimeOfDay? at, String label) async {
+      if (!await _ready(context, ref) || !context.mounted) return;
       final now = DateTime.now();
       final when = at != null ? nextAt(at.hour, at.minute, now) : now.add(inTime!);
       final cmds = ref.read(commandsProvider);
@@ -136,8 +142,8 @@ class LifeScreen extends ConsumerWidget {
                     key: ValueKey(t.id),
                     t: t,
                     live: connected && timers.synced,
-                    onCancel: () {
-                      if (!_ready(context, ref)) return;
+                    onCancel: () async {
+                      if (!await _ready(context, ref)) return;
                       ref.read(commandsProvider).cancelTimer(t.id);
                     },
                   ),
@@ -266,8 +272,8 @@ class LifeScreen extends ConsumerWidget {
                   child: _TimerTile(
                     t: t,
                     live: connected && timers.synced,
-                    onCancel: () {
-                      if (!_ready(context, ref)) return;
+                    onCancel: () async {
+                      if (!await _ready(context, ref)) return;
                       Haptics.confirm();
                       ref.read(commandsProvider).cancelTimer(t.id);
                     },
@@ -313,6 +319,7 @@ class LifeScreen extends ConsumerWidget {
                 ),
               ]),
             ),
+            if (pushVisible) ...[const SizedBox(height: 18), const RobotCard(tab: PushTab.life)],
           ],
         ),
       ),

@@ -163,7 +163,7 @@ class _ConnectScreenState extends ConsumerState<ConnectScreen> {
               for (final (i, ep) in disc.found.indexed)
                 Entrance(
                   index: i,
-                  child: _EndpointTile(
+                  child: EndpointTile(
                     ep: PairingSync.withKnownToken(ep, ref.watch(settingsProvider)),
                     icon: Icons.wifi_rounded,
                     onTap: () => _connect(PairingSync.withKnownToken(ep, ref.read(settingsProvider))),
@@ -172,7 +172,7 @@ class _ConnectScreenState extends ConsumerState<ConnectScreen> {
             if (recent.isNotEmpty) ...[
               const SectionHeader('Recent'),
               for (final (i, ep) in recent.indexed)
-                Entrance(index: i, child: _EndpointTile(ep: ep, icon: Icons.history_rounded, onTap: () => _connect(ep))),
+                Entrance(index: i, child: EndpointTile(ep: ep, icon: Icons.history_rounded, onTap: () => _connect(ep))),
             ],
             const SizedBox(height: 10),
             SpikeCard(
@@ -351,8 +351,8 @@ class _StatusBanner extends StatelessWidget {
   }
 }
 
-class _EndpointTile extends StatelessWidget {
-  const _EndpointTile({required this.ep, required this.icon, required this.onTap});
+class EndpointTile extends StatelessWidget {
+  const EndpointTile({super.key, required this.ep, required this.icon, required this.onTap});
   final BrainEndpoint ep;
   final IconData icon;
   final VoidCallback onTap;
