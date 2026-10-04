@@ -1,0 +1,34 @@
+{
+  "_readme": "Names, links and statuses for the whole website. Mirror of software/app/spike_app/brand.json for the names. See docs/UPDATING.md.",
+
+  "brand": {
+    "productName": "Spike",
+    "storeName": "Spike - your personal desktop companion",
+    "tagline": "your personal desktop companion",
+    "publisher": "SpaceZ",
+    "developer": "Nur Ifran Arpon",
+    "companionName": "Spicy",
+    "robotName": "Desk Buddy"
+  },
+
+  "links": {
+    "store": "https://apps.microsoft.com/detail/9N9TG975NJ6N",
+    "github": "https://github.com/nur-arpon/Spike",
+    "issues": "https://github.com/nur-arpon/Spike/issues",
+    "privacy": "privacy-policy.html"
+  },
+
+  "status": {
+    "windows": { "label": "On the Microsoft Store", "state": "live", "version": "1.0.1" },
+    "android": { "label": "Android app in testing", "state": "soon" },
+    "robot": { "label": "Prototype, building now", "state": "build" }
+  },
+
+  "robotBuild": [
+    { "title": "Designed", "text": "Body v3.2 modelled and checked: 56 printed parts, every servo and wire hidden, no clashes.", "state": "done" },
+    { "title": "Firmware", "text": "Both ESP32-S3 boards: face, body control, gait, sensors and the link to his brain.", "state": "done" },
+    { "title": "Parts and printing", "text": "Gathering the electronics and printing the first full shell.", "state": "now" },
+    { "title": "First assembly", "text": "Putting the first Spike together and running the day-one tests.", "state": "next" },
+    { "title": "First steps", "text": "Tuning the walk and give paw on the real body.", "state": "next" }
+  ]
+}

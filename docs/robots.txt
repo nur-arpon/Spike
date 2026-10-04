@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /Spike/robot-3d.html
+
+Sitemap: https://nur-arpon.github.io/Spike/sitemap.xml

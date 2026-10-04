@@ -1,31 +1,213 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spike by SpaceZ</title>
-<style>
-  :root { --bg: #fffaf3; --ink: #2b1d14; --muted: #6b5646; --accent: #b86f45; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #1b1410; --ink: #f6eadb; --muted: #c2ab97; --accent: #d9956a; } }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 "Segoe UI", system-ui, sans-serif; }
-  main { max-width: 720px; margin: 0 auto; padding: 56px 16px 64px; }
-  h1 { font-size: 36px; margin: 0 0 4px; }
-  .muted { color: var(--muted); }
-  a { color: var(--accent); }
-  ul { padding-left: 20px; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spike - your personal desktop companion</title>
+<meta name="description" content="Spike is a cheeky little dog who talks with you, remembers what you tell him and keeps your alarms. Free for Windows, with a phone app in testing and a desk robot on the way.">
+<link rel="canonical" href="https://nur-arpon.github.io/Spike/">
+<meta name="theme-color" content="#FBF5EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15100C" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Spike">
+<meta property="og:title" content="Spike - your personal desktop companion">
+<meta property="og:description" content="Spike is a cheeky little dog who talks with you, remembers what you tell him and keeps your alarms. Free for Windows, with a phone app in testing and a desk robot on the way.">
+<meta property="og:url" content="https://nur-arpon.github.io/Spike/">
+<meta property="og:image" content="https://nur-arpon.github.io/Spike/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Spike, a small cream and caramel robot dog with a screen face, beside the Spike logo">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Spike - your personal desktop companion">
+<meta name="twitter:description" content="Spike is a cheeky little dog who talks with you, remembers what you tell him and keeps your alarms. Free for Windows, with a phone app in testing and a desk robot on the way.">
+<meta name="twitter:image" content="https://nur-arpon.github.io/Spike/assets/img/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&amp;family=Inter:wght@400..700&amp;display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
-<main>
-<h1>Spike</h1>
-<p class="muted">Your personal desktop companion, by SpaceZ.</p>
-<p>Spike is a desk robot dog with a face, a memory and a personality, and the phone and Windows apps that
-bring him to life. His brain runs on your own computer.</p>
-<ul>
-  <li><a href="privacy-policy.html">Privacy policy</a></li>
-  <li><a href="https://github.com/nur-arpon/Spike">Source (view only, all rights reserved)</a></li>
-</ul>
-<p class="muted">Made by Nur Ifran Arpon &middot; SpaceZ. &copy; 2026 Nur Ifran Arpon. All rights reserved.</p>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="./" aria-label="Spike home"><img src="assets/img/logo.svg" alt="" width="36" height="36"><span class="brand-name" data-brand="productName">Spike</span></a>
+    <nav class="nav-links" aria-label="Main"><a href="meet-spike.html">Meet Spike</a><a href="robot.html">The Robot</a><a href="app.html">The App</a><a href="updates.html">Updates</a></nav>
+    <a class="btn btn--primary btn--sm nav-cta" data-link="store" href="https://apps.microsoft.com/detail/9N9TG975NJ6N" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M3 5.6 10.2 4.6v6.9H3zM11.1 4.5 21 3v8.5h-9.9zM3 12.4h7.2v6.9L3 18.4zM11.1 12.4H21V21l-9.9-1.4z"/></svg>Get the app</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu"><svg class="i-open" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="i-close" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Main (mobile)"><a href="meet-spike.html">Meet Spike <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a href="robot.html">The Robot <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a href="app.html">The App <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a href="updates.html">Updates <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn btn--primary btn--store" data-link="store" href="https://apps.microsoft.com/detail/9N9TG975NJ6N" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M3 5.6 10.2 4.6v6.9H3zM11.1 4.5 21 3v8.5h-9.9zM3 12.4h7.2v6.9L3 18.4zM11.1 12.4H21V21l-9.9-1.4z"/></svg><span class="store-text"><small>Get it on</small><span>Microsoft Store</span></span></a></nav>
+</header>
+<main id="main">
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Your personal desktop companion</span>
+      <h1 class="display">A little dog with a <em>big</em> personality.</h1>
+      <p class="lead"><span data-brand="productName">Spike</span> talks with you, remembers what you tell him, keeps your alarms and teases you just enough. He lives on your Windows PC today, comes with you on your phone, and is getting a body of his own.</p>
+      <div class="btn-row">
+        <a class="btn btn--primary btn--store" data-link="store" href="https://apps.microsoft.com/detail/9N9TG975NJ6N" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M3 5.6 10.2 4.6v6.9H3zM11.1 4.5 21 3v8.5h-9.9zM3 12.4h7.2v6.9L3 18.4zM11.1 12.4H21V21l-9.9-1.4z"/></svg><span class="store-text"><small>Get it on</small><span>Microsoft Store</span></span></a>
+        <a class="btn btn--ghost" href="meet-spike.html">Meet Spike</a>
+      </div>
+      <div class="hero-meta" aria-label="Where Spike is today">
+        <span class="pill pill--live" data-status="windows">On the Microsoft Store</span>
+        <span class="pill pill--soon" data-status="android">Android app in testing</span>
+        <span class="pill pill--build" data-status="robot">Prototype, building now</span>
+      </div>
+    </div>
+    <div class="stage-wrap" data-stage>
+    <div class="stage">
+      <picture class="stage-img" data-state="face"><source media="(prefers-color-scheme: dark)" srcset="assets/img/robot/hero-dark.webp"><img src="assets/img/robot/hero.webp" width="1400" height="1400" alt="Spike, a cream and caramel robot dog, his screen face smiling up at you" fetchpriority="high"></picture>
+      <picture class="stage-img is-hidden" data-state="asleep"><source media="(prefers-color-scheme: dark)" srcset="assets/img/robot/hero-asleep-dark.webp"><img src="assets/img/robot/hero-asleep.webp" width="1400" height="1400" alt="Spike asleep, his screen face showing closed eyes" loading="lazy"></picture>
+      <picture class="stage-img is-hidden" data-state="off"><source media="(prefers-color-scheme: dark)" srcset="assets/img/robot/hero-off-dark.webp"><img src="assets/img/robot/hero-off.webp" width="1400" height="1400" alt="Spike with his screen switched off: the ears, the forehead tuft and the collar tag still say dog" loading="lazy"></picture>
+    </div>
+      <div class="stage-controls" role="group" aria-label="Show Spike's screen">
+        <button type="button" data-show="face" aria-pressed="true">Awake</button>
+        <button type="button" data-show="asleep" aria-pressed="false">Asleep</button>
+        <button type="button" data-show="off" aria-pressed="false">Screen off</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint" aria-labelledby="ways-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Three ways to have him</span>
+      <h2 class="h2" id="ways-title">One Spike, wherever you are.</h2>
+      <p class="lead">The same character, the same memory and the same jokes on your computer, on your phone and on your desk.</p>
+    </div>
+    <div class="grid grid-3 ways">
+      <a class="card card--link way reveal" href="app.html">
+        <div class="way-media way-media--shot"><img src="assets/img/app/desktop-home.webp" width="1600" height="900" alt="Spike for Windows: his face beside the chat" loading="lazy"></div>
+        <div class="way-body">
+          <span class="pill pill--live" data-status="windows">On the Microsoft Store</span>
+          <h3 class="h3">On your Windows PC</h3>
+          <p>Talk or type while you work. His brain runs right there on your computer.</p>
+          <span class="card-arrow">The app <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+      <a class="card card--link way reveal" href="app.html#phone">
+        <div class="way-media way-media--phone"><img src="assets/img/app/phone-home.webp" width="720" height="1473" alt="The Spike phone app, home screen" loading="lazy"></div>
+        <div class="way-body">
+          <span class="pill pill--soon" data-status="android">Android app in testing</span>
+          <h3 class="h3">On your phone</h3>
+          <p>Pair with a code, reach him from anywhere, and drive the robot from the sofa.</p>
+          <span class="card-arrow">The phone app <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+      <a class="card card--link way reveal" href="robot.html">
+        <div class="way-media"><img src="assets/img/robot/front.webp" width="1600" height="1200" alt="The Spike robot from the front" loading="lazy"></div>
+        <div class="way-body">
+          <span class="pill pill--build" data-status="robot">Prototype, building now</span>
+          <h3 class="h3">On your desk</h3>
+          <p>A small four-legged robot whose face is a 4.3-inch screen. He drives, sits, bows and wags.</p>
+          <span class="card-arrow">The robot <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="feat-title">
+  <div class="container">
+    <div class="split">
+      <div class="split-copy reveal">
+        <span class="eyebrow">Meet Spike</span>
+        <h2 class="h2" id="feat-title">Cheeky when you're fine. <em>Gentle</em> when you're not.</h2>
+        <p class="lead">He is a character, not a chatbot. He jokes, he roasts, he notices when you've had a long day, and his friend Spicy the cat is one click away.</p>
+        <ul class="ticks">
+          <li><span><strong>Talk or type.</strong> Press Space and talk, or just start typing.</span></li>
+          <li><span><strong>He remembers.</strong> Your tea, your cat's name, Friday's exam. Forget anything with a click.</span></li>
+          <li><span><strong>Alarms with attitude.</strong> Yips, then barks, then jokes until you're up.</span></li>
+          <li><span><strong>Yours to design.</strong> Every feature, colour and size in the Face Studio.</span></li>
+        </ul>
+        <a class="btn btn--ghost" href="meet-spike.html">Everything he does</a>
+      </div>
+      <div class="split-media reveal">
+        <div class="shot shot--window"><img src="assets/img/app/desktop-studio.webp" width="1600" height="900" alt="The Face Studio in Spike for Windows: a live preview of his face with moods, starting faces and save slots" loading="lazy"></div>
+      </div>
+    </div>
+
+    <div class="split split--flip">
+      <div class="split-copy reveal">
+        <span class="eyebrow">The robot</span>
+        <h2 class="h2">One face, and a tuft of fur that hides his camera.</h2>
+        <p class="lead">The screen draws his eyes, nose and mouth. Above it, a little caramel cowlick in the middle of his forehead hides the camera lens. It is his signature.</p>
+        <a class="btn btn--ghost" href="robot.html">See the robot</a>
+      </div>
+      <div class="split-media reveal">
+        <div class="frame frame--stage"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/img/robot/close-dark.webp"><img src="assets/img/robot/close.webp" width="1600" height="1200" alt="Close-up of Spike's head: the screen face, the forehead tuft and the collar tag" loading="lazy"></picture></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight" aria-labelledby="privacy-title">
+  <div class="container">
+    <div class="band reveal">
+      <img class="band-logo" src="assets/img/logo.svg" alt="" width="340" height="340">
+      <div class="band-grid">
+        <div style="display:grid;gap:18px;justify-items:start">
+          <span class="eyebrow">Private by design</span>
+          <h2 class="h2" id="privacy-title">His brain lives on your computer.</h2>
+          <p>What Spike remembers, your alarms and your settings stay on your own machine. There is no account to make and nothing to sign up for.</p>
+          <a class="btn btn--ghost" href="privacy-policy.html">Read the privacy policy</a>
+        </div>
+        <ul class="ticks">
+          <li><span><strong>No account, no ads, no tracking.</strong> SpaceZ runs no servers for the app and collects nothing.</span></li>
+          <li><span><strong>Your voice stays home.</strong> Speech is turned into words on your computer and never recorded.</span></li>
+          <li><span><strong>Your key, your choice.</strong> To think and speak he uses Google's Gemini with your own free key, and only the words of your chat go there.</span></li>
+          <li><span><strong>Forget anything.</strong> See everything he remembers, and erase one thing or all of it.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="latest-title">
+  <div class="container">
+    <div class="section-head reveal" style="grid-template-columns:1fr auto;align-items:end;max-width:none">
+      <div style="display:grid;gap:16px"><span class="eyebrow">Updates</span><h2 class="h2" id="latest-title">What's new</h2></div>
+      <a class="btn btn--ghost btn--sm" href="updates.html">All updates</a>
+    </div>
+    <div class="latest" id="latest-updates" aria-live="polite"></div>
+    <noscript><p><a href="updates.html">See all updates</a></p></noscript>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container cta reveal">
+    <img class="cta-logo" src="assets/img/logo.svg" alt="" width="88" height="88">
+    <h2 class="h2">Say hi to <span data-brand="productName">Spike</span>.</h2>
+    <p class="lead">Free for Windows 10 and 11. Bring a free Gemini key from Google AI Studio; the app shows you how.</p>
+    <a class="btn btn--primary btn--store" data-link="store" href="https://apps.microsoft.com/detail/9N9TG975NJ6N" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M3 5.6 10.2 4.6v6.9H3zM11.1 4.5 21 3v8.5h-9.9zM3 12.4h7.2v6.9L3 18.4zM11.1 12.4H21V21l-9.9-1.4z"/></svg><span class="store-text"><small>Get it on</small><span>Microsoft Store</span></span></a>
+  </div>
+</section>
+
 </main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="./" aria-label="Spike home"><img src="assets/img/logo.svg" alt="" width="36" height="36"><span class="brand-name" data-brand="productName">Spike</span></a>
+        <p><span data-brand="storeName">Spike - your personal desktop companion</span>. A cheeky little dog for your desktop, your phone and, soon, your desk.</p>
+      </div>
+      <div class="footer-cols">
+        <div><h2>Spike</h2><ul><li><a href="meet-spike.html">Meet Spike</a></li><li><a href="robot.html">The Robot</a></li><li><a href="app.html">The App</a></li><li><a href="updates.html">Updates</a></li></ul></div>
+        <div><h2>Get him</h2><ul><li><a data-link="store" href="https://apps.microsoft.com/detail/9N9TG975NJ6N" rel="noopener">Microsoft Store</a></li><li><a href="app.html#phone">Android (in testing)</a></li></ul></div>
+        <div><h2>About</h2><ul><li><a href="privacy-policy.html">Privacy policy</a></li><li><a data-link="github" href="https://github.com/nur-arpon/Spike" rel="noopener">GitHub</a></li><li><a data-link="issues" href="https://github.com/nur-arpon/Spike/issues" rel="noopener">Questions and feedback</a></li></ul></div>
+      </div>
+    </div>
+    <div class="footer-base">
+      <p>Made by <span data-brand="developer">Nur Ifran Arpon</span> &middot; <span data-brand="publisher">SpaceZ</span></p>
+      <p>&copy; 2026 Nur Ifran Arpon. Source available for viewing only &mdash; all rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/site.js" defer></script>
 </body>
 </html>
