@@ -549,6 +549,8 @@ ul, ol { margin: 0; padding: 0; }
 .footer-cols a { color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
 .footer-cols a:hover { color: var(--ink); text-decoration: underline; }
 .footer-base { display: grid; gap: 8px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 0.8125rem; color: var(--ink-3); }
+.footer-base a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
+.footer-base a:hover { color: var(--ink); }
 @media (min-width: 600px) { .footer-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1024px) {
   .footer-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 80px; }
