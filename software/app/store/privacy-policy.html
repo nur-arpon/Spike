@@ -22,12 +22,13 @@
 <body>
 <main>
 <h1>Spike privacy policy</h1>
-<p class="muted">Spike - your personal desktop companion, by SpaceZ. Version 1.0.0. Last updated 30 September 2026.</p>
+<p class="muted">Spike - your personal desktop companion, by SpaceZ. Version 1.0.0. Last updated 4 October 2026.</p>
 
 <p>Spike is a desktop companion. This policy explains what the Windows app (and the Spike phone app and robot
 when you pair them) does with your information. The short version: his brain runs on your own computer, the
 words of your conversation go to Google's Gemini so he can think and speak, and nothing else leaves your
-devices. There is no account, no advertising and no tracking.</p>
+devices, apart from two small things on the Android app that are named under "Your phone and the robot". There is no account, no advertising
+and no tracking.</p>
 
 <h2>What stays on your computer</h2>
 <ul>
@@ -57,9 +58,15 @@ is answered on your computer with help-line information and is not sent to Googl
 <p>When you pair the Spike phone app or robot, they talk to the brain on your computer over your home network,
 protected by a pairing code. If you choose to use Tailscale to reach him away from home, that connection runs
 through your own Tailscale account under Tailscale's privacy policy.</p>
+<p>The Android app has a scanner for the pairing code. It uses Google's ML Kit, which runs on your phone. Google
+says ML Kit may send it anonymous performance and usage information about the scanner, such as how fast it
+worked. No pictures and no codes are sent. Google explains this in its <a href="https://developers.google.com/ml-kit/android-data-disclosure" rel="noopener">ML Kit data disclosure</a>.</p>
+<p>The Android app can also add an optional offline voice, so Spike can still talk when his brain is out of reach.
+It is downloaded only if you tap to add it. The files come straight from the open-source sherpa-onnx project on
+GitHub and from the model pages of the Kokoro voice, not from SpaceZ. Nothing about you is sent with the download.</p>
 
 <h2>What we collect</h2>
-<p>Nothing. SpaceZ runs no servers for this app, collects no analytics, crash reports, identifiers or
+<p>Nothing, apart from the scanner information described above, which goes from Google's code on your phone to Google, not to SpaceZ. SpaceZ runs no servers for this app, collects no analytics, crash reports, identifiers or
 usage data, and shows no ads. Microsoft may collect data about the installation under its own privacy
 statement.</p>
 

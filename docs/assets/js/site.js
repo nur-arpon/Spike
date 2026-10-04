@@ -101,6 +101,9 @@
       el.className = el.className.replace(/\bpill--\w+/g, "").trim() + " pill--" + s.state;
     });
     $all("[data-version]").forEach(function (el) { var s = d.status[el.getAttribute("data-version")]; if (s && s.version) el.textContent = s.version; });
+    ["size", "sha256"].forEach(function (k) {
+      $all("[data-" + k + "]").forEach(function (el) { var s = d.status[el.getAttribute("data-" + k)]; if (s && s[k]) el.textContent = s[k]; });
+    });
     var build = $("#robot-build");
     if (build && d.robotBuild) {
       build.style.setProperty("--n", d.robotBuild.length);

@@ -46,6 +46,7 @@ run `python -m json.tool docs/data/updates.json`.
 All in `data/site.json`:
 
 - `status.windows.version` - the version shown on The App page (for example `1.0.2`).
+- `links.android`, `status.android.version`, `.size`, `.sha256` - a new Android release: upload the file to GitHub Releases, then change these four values (the download link, version, size and checksum on `app.html` and Home update from them) and add an update entry. Search the `docs` folder for the old version number in the page text too.
 - `status.android` - when the phone app reaches Google Play, change it to
   `{ "label": "On Google Play", "state": "live" }`, then update the wording on `app.html` (the "Not on
   Google Play yet" line and the phone section) and add a Play link.

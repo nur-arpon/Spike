@@ -3,6 +3,14 @@
   "updates": [
     {
       "date": "2026-10-04",
+      "tag": "App",
+      "title": "Spike is on Android",
+      "text": "Spike 1.0.3 for Android is ready to download, for 64-bit phones. He opens straight into exploring: Face Studio, his face, pats and boops. To talk, remember, play and drive the robot he needs his brain, either a free Google Gemini key or a pairing code from Spike on a Windows PC. It is not on Google Play yet, so the page shows how to install it.",
+      "link": "app.html#phone",
+      "linkText": "Get the Android app"
+    },
+    {
+      "date": "2026-10-04",
       "tag": "Website",
       "title": "Spike has a home on the web",
       "text": "This site: what Spike is, the robot he is getting, the apps, and every update from here on.",

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Spike for Windows and Android - the Spike app</title>
-<meta name="description" content="Spike for Windows is free on the Microsoft Store: chat, memory, alarms, Face Studio and robot control, with his brain on your own PC. The Android app is in testing.">
+<meta name="description" content="Spike for Windows is free on the Microsoft Store, and Spike for Android is a download: chat, memory, Face Studio and robot control, with his brain on your own PC or a free Gemini key.">
 <link rel="canonical" href="https://nur-arpon.github.io/Spike/app.html">
 <meta name="theme-color" content="#FBF5EC" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#15100C" media="(prefers-color-scheme: dark)">
@@ -15,7 +15,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Spike">
 <meta property="og:title" content="Spike for Windows and Android - the Spike app">
-<meta property="og:description" content="Spike for Windows is free on the Microsoft Store: chat, memory, alarms, Face Studio and robot control, with his brain on your own PC. The Android app is in testing.">
+<meta property="og:description" content="Spike for Windows is free on the Microsoft Store, and Spike for Android is a download: chat, memory, Face Studio and robot control, with his brain on your own PC or a free Gemini key.">
 <meta property="og:url" content="https://nur-arpon.github.io/Spike/app.html">
 <meta property="og:image" content="https://nur-arpon.github.io/Spike/assets/img/og.png">
 <meta property="og:image:width" content="1200">
@@ -23,7 +23,7 @@
 <meta property="og:image:alt" content="Spike, a small cream and caramel robot dog with a screen face, beside the Spike logo">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Spike for Windows and Android - the Spike app">
-<meta name="twitter:description" content="Spike for Windows is free on the Microsoft Store: chat, memory, alarms, Face Studio and robot control, with his brain on your own PC. The Android app is in testing.">
+<meta name="twitter:description" content="Spike for Windows is free on the Microsoft Store, and Spike for Android is a download: chat, memory, Face Studio and robot control, with his brain on your own PC or a free Gemini key.">
 <meta name="twitter:image" content="https://nur-arpon.github.io/Spike/assets/img/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -111,16 +111,32 @@
   <div class="container">
     <div class="split split--flip">
       <div class="split-copy reveal">
-        <span class="pill pill--soon" data-status="android">Android app in testing</span>
+        <span class="pill pill--live" data-status="android">Android: download the app</span>
         <h2 class="h2" id="phone-title">Spike on your phone.</h2>
-        <p class="lead">The Android app is in testing now. It pairs with Spike on your computer by scanning a code, and brings him with you.</p>
+        <p class="lead">Spike for Android is ready to download. Open it and he is straight there: his face, Face Studio, a pat, a boop.</p>
+        <div class="dl">
+          <a class="btn btn--primary btn--store" data-link="android" href="https://github.com/nur-arpon/Spike/releases/download/android-v1.0.3/Spike_1.0.3_android_arm64.apk" rel="noopener" download><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path fill-rule="evenodd" d="M4 18a8 8 0 0 1 16 0zM9 14.6a1.1 1.1 0 1 0 0-2.2 1.1 1.1 0 0 0 0 2.2zm6 0a1.1 1.1 0 1 0 0-2.2 1.1 1.1 0 0 0 0 2.2z"/><path d="M7.6 8 6 5.4M16.4 8 18 5.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></svg><span class="store-text"><small>Download for</small><span>Android</span></span></a>
+          <p class="dl-meta">Version <span data-version="android">1.0.3</span> &middot; <span data-size="android">96 MB</span> &middot; Android 64-bit phones only</p>
+        </div>
         <ul class="ticks">
-          <li><span><strong>Talk from anywhere.</strong> At home on your Wi-Fi, or anywhere else with Tailscale.</span></li>
-          <li><span><strong>His voice, his memory.</strong> The same Spike as on your computer.</span></li>
-          <li><span><strong>A small brain of his own</strong> for when your computer is off.</span></li>
-          <li><span><strong>Robot remote.</strong> Set up the robot's Wi-Fi, drive him, and see what he sees.</span></li>
+          <li><span><strong>Explore straight away.</strong> Face Studio, his face, pats and boops, with nothing to set up.</span></li>
+          <li><span><strong>To talk, remember, play, do tricks or drive the robot, he needs his brain.</strong> Paste a free Google Gemini key in the app, or scan the pairing code from Spike on a Windows PC.</span></li>
+          <li><span><strong>Alarms need the PC.</strong> They are kept by Spike on your computer.</span></li>
+          <li><span><strong>An optional backup voice.</strong> In Settings you can choose to download an offline voice, from the open-source sherpa-onnx project, not from SpaceZ.</span></li>
         </ul>
-        <p class="muted small">Not on Google Play yet. Updates here will say when it is.</p>
+        <details class="install">
+          <summary>How to install it</summary>
+          <ol class="steps">
+            <li>On your phone, tap the Download button and save the file.</li>
+            <li>Open the file when it finishes.</li>
+            <li>If Android asks, allow installs from your browser. It is called &ldquo;Install unknown apps&rdquo;.</li>
+            <li>If Google Play Protect warns about an unknown app, tap &ldquo;More details&rdquo;, then &ldquo;Install anyway&rdquo;.</li>
+            <li>Open Spike.</li>
+          </ol>
+          <p class="small muted"><strong>To update,</strong> download the newer file and install it over the top. Your data stays.</p>
+          <p class="small muted">Want to check the download? Its SHA-256 is <code data-sha256="android">f6dfbdacb085be0418d3be5e400493fd590e82b1c10b9a26a9da9297f43d16dd</code></p>
+        </details>
+        <p class="muted small">Spike is not on Google Play yet, so Google has not scanned it. That is why Android warns you. All releases are on <a data-link="releases" href="https://github.com/nur-arpon/Spike/releases" rel="noopener">GitHub</a>.</p>
       </div>
       <div class="split-media reveal">
         <div class="phones">
@@ -162,7 +178,7 @@
       </div>
       <div class="footer-cols">
         <div><h2>Spike</h2><ul><li><a href="meet-spike.html">Meet Spike</a></li><li><a href="robot.html">The Robot</a></li><li><a href="app.html">The App</a></li><li><a href="updates.html">Updates</a></li></ul></div>
-        <div><h2>Get him</h2><ul><li><a data-link="store" href="https://apps.microsoft.com/detail/9N9TG975NJ6N" rel="noopener">Microsoft Store</a></li><li><a href="app.html#phone">Android (in testing)</a></li></ul></div>
+        <div><h2>Get him</h2><ul><li><a data-link="store" href="https://apps.microsoft.com/detail/9N9TG975NJ6N" rel="noopener">Microsoft Store</a></li><li><a href="app.html#phone">Android (download)</a></li></ul></div>
         <div><h2>About</h2><ul><li><a href="privacy-policy.html">Privacy policy</a></li><li><a data-link="github" href="https://github.com/nur-arpon/Spike" rel="noopener">GitHub</a></li><li><a data-link="issues" href="https://github.com/nur-arpon/Spike/issues" rel="noopener">Questions and feedback</a></li></ul></div>
       </div>
     </div>
