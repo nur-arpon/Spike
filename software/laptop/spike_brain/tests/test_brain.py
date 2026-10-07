@@ -290,11 +290,24 @@ async def test_spicy_ignores_a_trick_then_does_it(rig):
 ])
 async def test_body_action_voice_commands(rig, phrase, action):
     brain, robot, _ = rig
+    for c in brain.server.clients.values():          # v1.9: this robot announced walk / paw (gait enable on)
+        c.caps |= {"walk", "paw"}
     await robot.send("text", text=phrase)
     act = await robot.pump(lambda m: m["type"] == "action", 6)
     assert act["action"] == action
     say = await robot.pump(lambda m: m["type"] == "say" and m["text"], 4)
     assert say is not None                            # tricks still say "Ta-da!" (owner decision)
+
+
+@pytest.mark.parametrize("phrase", ["walk", "give paw"])
+async def test_body_actions_stay_in_development_without_the_caps(rig, phrase):
+    """v1.9 capability rule: no walk / paw caps in the robot's hello -> nothing is sent, Spike explains."""
+    brain, robot, _ = rig
+    start = len(robot.seen)
+    await robot.send("text", text=phrase)
+    say = await robot.pump(lambda m: m["type"] == "say" and m["text"], 6)
+    assert say is not None and "learning" in say["text"]
+    assert not any(m["type"] == "action" and m["action"] in ("walk", "paw") for m in robot.seen[start:])
 
 
 async def test_model_failure_falls_back_to_a_scripted_line(rig):

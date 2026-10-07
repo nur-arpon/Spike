@@ -57,7 +57,7 @@ def test_service_info_never_carries_the_token():
     info = adv._service_info("192.168.1.20")
     props = {k.decode(): (v.decode() if v else v) for k, v in info.properties.items()}
     assert info.type == D.SERVICE_TYPE and info.port == 8765
-    assert props["name"] == "Spike" and props["token"] == "1" and props["v"] == "1" and props["pv"] == "1.2"
+    assert props["name"] == "Spike" and props["token"] == "1" and props["v"] == "1" and props["pv"] == "1.10"
     assert all("secret" not in str(v) for v in props.values())
     assert socket.inet_ntoa(info.addresses[0]) == "192.168.1.20"
 

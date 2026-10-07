@@ -25,7 +25,7 @@ from . import __version__
 from . import discovery
 from . import protocol as P
 from .applink import AppLink
-from .capabilities import is_available, unavailable_line
+from .capabilities import in_development_line, is_available, unavailable_line
 from .config import Persona, Settings
 from .hearing.wake import WakeMatcher
 from .life import timeparse
@@ -202,6 +202,18 @@ class Brain:
         # v1.8: the owner's Gemini voice style per character (desktop light brain; kept in app_prefs.json)
         from .speech.gemini_tts import VoicePicks
         self.voice_picks = VoicePicks(self.app.prefs.get("voice_styles") or {})
+        # v1.9 thinking cue (PROTOCOL.md 5.6): at most one per turn, only when the reply is slow
+        self.turn_seq = 0                         # +1 per owner turn
+        self._turn_spoke = 0                      # the last turn whose reply started speaking
+        self._cue_turn = 0                        # the last turn that got its cue
+        self._cue_handle: asyncio.TimerHandle | None = None
+        self.cues_sent = 0
+        self.last_wave_line = -1e9                # v1.9 gesture: the last spoken answer to a hand wave
+        # B3 watchdogs (DESIGN.md "Watchdogs"): a stuck turn is cancelled, a stalled event loop is logged
+        self.watchdog_trips = 0
+        self._loop_tick = time.monotonic()
+        self._loop_dog: threading.Thread | None = None
+        self._loop_dog_stop = threading.Event()
 
     # ------------------------------------------------------------------ helpers
     @property
@@ -247,7 +259,28 @@ class Brain:
                  "voice_source": True}                    # v1.7: understands `voice_source`
         if self._gemini_voice():
             hello["voice_style"] = self.voice_picks.as_dict()   # v1.8: speaks with Gemini TTS, takes `voice_style`
+        hello["robot_tools"] = True               # v1.9: relays diag_get / calib / cam_config (PROTOCOL.md 12)
         return hello
+
+    def robot_can(self, cap: str) -> bool:
+        """A connected robot board (or simulator) announced `cap` in its hello (v1.9 caps, PROTOCOL.md 4.1).
+        Phones do not count: they mirror the face, they are not the body."""
+        return any(c.has(cap) for c in self.server.clients.values() if c.role not in ("app", "tool"))
+
+    def robot_is_v4(self) -> bool:
+        """A connected robot board announced hw "v4" (v1.10) and speaks protocol 1.10 or newer."""
+        return any(c.hw == P.HW_V4 and P.pv_at_least(c.pv, "1.10")
+                   for c in self.server.clients.values() if c.role not in ("app", "tool"))
+
+    def can_do_action(self, action: str) -> bool:
+        """v1.9 / v1.10 capability gate for body actions (PROTOCOL.md 4.1, 5.2). Other actions: always."""
+        if action in P.BODY_ACTIONS:
+            return self.robot_can(action)
+        if action == "stand":
+            return self.robot_is_v4()
+        if action in P.V4_ACTION_CAPS:
+            return self.robot_can(P.V4_ACTION_CAPS[action])
+        return True
 
     def _gemini_voice(self) -> bool:
         """This brain speaks with Gemini TTS itself ([tts] engine = "gemini", the desktop light brain)."""
@@ -310,12 +343,14 @@ class Brain:
                                 local_device=s.audio.local_output_device or None,
                                 mute_tail_ms=s.audio.mute_tail_ms, report_timeout_s=s.audio.say_report_timeout_s,
                                 set_mic_muted=self._set_mic_muted, on_done=self._on_speech_done,
-                                text_only=self.opts.text_only or not self.opts.tts)
+                                text_only=self.opts.text_only or not self.opts.tts,
+                                synth_deadline_s=float(s.tts.get("synth_deadline_s", 30)))
         if not self.opts.text_only:
             await self.loop.run_in_executor(None, self._init_hearing)
         if self.opts.camera and s.vision.enabled and not self.opts.text_only:
             await self.loop.run_in_executor(None, self._init_eyes)
         self._tasks.append(asyncio.create_task(self._tick(), name="life-tick"))
+        self._start_loop_watchdog()
         self._ready.set()
         log.info("%s is awake (brain %s, mode %s). Simulator: face_v2/index.html?brain=%s",
                  self.persona.name, __version__, self.mode, self.server.local_url)
@@ -323,6 +358,57 @@ class Brain:
             await self._greet(first=True)        # no camera: say hello now (with one: when he sees you)
         if self.opts.console or self.opts.text_only or not self.opts.mic:
             self._start_console()
+
+    # ------------------------------------------------------------------ B3: voice engine stop / start, watchdogs
+    async def voice_engine_stop(self, timeout: float | None = None) -> bool:
+        """Stop the Turbo voice worker inside the running brain (frees the graphics card). Bounded: it never
+        waits longer than `timeout`; replies meanwhile use the next voice (cache, Kokoro, Piper) or captions."""
+        if self.voice_set is None or self.voice_set.turbo is None:
+            return False
+        t = float(timeout if timeout is not None else self.s.cfg.tts.get("voice_stop_timeout_s", 20))
+        ok = await self.voice_set.stop_turbo(t)
+        log.info("Turbo voice stopped%s", "" if ok else f" (not cleanly within {t:.0f} s: marked failed)")
+        return ok
+
+    async def voice_engine_start(self, wait_ready: bool = False, timeout: float | None = None) -> bool:
+        """Start the Turbo voice worker again (bounded like voice_engine_stop)."""
+        if self.voice_set is None or self.voice_set.turbo is None:
+            return False
+        t = float(timeout if timeout is not None else self.s.cfg.tts.get("voice_stop_timeout_s", 20))
+        return await self.voice_set.start_turbo(t, wait_ready=wait_ready)
+
+    def _start_loop_watchdog(self) -> None:
+        """B3: if the event loop stops turning (something blocked it), write every thread's stack to the log
+        once per stall -- the evidence the unreproduced ~20 min hang never left behind."""
+        if self._loop_dog is not None:
+            return
+        stall_s = float(self.s.life.get("loop_stall_log_s", 15))
+
+        async def ticker():
+            while True:
+                self._loop_tick = time.monotonic()
+                await asyncio.sleep(1.0)
+
+        def dog():
+            import traceback
+            reported = False
+            while not self._loop_dog_stop.wait(1.0):
+                lag = time.monotonic() - self._loop_tick
+                if lag > stall_s and not reported:
+                    reported = True
+                    self.watchdog_trips += 1
+                    stacks = []
+                    for tid, frame in sys._current_frames().items():
+                        name = next((t.name for t in threading.enumerate() if t.ident == tid), str(tid))
+                        stacks.append(f"--- thread {name}\n" + "".join(traceback.format_stack(frame)))
+                    log.error("WATCHDOG: the brain's event loop has not run for %.0f s. Thread stacks:\n%s",
+                              lag, "\n".join(stacks))
+                elif lag < 2:
+                    reported = False
+
+        self._tasks.append(asyncio.create_task(ticker(), name="loop-tick"))
+        self._loop_dog = threading.Thread(target=dog, name="loop-watchdog", daemon=True)
+        self._loop_dog.start()
 
     async def _init_llm(self) -> None:
         s = self.s
@@ -365,6 +451,24 @@ class Brain:
         persona prompt, reply parser and safety checks run on its words as on Ollama's.
         No key yet: scripted lines only, and the app says a key is needed (brain_status off)."""
         s = self.s
+        # 1.0.7: the owner's ordered AI keys (any provider) from the app, with fallback between them
+        # (mind/cloud_keys.py); without the list, the single Gemini key as before
+        from .mind.cloud_keys import build_key_chain
+        chain = build_key_chain(
+            s.env.get("SPIKE_AI_KEYS", ""), temperature=s.llm.temperature, max_tokens=s.llm.max_tokens,
+            timeout_s=float(s.llm.first_token_timeout_s), total_timeout_s=float(s.llm.total_timeout_s),
+            gemini_models=list(s.llm.get("gemini_models", GeminiLLM.DEFAULT_MODELS)),
+            gemini_base_url=s.llm.get("gemini_base_url") or None,
+            base_urls=(s.llm.get("cloud_base_urls").to_dict()           # tests point providers at mock servers
+                       if "cloud_base_urls" in s.llm else None),
+            cooldown_path=s.path("data/ai_key_rests.json"),
+            on_notice=lambda text, rests: self.app.on_ai_note(text, rests))
+        if chain is not None:
+            self.local_llm = chain
+            self.llm = LLMRouter(chain, None)
+            log.info("language model: the owner's AI keys, in his order (%s); conversation text goes to the "
+                     "provider of the key in use", ", ".join(m[0].get("provider", "?") for m in chain.members))
+            return
         key = s.secret("GEMINI_API_KEY")
         if not key:
             log.warning("no Gemini key yet: Spike answers with his scripted lines until one is added in the app")
@@ -532,13 +636,17 @@ class Brain:
             except Exception as e:  # noqa: BLE001
                 log.warning("ArUco home marker disabled: %s", e)
         self.remote_cam = RemoteCameraSource()
-        source = WebcamSource(s.vision.camera_index, s.vision.width, s.vision.height)
+        # vision.source: "webcam" (the laptop's camera, default) or "robot" (the camera board's JPEG frames;
+        # print v3.2 delivers them upright and not mirrored, so the look_at mapping is the robot's own view)
+        use_robot = str(getattr(s.vision, "source", "webcam")).lower() == "robot"
+        source = self.remote_cam if use_robot else WebcamSource(s.vision.camera_index, s.vision.width, s.vision.height)
         self.eyes = Eyes(source, face_model=s.path(s.vision.face_model), gesture_model=s.path(s.vision.gesture_model),
                          on_event=lambda k, d: self._threadsafe(self._on_vision_event, k, d),
                          process_fps=s.vision.process_fps, look_at_hz=s.vision.look_at_hz,
                          present_after_s=s.vision.present_after_s, absent_after_s=s.vision.absent_after_s,
                          emotion_window_s=s.vision.emotion_window_s, sad_threshold=s.vision.sad_threshold,
-                         tired_threshold=s.vision.tired_threshold, mirror=s.vision.mirror, aruco=aruco)
+                         tired_threshold=s.vision.tired_threshold, mirror=s.vision.mirror, aruco=aruco,
+                         selfie_view=not use_robot)
         try:
             self.eyes.start()
             self.owner.present = False
@@ -572,6 +680,7 @@ class Brain:
 
     async def shutdown(self) -> None:
         log.info("%s is going to sleep...", self.persona.name)
+        self._loop_dog_stop.set()
         for t in self._tasks:
             t.cancel()
         if self.turn_task:
@@ -658,6 +767,8 @@ class Brain:
                 await self.alarm_snooze(None)
         elif t == "edge":
             log.info("edge sensor %s: %s", msg["sensor"], msg["state"])
+        elif t == "gesture":
+            await self.on_gesture(msg["gesture"], msg.get("dir"))
         elif t == "log":
             log.info("[%s] %s: %s", client.label, msg.get("level", "info"), msg["msg"][:300])
 
@@ -683,10 +794,74 @@ class Brain:
         if type_ == "action" and not is_available(fields.get("action")):
             log.warning("dropped action %s: the robot body cannot do it (capabilities.py)", fields.get("action"))
             return
+        if type_ == "action" and not self.can_do_action(fields.get("action")):
+            # v1.9 capability rule: walk / paw are "in development" -- only a robot whose hello carries the cap
+            # (its owner ran `gait enable` after day-1 step 15) is ever sent them; v1.10: sit / lieDown / lie /
+            # stand / wave likewise need the matching cap (stand: a v4 body)
+            log.warning("dropped action %s: no connected robot announced the cap for it", fields.get("action"))
+            return
         self.server.broadcast(type_, cap="face", **fields)
 
     def set_listening(self, state: str) -> None:
+        if state in ("speaking", "idle"):
+            self._turn_spoke = self.turn_seq          # the reply arrived (or the turn ended): no cue any more
+            self._cancel_cue()
         self.send_face("listening", state=state)
+
+    # ------------------------------------------------------------------ v1.9 thinking cue
+    def _cancel_cue(self) -> None:
+        if self._cue_handle is not None:
+            self._cue_handle.cancel()
+            self._cue_handle = None
+
+    def _arm_cue(self, origin: Client | None) -> None:
+        """B2: the reply takes ~4.5 s on this laptop. If nothing is said within `thinking_cue_s` (1.2 s), the
+        faces show a small "let me think" look once, and the speaker that will play the reply makes a soft
+        "hm-hm?" -- never more than once per turn, never once the reply has started."""
+        self._cancel_cue()
+        after = float(self.s.cfg.tts.get("thinking_cue_s", 1.2))
+        if after <= 0 or self.loop is None:
+            return
+        self._cue_handle = self.loop.call_later(after, self._thinking_cue, self.turn_seq, origin)
+
+    def _thinking_cue(self, seq: int, origin: Client | None) -> None:
+        self._cue_handle = None
+        if seq != self.turn_seq or self._turn_spoke == seq or self._cue_turn == seq:
+            return
+        cur = self.speech.current if self.speech is not None else None
+        if cur is not None and not cur.done.is_set() and cur.t_first_sent is not None:
+            return                                    # a sentence already went out (a scripted line): no cue on top
+        self._cue_turn = seq
+        self.cues_sent += 1
+        # the client whose speaker will play this reply gets the sound (speech/output.py routing, v1.5)
+        voice_client = None
+        if origin is not None and origin.has("audio_out") and origin.conn_id in self.server.clients:
+            voice_client = origin
+        elif self.speech is not None and self.speech._target() == "robot":
+            speakers = self.server.with_cap("speaker")
+            voice_client = speakers[0] if speakers else None
+        for c in self.server.with_cap("face"):
+            self.server.send(c, "listening", state="thinking", cue="thinking", sound=c is voice_client)
+        log.debug("thinking cue (turn %d, sound on %s)", seq, voice_client.label if voice_client else "none")
+
+    # ------------------------------------------------------------------ v1.9 gestures (APDS-9960 in the chest)
+    WAVE_LINE_GAP_S = 120
+
+    async def on_gesture(self, gesture: str, direction: str | None) -> None:
+        """The robot already reacts on its own (curious look, its sayHi, eyes follow a swipe). The brain counts it
+        as the owner being here, and answers a wave out loud now and then (not while talking, not in quiet hours)."""
+        self.interacted()
+        log.info("gesture: %s%s", gesture, f" {direction}" if direction else "")
+        if gesture != "wave":
+            return
+        now = time.monotonic()
+        busy = (self.turn_task is not None and not self.turn_task.done()) or (self.speech is not None and self.speech.speaking)
+        if busy or self.ringer or self.quiet_hours() or now - self.last_wave_line < self.WAVE_LINE_GAP_S:
+            return
+        if not self.persona.has_line("wave_hello"):
+            return
+        self.last_wave_line = now
+        await self.say_line("wave_hello")
 
     def interacted(self) -> None:
         self.last_interaction = time.monotonic()
@@ -888,7 +1063,22 @@ class Brain:
         if self.speech and self.speech.speaking and via != "alarm":
             self.speech.stop()
         self.wake_llm("owner talking")
-        self.turn_task = asyncio.create_task(self._turn(text, via, heard, origin), name="turn")
+        self.turn_seq += 1
+        self.turn_task = asyncio.create_task(self._guarded_turn(text, via, heard, origin), name="turn")
+
+    async def _guarded_turn(self, text: str, via: str, heard=None, origin: Client | None = None) -> None:
+        """B3 turn watchdog: a turn that has not finished after `turn_deadline_s` (a stuck voice engine, a model
+        that stopped answering) is cancelled, the face goes back to idle and the next turn starts clean."""
+        deadline = float(self.s.life.get("turn_deadline_s", 150))
+        try:
+            await asyncio.wait_for(self._turn(text, via, heard, origin), timeout=deadline)
+        except asyncio.TimeoutError:
+            self.watchdog_trips += 1
+            log.error("WATCHDOG: the turn %r was stuck for %.0f s and was cancelled (trip %d)", text[:60], deadline,
+                      self.watchdog_trips)
+            if self.speech is not None:
+                self.speech.stop()
+            self.set_listening("idle")
 
     async def _turn(self, text: str, via: str, heard=None, origin: Client | None = None) -> None:
         REPLY_TO.set(origin)                      # task-local: this turn's replies play on that phone (v1.5)
@@ -922,6 +1112,7 @@ class Brain:
             if heard is not None and heard.mode and heard.mode != self.mode and self.s.wake.cross_mode_switch:
                 await self.set_mode(heard.mode, announce=False)
             self.set_listening("thinking")
+            self._arm_cue(origin)                     # v1.9: one "let me think" cue if the reply is slow
             # 1. safety and care: how is the owner? (before anything else)
             screen = safety.screen_input(text)
             level, kind = screen.level, screen.kind
@@ -964,6 +1155,7 @@ class Brain:
             log.exception("turn failed")
             await self.say_line("fallback")
         finally:
+            self._cancel_cue()
             self.last_turn = {"text": text, "level": level.name, "kind": kind, "said": list(self.turn_said),
                               "raw_tags": self.turn_raw_tags}
             if self.speech is None or not self.speech.speaking:
@@ -1407,9 +1599,9 @@ class Brain:
             self.rps = None
             await self.say_line("stop_ok")
         elif n == "trick":
-            await self.do_trick(sl.get("action"))
+            await self.do_trick(sl.get("action"), **(sl.get("fields") or {}))
         elif n == "trick_unavailable":
-            line, _offer = unavailable_line(sl["trick"], self.mode)
+            line, _offer = unavailable_line(sl["trick"], self.mode, self.robot_can)
             await self.say_text(line)
         elif n == "sleep":
             self.send_face("action", action="fallAsleep")
@@ -1465,7 +1657,13 @@ class Brain:
     async def do_trick(self, action: str | None, **extra) -> None:
         if not is_available(action):
             return await self._do_intent(Intent("trick_unavailable", {"trick": "do that"}), "")
-        action = action or self.rng.choice(["zoomies", "tailWagDance", "playBow", "paw"])
+        if action is None:
+            action = self.rng.choice([a for a in ("zoomies", "tailWagDance", "playBow", "paw")
+                                      if a not in P.BODY_ACTIONS or self.robot_can(a)])
+        if action in P.BODY_ACTIONS and not self.robot_can(action):
+            # v1.9 capability rule: walk / give paw stay "in development" until the robot announces them
+            await self.say_text(in_development_line(action, self.mode))
+            return
         if self.mode == "cat" and self.persona.has_line("trick_refuse"):
             # Spicy ignores you on purpose... then does it anyway
             await self.say_line("trick_refuse")

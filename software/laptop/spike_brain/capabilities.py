@@ -36,9 +36,26 @@ def available(actions):
     return tuple(a for a in actions if is_available(a))
 
 
-def unavailable_line(trick: str, mode: str = "dog") -> tuple[str, str | None]:
-    """(spoken line, offered action) for a trick the body cannot do yet."""
+# v1.9 (lead decision 5 Oct): body actions that are real but still "in development". The brain only sends
+# them to a robot whose hello carries the matching cap (`walk`, `paw`): the firmware announces those only
+# after the owner's `gait enable`, which FLASHING_CHECKLIST 5d allows once day-1 step 15 has passed.
+IN_DEVELOPMENT = {"walk": "walk", "paw": "give paw"}
+
+
+def in_development_line(action: str, mode: str = "dog") -> str:
+    """What Spike / Spicy say when asked for a body action the robot has not switched on yet."""
+    what = IN_DEVELOPMENT.get(action, action)
+    if mode == "cat":
+        return f"[smugness] I'm still practising how to {what}. A lady does not rush these things."
+    return f"[embarrassed] I'm still learning to {what}! My legs need a bit more practice first."
+
+
+def unavailable_line(trick: str, mode: str = "dog", can=None) -> tuple[str, str | None]:
+    """(spoken line, offered action) for a trick the body cannot do yet. `can(action)`: whether the robot
+    can do the substitute right now (v1.9: walk / paw only when switched on); default: assume it can."""
     offer = UNAVAILABLE_TRICKS.get(trick, "playBow")
+    if can is not None and offer in IN_DEVELOPMENT and not can(offer):
+        offer = "playBow"
     what = OFFER_WORDS.get(offer, offer)
     if mode == "cat":
         return (f"[smugness] Hmph. I can't {trick} yet, and I would not anyway. "

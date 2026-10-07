@@ -22,11 +22,11 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 from . import __version__
+from .protocol import PROTOCOL_MINOR   # v1.9: the TXT `pv` follows the spec version
 
 log = logging.getLogger("spike.lan")
 
 SERVICE_TYPE = "_spike._tcp.local."
-PROTOCOL_MINOR = "1.2"
 TOKEN_FILE = "data/pairing_token.txt"
 QR_FILE = "data/pairing_qr.png"
 

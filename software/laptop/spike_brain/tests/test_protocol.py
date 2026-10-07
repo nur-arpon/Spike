@@ -147,7 +147,7 @@ def test_actions_match_face_v2():
     src = (FACE_V2 / "actions.js").read_text(encoding="utf-8")
     block = src[src.index("var ACTIONS = {"):src.index("var ACTION_NAMES")]
     keys = re.findall(r"^\s{4}([A-Za-z]+): \{ label:", block, re.M)
-    assert set(keys) == set(P.ACTIONS) - set(P.COMFORT_ACTIONS) - set(P.BODY_ACTIONS)
+    assert set(keys) == set(P.ACTIONS) - set(P.COMFORT_ACTIONS) - set(P.BODY_ACTIONS) - set(P.V4_BODY_ACTIONS)
     link = (FACE_V2 / "brain_link.js").read_text(encoding="utf-8")
     for a in P.COMFORT_ACTIONS:                       # the simulator draws the brain-level ones itself
         assert re.search(rf"\b{a}: function", link), f"brain_link.js does not implement {a}"

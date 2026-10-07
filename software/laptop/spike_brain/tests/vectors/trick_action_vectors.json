@@ -1,0 +1,19 @@
+{
+  "about": "PROTOCOL.md v1.10 (5.2, 4.1): how a v4 body (hello \"hw\":\"v4\") reads the trick actions, and which caps it announces. Firmware: lib/spike_body spike_remote.cpp (parseRemoteBodyAction, bodyTrickCaps), host-tested in pc/body_v4_test.cpp. A v3.3 robot ignores sit / lieDown / stand / wave (unknown face actions).",
+  "actions": [
+    {"name": "sit", "message": {"type": "action", "action": "sit"}, "gate_off": "runs", "gate_on": "runs"},
+    {"name": "lie down", "message": {"type": "action", "action": "lieDown"}, "gate_off": "runs", "gate_on": "runs"},
+    {"name": "lie (alias)", "message": {"type": "action", "action": "lie"}, "gate_off": "runs", "gate_on": "runs"},
+    {"name": "stand", "message": {"type": "action", "action": "stand"}, "gate_off": "runs", "gate_on": "runs"},
+    {"name": "wave", "message": {"type": "action", "action": "wave"}, "side": "left", "gate_off": "refused", "gate_on": "runs"},
+    {"name": "wave right", "message": {"type": "action", "action": "wave", "side": "right"}, "side": "right", "gate_off": "refused", "gate_on": "runs"},
+    {"name": "give paw (always from the sit on v4)", "message": {"type": "action", "action": "paw", "side": "left", "from": "stand"}, "side": "left", "from_sit": true, "gate_off": "refused", "gate_on": "runs"},
+    {"name": "beg", "message": {"type": "action", "action": "beggingAction"}, "gate_off": "safe pleading sit (face action + body label beg)", "gate_on": "rock-back beg"}
+  ],
+  "caps": {
+    "gate_off": ["sit", "lie", "play_bow", "head_tilt", "tail_wag", "roll_lie"],
+    "gate_on": ["walk", "paw", "sit", "lie", "play_bow", "head_tilt", "tail_wag", "roll_lie", "give_paw", "wave", "beg"],
+    "never": ["roll_over", "self_right"]
+  },
+  "trick_log": "trick <paw|wave|beg>: <done|handshake|stopped|aborted|no rock-back|refused|cancelled> - <why>"
+}

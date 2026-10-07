@@ -135,6 +135,8 @@ class Client:
     audio_rates: list[int] = field(default_factory=list)
     audio_format: str = ""          # v1.5: what a phone with cap `audio_out` gets (ogg_opus / pcm_s16le)
     phone_voice: bool = False       # v1.7: the phone voices its replies itself (text only, no synthesis here)
+    pv: str = ""                    # v1.9: the spec version in the client's hello ("" = before v1.9)
+    hw: str = ""                    # v1.10: body generation in the hello ("v4"; "" = the v3.3 body)
     ids: P.IdCounter = field(default_factory=P.IdCounter)
     last_seen: float = field(default_factory=time.monotonic)
     connected_at: float = field(default_factory=time.monotonic)
@@ -327,6 +329,8 @@ class BrainServer:
         client.device_id = msg["device_id"]
         client.fw = msg["fw"]
         client.caps = {c for c in msg["caps"] if isinstance(c, str)}
+        client.pv = str(msg.get("pv") or "")[:8]
+        client.hw = str(msg.get("hw") or "")[:8]
         ao = msg.get("audio_out") or {}
         client.audio_rates = [int(r) for r in ao.get("rates", []) if isinstance(r, (int, float))]
         if "audio_out" in client.caps:             # v1.5 (PROTOCOL.md 10.8): a phone that plays Spike's voice
@@ -335,7 +339,7 @@ class BrainServer:
             client.audio_format = choose_format([f for f in fmts if isinstance(f, str)] if isinstance(fmts, list) else None)
             client.phone_voice = ao.get("voice") == "phone"      # v1.7 (PROTOCOL.md 10.10), also `voice_source`
         fields = {"server": "spike-brain", "version": __version__, "session": f"{client.conn_id:04x}",
-                  "heartbeat_s": self.heartbeat_s}
+                  "heartbeat_s": self.heartbeat_s, "pv": P.PROTOCOL_MINOR}   # v1.9: the spec this brain speaks
         fields.update(self.welcome(client))
         fields.setdefault("mode", "dog")
         await self._send_now(client, "hello", re=msg.get("id"), **fields)

@@ -98,10 +98,16 @@ def test_random_trick_never_picks_a_hidden_action():
     async def say_line(key, **k):
         pass
     b.say_line = say_line
+    b.robot_can = lambda a: True                 # v1.9: a robot with walk / paw switched on
 
     async def run():
         for _ in range(60):
             await b.do_trick(None)
+        b.robot_can = lambda a: False            # ... and one without: a random trick never picks paw
+        n = len(sent)
+        for _ in range(60):
+            await b.do_trick(None)
+        assert "paw" not in sent[n:]
     real_sleep = asyncio.sleep
 
     async def fast(_s):

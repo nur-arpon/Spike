@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from typing import Any
 
 PROTOCOL_VERSION = 1
+PROTOCOL_MINOR = "1.10"                # the spec version this brain implements; sent as hello `pv` (v1.9, 1.10)
 MAX_MESSAGE_BYTES = 64 * 1024          # what a sender may send
 AUDIO_CHUNK_SAMPLES = 8192             # say_audio chunk size (16 KiB raw)
 
@@ -31,6 +32,7 @@ ACTIONS = (
     "sneeze", "hiccup", "shiver", "pant", "tailWagDance", "zoomies", "headTilt",
     "sniffAround", "beggingAction", "rollOver", "playBow", "yawn", "boop",
     "snuggle", "slowWag", "walk", "paw",
+    "sit", "lieDown", "lie", "stand", "wave",     # v1.10 v4-body actions (PROTOCOL.md 5.2)
 )
 # Comfort actions added in v1.1 (PROTOCOL.md 5.2): not in face_v2/actions.js; the
 # simulator draws them in brain_link.js, the firmware implements them itself.
@@ -39,6 +41,11 @@ COMFORT_ACTIONS = ("snuggle", "slowWag")
 # robot-side only, but (unlike the comfort actions) the simulator does not draw them -
 # there is no face_v2 motion for a walk or a paw to fall back to.
 BODY_ACTIONS = ("walk", "paw")
+# v1.10 body actions (PROTOCOL.md 5.2 "Brain note"): only sent to a robot with the matching cap.
+# `stand` needs no cap, only a v4 body (hello hw "v4"); `wave` is gated by `gait enable` like walk / paw.
+V4_BODY_ACTIONS = ("sit", "lieDown", "lie", "stand", "wave")
+V4_ACTION_CAPS = {"sit": "sit", "lieDown": "lie", "lie": "lie", "wave": "wave"}   # stand -> hw "v4"
+HW_V4 = "v4"
 ACTION_DIRECTIONS = ("forward", "back")
 ACTION_STEPS = tuple(range(1, 17))                 # walk.steps: 1..16
 ACTION_STYLES = ("auto", "tiltStep", "rearStep", "march")
@@ -53,18 +60,29 @@ MODES = ("dog", "cat")
 ROLES = ("simulator", "face", "camera", "robot", "tool", "app")   # "app" = the phone app (v1.2)
 BOARD_ROLES = ("face", "camera", "robot")                          # the physical robot's own boards
 CAPS = ("face", "speaker", "mic", "camera", "touch", "imu", "edge", "battery", "drive", "text",
-        "audio_out")                         # v1.5: a phone app that plays Spike's voice (PROTOCOL.md 10.8)
+        "audio_out",                         # v1.5: a phone app that plays Spike's voice (PROTOCOL.md 10.8)
+        # v1.9 robot caps (PROTOCOL.md 4.1): walk / paw only while the owner's `gait enable` is on
+        "gesture", "edge_rear", "captions", "thinking_cue", "diag", "calib", "cam_config", "walk", "paw",
+        # v1.10 trick caps of a v4 body (PROTOCOL.md 4.1); give_paw / wave / beg only with `gait enable`
+        "sit", "lie", "play_bow", "head_tilt", "tail_wag", "roll_lie", "give_paw", "wave", "beg")
 LISTEN_STATES = ("idle", "wake", "listening", "thinking", "speaking")
 TOUCH_ZONES = ("head", "nose", "back", "chin")
 TOUCH_GESTURES = ("tap", "pat", "hold", "release")
 IMU_EVENTS = ("pickup", "putdown", "shake", "fall", "lap")
-EDGE_SENSORS = ("front_left", "front_right", "rear_left", "rear_right")
+EDGE_SENSORS = ("front_left", "front_right", "rear_left", "rear_right",
+                "rear")                      # v1.9: the one centred rear desk-edge laser (robots with cap edge_rear)
+GESTURES = ("near", "wave", "swipe")         # v1.9 `gesture` (PROTOCOL.md 6.13)
+GESTURE_DIRS = ("up", "down", "left", "right")
+THINK_CUES = ("thinking",)                   # v1.9 `listening.cue` (PROTOCOL.md 5.6)
+CALIB_OPS = ("signtest", "balance", "edge_level", "servo_center", "servo_test", "servo_save", "stop")
+CALIB_STATES = ("running", "passed", "failed", "stopped", "refused")
+CALIB_SIDES = ("left", "right")
 SAY_STATES = ("started", "finished", "stopped")
 ALARM_STATES = ("ringing", "snoozed", "stopped")
 GAME_PHASES = ("start", "countdown", "shoot", "reveal", "end")
 RPS = ("rock", "paper", "scissors", "unknown")
 ERROR_CODES = ("bad_json", "missing_field", "bad_value", "unknown_type",
-               "version_mismatch", "not_ready", "auth", "too_big")
+               "version_mismatch", "not_ready", "auth", "too_big", "busy")
 RESERVED_TYPES = ("move", "ota", "config")
 
 # Close codes (PROTOCOL.md section 3)
@@ -79,7 +97,9 @@ _NULLDICT = (dict, type(None))
 ROBOT_TO_BRAIN: dict[str, dict[str, tuple]] = {
     "hello": {"role": (_STR, ROLES, True), "device_id": (_STR, None, True),
               "fw": (_STR, None, True), "caps": (_LIST, None, True),
-              "audio_out": (_DICT, None, False), "token": (_STR, None, False)},
+              "audio_out": (_DICT, None, False), "token": (_STR, None, False),
+              "pv": (_STR, None, False),                            # v1.9: the spec version the client speaks
+              "hw": (_STR, None, False)},                           # v1.10: body generation, "v4" (absent = v3.3)
     "touch": {"zone": (_STR, TOUCH_ZONES, True), "gesture": (_STR, TOUCH_GESTURES, False)},
     "imu": {"event": (_STR, IMU_EVENTS, True)},
     "edge": {"sensor": (_STR, EDGE_SENSORS, True), "state": (_STR, ("edge", "clear"), True)},
@@ -100,6 +120,12 @@ ROBOT_TO_BRAIN: dict[str, dict[str, tuple]] = {
     "pong": {},
     "ping": {},
     "error": {"code": (_STR, None, True)},
+    # --- v1.9 (PROTOCOL.md 6.13, 12) ---
+    "gesture": {"gesture": (_STR, GESTURES, True), "dir": (_STR, GESTURE_DIRS, False)},
+    "diag": {"fw": (_STR, None, True)},
+    "calib_state": {"op": (_STR, CALIB_OPS, True), "state": (_STR, CALIB_STATES, True),
+                    "reason": (_STR, None, False), "result": (_DICT, None, False)},
+    "cam_config": {"vflip": (_BOOL, None, True), "hmirror": (_BOOL, None, True), "saved": (_BOOL, None, False)},
 }
 
 BRAIN_TO_ROBOT: dict[str, dict[str, tuple]] = {
@@ -118,7 +144,9 @@ BRAIN_TO_ROBOT: dict[str, dict[str, tuple]] = {
     "say_audio": {"utt": (_STR, None, True), "seq": (_INT, None, True), "index": (_INT, None, True),
                   "last": (_BOOL, None, True), "data": (_STR, None, True)},
     "stop_speaking": {},
-    "listening": {"state": (_STR, LISTEN_STATES, True)},
+    "listening": {"state": (_STR, LISTEN_STATES, True),
+                  # v1.9 thinking cue: at most once per turn when the reply is slow (PROTOCOL.md 5.6)
+                  "cue": (_STR, THINK_CUES, False), "sound": (_BOOL, None, False)},
     "look_at": {"x": (_NUM, None, True), "y": (_NUM, None, True)},
     "sound": {"sound": (_STR, SOUNDS, True)},
     "alarm": {"state": (_STR, ALARM_STATES, True), "level": (_INT, None, False)},
@@ -131,6 +159,11 @@ BRAIN_TO_ROBOT: dict[str, dict[str, tuple]] = {
     # --- v1.2 (PROTOCOL.md section 10): new brain -> robot types ---
     "drive": {"x": (_NUM, None, True), "y": (_NUM, None, True), "ttl_ms": (_INT, None, True)},
     "set_display": {"captions": (_BOOL, None, False)},
+    # --- v1.9 (PROTOCOL.md 12): health and the day-1 checks, relayed from an app ---
+    "diag_get": {},
+    "calib": {"op": (_STR, CALIB_OPS, True), "side": (_STR, CALIB_SIDES, False), "joint": (_INT, None, False),
+              "us": (_INT, None, False)},
+    "cam_config": {"vflip": (_BOOL, None, False), "hmirror": (_BOOL, None, False), "save": (_BOOL, None, False)},
 }
 
 # --- v1.2: what the brain sends a client with role "app" (everything a robot gets, plus these) ---
@@ -145,6 +178,10 @@ BRAIN_TO_APP: dict[str, dict[str, tuple]] = {
     "voice_style": {"styles": (_DICT, None, True)},       # v1.8: the Gemini voice style picked per character
     "battery": {"percent": (_NUM, None, True), "volts": (_NUM, None, False), "charging": (_BOOL, None, False)},
     "camera": {"data": (_STR, None, True), "format": (_STR, ("jpeg",), False), "seq": (_INT, None, False)},
+    # v1.9: relayed from the robot boards (PROTOCOL.md 10.5, 12)
+    "edge": ROBOT_TO_BRAIN["edge"], "imu": ROBOT_TO_BRAIN["imu"], "gesture": ROBOT_TO_BRAIN["gesture"],
+    "diag": ROBOT_TO_BRAIN["diag"], "calib_state": ROBOT_TO_BRAIN["calib_state"],
+    "cam_config": ROBOT_TO_BRAIN["cam_config"],
 }
 
 # --- v1.2: what a client with role "app" (the phone) may send (PROTOCOL.md section 10) ---
@@ -179,6 +216,10 @@ APP_ONLY: dict[str, dict[str, tuple]] = {
     "keepalive": {"warm": (_BOOL, None, False)},     # v1.6: silent "still here" (PROTOCOL.md 10.9)
     "voice_source": {"voice": (_STR, ("phone", "laptop"), True)},   # v1.7: who voices this phone's replies (10.10)
     "voice_style": {"mode": (_STR, MODES, True), "style": (_STR, None, True)},   # v1.8: the laptop's Gemini voice style (10.11)
+    # v1.9 robot tools (PROTOCOL.md 12), passed on to the robot board
+    "diag_get": {},
+    "calib": BRAIN_TO_ROBOT["calib"],
+    "cam_config": BRAIN_TO_ROBOT["cam_config"],
 }
 APP_TO_BRAIN: dict[str, dict[str, tuple]] = {**ROBOT_TO_BRAIN, **APP_ONLY}
 
@@ -239,6 +280,20 @@ def decode(text: str | bytes) -> dict:
     if "id" in msg and (not isinstance(msg["id"], int) or isinstance(msg["id"], bool)):
         raise ProtocolError("bad_value", "'id' must be an integer")
     return msg
+
+
+def parse_pv(pv: Any) -> tuple[int, int]:
+    """A protocol version string as (major, minor) integers; never compare `pv` as text ("1.10" > "1.9").
+    Missing or unreadable -> (0, 0), i.e. older than every real version."""
+    try:
+        major, _, minor = str(pv).strip().partition(".")
+        return int(major), int(minor or 0)
+    except (TypeError, ValueError):
+        return (0, 0)
+
+
+def pv_at_least(pv: Any, minimum: str) -> bool:
+    return parse_pv(pv) >= parse_pv(minimum)
 
 
 def validate(msg: dict, direction: str) -> None:
