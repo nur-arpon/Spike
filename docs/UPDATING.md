@@ -6,8 +6,9 @@ every file here is served exactly as it is.
 
 | What | Where |
 |---|---|
-| Pages | `index.html` (Home), `meet-spike.html`, `robot.html`, `app.html`, `updates.html`, `privacy-policy.html`, `404.html` |
+| Pages | `index.html` (Home), `meet-spike.html`, `robot.html`, `inside-spike.html`, `app.html`, `updates.html`, `privacy-policy.html`, `404.html` |
 | Interactive 3D model (The Robot page) | `robot-3d.html`, made by `tools/make_robot_3d.py` |
+| Inside Spike page (exploded view) | `inside-spike.html`; component `assets/components/exploded-view.js`; Spike content `assets/products/spike/` (copies, see below) |
 | Design (colours, type, layout) | `assets/css/site.css` (one file; colour tokens at the top) |
 | Behaviour | `assets/js/site.js` (menu, image switcher, screenshot tabs, 3D loader, reads the data files) |
 | Names, links, statuses, robot build steps | `data/site.json` |
@@ -92,6 +93,30 @@ python docs/tools/make_robot_3d.py preview_3d/spike_preview_v7_2_view.html
 
 It copies the preview to `docs/robot-3d.html` and hides the design-review text and engineering controls.
 
+## Update the Inside Spike exploded view
+
+`inside-spike.html` uses the shared `<exploded-view>` component. The site holds **copies**: the component in
+`assets/components/` and Spike's manifest, geometry and models in `assets/products/spike/`. After a CAD
+re-export (new files in `preview_3d/exploded_v3_4c/`), or a new version of the component, refresh them. Run
+from the repository folder:
+
+```
+powershell -File docs\tools\sync_exploded.ps1
+```
+
+That is the two copy steps in one go. By hand, from the repository folder:
+
+```
+copy ..\shared-components\exploded-view\exploded-view.js docs\assets\components\
+xcopy /Y /I preview_3d\exploded_v3_4c\manifest.json docs\assets\products\spike\
+xcopy /Y /I preview_3d\exploded_v3_4c\geometry.json docs\assets\products\spike\
+xcopy /Y /I /E preview_3d\exploded_v3_4c\models docs\assets\products\spike\models\
+```
+
+For a new export folder name use `-Content preview_3d\exploded_v3_4d`. Nothing is deleted: a model removed from
+the CAD stays in `docs/assets/products/spike/models/` until you remove it by hand. When the electronics stop
+being stand-in shapes, change the "test model" note on `inside-spike.html` too.
+
 ## Change the privacy policy
 
 Edit `privacy-policy.html` directly; its address must stay exactly
@@ -112,3 +137,51 @@ page (the header and footer blocks are repeated in each file) and to `sitemap.xm
   server.)
 - After pushing, the site updates within a few minutes; the build status is under the repository's
   **Actions** tab ("pages build and deployment").
+
+## Edit the "Inside Spike" scroll story (beats, cards and part facts)
+
+The scroll section is the first thing under the Home hero, and it is also at the top of `inside-spike.html`.
+Both use the same component (`<exploded-view mode="scroll">`, version 1.3.0) and the same manifest, so one edit
+changes both. Since 1.3.0 the stage is full-screen, edge to edge: the caption, the progress dots, the beat's part
+card, the Parts button (all 8 cards in a drawer, or a sheet on phones) and the Cream / Chocolate switch float over
+the 3D, and the site header slides away while the stage is pinned (`site.css`, the `data-pinned` rule).
+All of its words live in the HUMAN manifest, never in `geometry.json` (that file is rewritten by every CAD export):
+
+- edit `preview_3d/exploded_v3_4g/manifest.json` (the source), then copy it to the site with
+  `powershell -File docs\tools\sync_exploded.ps1 -Content preview_3d\exploded_v3_4g`.
+
+What to change, and where in that file:
+
+- **The captions (beats):** `scroll.beats`. Each has `at` (where it appears, from 0 = the top of the section to
+  1 = the end), a `title` and one or two short sentences of `text`. `card` names the card that opens with it,
+  and `parts` (optional) the parts that light up and get framed big while he is fully apart. `camera`
+  (optional) turns the view for that beat: a camera id, or a direction such as `[0.85, -0.32, 1.15]` (from a
+  little below, used for the dock). Keep them in order. Spike is fully apart between `explodeAt[1]` (0.30) and
+  `assembleAt[0]` (0.84), so the beats that light parts go in there, about 0.1 apart for a comfortable dwell.
+- **How close a beat zooms:** `scroll.focusMin` (0.6: a beat's parts may be framed up to about 1.7 times closer
+  than the fully-apart view). `scroll.beatDim` is how faint everything else gets during a beat.
+- **The 8 part cards:** `scroll.cards`. Each has an `id` (do not change it: beats point at it), a `title`, a
+  `text` of two or three sentences, one short `fact`, and the `parts` that light up. `camera` only picks the
+  angle of the small picture, which is drawn from the 3D model automatically.
+- **A part's hover details:** in `parts` (or in its group in `groups`): `name`, `role` (what it does) and
+  `fact` (one true fact). A group's `fact` is used for every part in it that has no fact of its own.
+- **The order he comes apart:** `scroll.layers` (legs out, lid up, boards lift, head opens). `carry` lets the
+  head ride up with the lid so nothing passes through anything. The layer titles show in a small pill
+  ("Taking apart · Lid up"); its words are `scroll.apartLabel` and `scroll.togetherLabel`.
+- **How far the parts spread:** each group's and part's `explode` (`distance` in mm, `add` for an extra
+  offset). The legs go out 140 mm and front/back legs 55 mm apart; these are shared with the Explode tab on
+  `inside-spike.html`.
+- **What reduced motion shows:** `scroll.static` (a title and a sentence for the still, exploded view).
+
+Rules for the words: every fact must be true and come from the project docs (`guide/FOLLOW_THE_ENERGY.md`,
+`cad/release_v3_4/HOW_IT_WORKS.md`, `FIT_REPORT.md`, the `UPDATE_*.md` files, `software/firmware/README.md`).
+Only claim what the real robot does; walk and give paw stay "in development". Plain, warm and short.
+
+The page side, if ever needed: the section's attributes (`scroll-length`, 680 = about 6.8 screens of
+scroll, `stage`, `stage-labels`, `storage-key`, `parts-title`, and `max-dpr` if you ever need to cap the
+resolution) are on the `<exploded-view mode="scroll">` tag in `index.html` and `inside-spike.html`; the
+visitor's Cream / Chocolate choice is remembered under the key `spike-stage`. The poster that shows until the
+3D is ready is `assets/img/robot/spike-3d-whole.webp`, a transparent render made from the component
+(`ev.snapshot()`); re-make it after a CAD change that alters his outside. After any change, bump the `?v=` on
+the manifest and component links in both pages so visitors get the new copy (and the `site.css?v=` when you
+touch the CSS), and update `sitemap.xml`.

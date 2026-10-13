@@ -246,7 +246,7 @@ ul, ol { margin: 0; padding: 0; }
 }
 
 /* ---------- hero ---------- */
-.hero { position: relative; padding-block: 32px 72px; overflow: clip; }
+.hero { position: relative; padding-block: 32px 40px; overflow: clip; }
 .hero::before {
   content: ""; position: absolute; inset: -20% -10% auto auto; width: 70vw; height: 70vw; max-width: 1100px; max-height: 1100px;
   background: radial-gradient(closest-side, color-mix(in srgb, var(--cream) 70%, transparent), transparent 70%);
@@ -260,17 +260,17 @@ ul, ol { margin: 0; padding: 0; }
 .page-hero .container { display: grid; gap: 20px; justify-items: start; }
 .page-hero .lead { max-width: 40em; }
 @media (min-width: 600px) {
-  .hero { padding-block: 48px 96px; }
+  .hero { padding-block: 48px 48px; }
   .page-hero { padding-block: 64px 72px; }
 }
 @media (min-width: 1024px) {
-  .hero { padding-block: 56px 120px; }
+  .hero { padding-block: 56px 56px; }
   .hero-grid { grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr); gap: 56px; }
   .hero-copy { gap: 28px; }
   .page-hero { padding-block: 88px 88px; }
 }
 @media (min-width: 1600px) {
-  .hero { padding-block: 72px 160px; }
+  .hero { padding-block: 72px 72px; }
   .hero-grid { gap: 96px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .page-hero { padding-block: 120px 104px; }
 }
@@ -619,3 +619,37 @@ figure { margin: 0; }
 picture { display: block; }
 .mosaic .wide picture { height: 100%; }
 .display em, .h2 em { margin-right: .06em; }
+
+/* ---------- Home hero: short enough that the scroll stage below peeks into the first screen ---------- */
+/* 300px = the 76px header + the 56px hero top and bottom padding + the 58px screen switcher + 54px of the stage below */
+@media (min-width: 1024px) {
+  .hero .stage-wrap { width: min(100%, calc(100vh - 300px)); width: min(100%, calc(100svh - 300px)); justify-self: center; }
+}
+
+/* ---------- Inside Spike scroll story (exploded-view mode="scroll" 1.3.0), on Home and Inside Spike ----------
+   The stage is full-screen and edge to edge. While it is pinned (the component sets data-pinned) the site header
+   slides away, and it comes back as the section ends. */
+.details { position: relative; }
+.details exploded-view {
+  display: block;
+  --ev-font: var(--body);
+  --ev-display-font: var(--display);
+  --ev-sticky-top: 0px;
+}
+.site-header { transition: border-color .3s, transform .4s cubic-bezier(.2, .7, .2, 1); }
+body:has(.details exploded-view[data-pinned]) .site-header:not(.menu-open) { transform: translateY(-100%); }
+@media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
+/* before the component arrives: hold one full screen with the poster on the stage colour */
+.details exploded-view:not(:defined) {
+  display: grid; place-items: center; overflow: hidden;
+  height: 100vh; height: 100svh; min-height: 480px;
+  background: radial-gradient(120% 100% at 62% 38%, #3B2B21, #120D0A);
+}
+.details exploded-view[stage="light"]:not(:defined) { background: radial-gradient(120% 100% at 62% 38%, #FFFAF2, #E8D2B6); }
+.details exploded-view:not(:defined) > img { width: min(78vh, 88vw); width: min(78svh, 88vw); height: auto; aspect-ratio: 1; object-fit: contain; }
+.details-foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 20px;
+  padding-block: 24px 8px; text-align: center;
+}
+.details-foot p { max-width: 40em; }
+@media (min-width: 1024px) { .details-foot { padding-block: 32px 8px; } }

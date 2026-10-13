@@ -1,0 +1,1897 @@
+{
+  "schema": "exploded-view/manifest@1",
+  "title": "Spike, inside and out",
+  "subtitle": "Desk Buddy v3.4g, exported from the release CAD in his standing pose. Screws, horns and servo leads are left out.",
+  "geometry": "geometry.json",
+  "labels": {
+    "assembled": "Assembled",
+    "exploded": "Exploded"
+  },
+  "explodeHint": "Drag to spin him round. Pinch or scroll to zoom. Tap any part to see what it does.",
+  "explodeStagger": 0.55,
+  "defaults": {
+    "colour": "#d9c6ad",
+    "roughness": 0.62,
+    "explode": {
+      "dir": "radial",
+      "distance": 70
+    }
+  },
+  "groups": [
+    {
+      "id": "sensors",
+      "name": "Sensors",
+      "match": [
+        "VL53L0X*",
+        "MPU6050*",
+        "APDS*"
+      ],
+      "colour": "model",
+      "role": "Helps Spike feel his way round the desk.",
+      "explode": {
+        "dir": "radial",
+        "distance": 60
+      },
+      "fact": "Each laser takes about 19 mA, from its own 3.3 V supply."
+    },
+    {
+      "id": "hip-servos",
+      "name": "Hip servos",
+      "match": [
+        "MG90S_Hip_*"
+      ],
+      "colour": "model",
+      "role": "Turns a whole leg forward and back at the hip.",
+      "explode": {
+        "dir": "radial-x",
+        "distance": 62
+      },
+      "fact": "An MG90S servo. It works from 4.8 to 6 V."
+    },
+    {
+      "id": "leg-fl",
+      "name": "Front left leg",
+      "match": [
+        "*FrontLeft*"
+      ],
+      "colour": "#B97A4F",
+      "role": "One of four legs: a hip, a knee and a driven wheel.",
+      "explode": {
+        "dir": "radial-x",
+        "distance": 140,
+        "add": [
+          0,
+          0,
+          55
+        ]
+      },
+      "fact": "The right legs are mirror images of the left ones."
+    },
+    {
+      "id": "leg-fr",
+      "name": "Front right leg",
+      "match": [
+        "*FrontRight*"
+      ],
+      "colour": "#B97A4F",
+      "role": "One of four legs: a hip, a knee and a driven wheel.",
+      "explode": {
+        "dir": "radial-x",
+        "distance": 140,
+        "add": [
+          0,
+          0,
+          55
+        ]
+      },
+      "fact": "The right legs are mirror images of the left ones."
+    },
+    {
+      "id": "leg-bl",
+      "name": "Back left leg",
+      "match": [
+        "*BackLeft*"
+      ],
+      "colour": "#B97A4F",
+      "role": "One of four legs: a hip, a knee and a driven wheel.",
+      "explode": {
+        "dir": "radial-x",
+        "distance": 140,
+        "add": [
+          0,
+          0,
+          -55
+        ]
+      },
+      "fact": "The right legs are mirror images of the left ones."
+    },
+    {
+      "id": "leg-br",
+      "name": "Back right leg",
+      "match": [
+        "*BackRight*"
+      ],
+      "colour": "#B97A4F",
+      "role": "One of four legs: a hip, a knee and a driven wheel.",
+      "explode": {
+        "dir": "radial-x",
+        "distance": 140,
+        "add": [
+          0,
+          0,
+          -55
+        ]
+      },
+      "fact": "The right legs are mirror images of the left ones."
+    },
+    {
+      "id": "head",
+      "name": "Head",
+      "match": [
+        "Head_*",
+        "Tuft*",
+        "Port_*",
+        "Ear_*",
+        "Screen_Clamp_*",
+        "Guition*",
+        "ESP32*",
+        "OV5640*",
+        "MS3625*",
+        "Cavity_Speaker*",
+        "Cap_Neck"
+      ],
+      "colour": "#F1DEC2",
+      "role": "Part of the head: face, eyes, ears and voice.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0
+        ],
+        "distance": 220
+      },
+      "fact": "The whole head weighs about 238 g."
+    },
+    {
+      "id": "neck",
+      "name": "Neck",
+      "match": [
+        "Collar*",
+        "Neck_*",
+        "MG90S_Neck"
+      ],
+      "colour": "#A56A43",
+      "role": "Holds the head up and tilts it like a curious dog.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0.25
+        ],
+        "distance": 165
+      },
+      "fact": "The head tilts one-to-one with the servo, up to 20 degrees each way."
+    },
+    {
+      "id": "lid",
+      "name": "Lid and its electronics",
+      "match": [
+        "Torso_Lid*",
+        "Hub_*",
+        "AMS1117*",
+        "MPR121*",
+        "Magnets_Back*",
+        "Magnet_Cap_Back*",
+        "MG90S_Tail"
+      ],
+      "colour": "model",
+      "role": "Lives under the lid, the top half of the body.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0
+        ],
+        "distance": 105
+      },
+      "fact": "The lid is built upside down on the bench, then closed over the tub."
+    },
+    {
+      "id": "tail",
+      "name": "Tail",
+      "match": [
+        "Tail*",
+        "Cap_Tail"
+      ],
+      "colour": "#F1DEC2",
+      "role": "The tail, wagged by its own servo.",
+      "explode": {
+        "dir": [
+          0,
+          0.35,
+          -1
+        ],
+        "distance": 110
+      },
+      "fact": "Its servo takes orders from servo board A, on the left wall."
+    },
+    {
+      "id": "power",
+      "name": "Power",
+      "match": [
+        "Battery_*",
+        "BMS*",
+        "Fuse_*",
+        "USB-C*",
+        "KCD1*",
+        "Ballast_*"
+      ],
+      "colour": "model",
+      "role": "Stores, protects and switches Spike's power.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0
+        ],
+        "distance": 80
+      },
+      "fact": "About 26 Wh stored: roughly 3 hours of mixed play (an estimate)."
+    },
+    {
+      "id": "dock",
+      "name": "Dock",
+      "match": [
+        "Dock_*",
+        "Magnets_Belly*",
+        "Magnet_Cap_Belly*"
+      ],
+      "colour": "model",
+      "role": "Lets Spike park on a charging base.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 60
+      },
+      "fact": "Six pads: two for 5 V, two for ground and two for a serial link."
+    },
+    {
+      "id": "body",
+      "name": "Body",
+      "match": [
+        "Torso_Bottom*",
+        "Side_Panel_*",
+        "Band_*",
+        "PCA9685*"
+      ],
+      "colour": "#B97A4F",
+      "role": "The body shell that everything else hangs on.",
+      "explode": {
+        "dir": "radial-x",
+        "distance": 125
+      },
+      "fact": "Spike weighs about 1075 g in the CAD."
+    }
+  ],
+  "parts": {
+    "Torso_Bottom*": {
+      "name": "Tub (lower body)",
+      "role": "The lower body. The heavy parts sit low in it, so Spike stays steady.",
+      "explode": {
+        "dir": "none"
+      },
+      "fact": "The heavy parts sit low: his centre of weight is about 11 cm above the desk."
+    },
+    "Torso_Lid*": {
+      "name": "Lid (upper body)",
+      "colour": "#F1DEC2",
+      "role": "The top half of the body. Sensors, the power hub and two servos hang under it.",
+      "explode": {
+        "distance": 150
+      },
+      "fact": "The lid is built upside down on the bench, then closed over the tub."
+    },
+    "Side_Panel_*": {
+      "name": "Side panel",
+      "role": "Clips onto the side of the tub and covers the hip servos.",
+      "fact": "No screws: it clips on. Press both ends together."
+    },
+    "Band_Chest": {
+      "name": "Chest band",
+      "colour": "#A56A43",
+      "role": "Snaps on the front of the body.",
+      "explode": {
+        "dir": [
+          0,
+          0,
+          1
+        ],
+        "distance": 105
+      },
+      "fact": "Snaps on over the gesture sensor's chest pocket."
+    },
+    "Band_Rump": {
+      "name": "Rump band",
+      "colour": "#A56A43",
+      "role": "Snaps on the back. Its opening lines up with the USB-C charging socket.",
+      "explode": {
+        "dir": [
+          0,
+          0,
+          -1
+        ],
+        "distance": 105
+      },
+      "fact": "Snaps on with no screws."
+    },
+    "PCA9685_Left*": {
+      "name": "Servo driver board A (left)",
+      "colour": "model",
+      "role": "Tells the left legs and the tail where to point (address 0x40).",
+      "explode": {
+        "dir": [
+          0.45,
+          1,
+          0
+        ],
+        "distance": 115
+      },
+      "fact": "Board A sits on the left wall; board B, on the right, has its A0 pad bridged."
+    },
+    "PCA9685_Right*": {
+      "name": "Servo driver board B (right)",
+      "colour": "model",
+      "role": "Tells the right legs and the neck where to point (address 0x41).",
+      "explode": {
+        "dir": [
+          -0.45,
+          1,
+          0
+        ],
+        "distance": 115
+      },
+      "fact": "Its bridged A0 pad gives it its own address, 0x41."
+    },
+    "Battery_Pack*": {
+      "name": "Battery: 2 x 18650 cells",
+      "role": "Two cells in series: 7.4 V, 3.5 Ah, about 26 Wh of energy.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 92
+      },
+      "fact": "Two Samsung 35E cells, 3500 mAh each."
+    },
+    "Battery_Door*": {
+      "name": "Battery door",
+      "colour": "#B97A4F",
+      "role": "Carries the battery holder and closes the belly.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 135
+      },
+      "fact": "The cells stay out until the first power-on."
+    },
+    "Battery_Clamp*": {
+      "name": "Battery clamp",
+      "colour": "#B97A4F",
+      "role": "Holds the battery holder on the door.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 112
+      },
+      "fact": "Sized for a cell holder of 76 x 40.1 x 19 mm."
+    },
+    "Ballast_Cover_*": {
+      "name": "Ballast cover",
+      "colour": "#4A3326",
+      "role": "A flat plate that presses in under a rear hip and holds the steel in.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 150
+      },
+      "fact": "With the steel, it keeps his centre of weight low."
+    },
+    "Ballast_Steel_*": {
+      "name": "Ballast steel",
+      "colour": "#A0A4A8",
+      "metalness": 0.6,
+      "roughness": 0.4,
+      "role": "Five slices of 25 x 3 mm flat bar from Bunnings, about 24 g a side. They keep Spike steady, and the dock's rear magnets grip them.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 112
+      },
+      "fact": "Keeps the give-paw pose (in development) 8.7 mm inside its balance."
+    },
+    "BMS*": {
+      "name": "Battery protection board",
+      "role": "Guards the cells: cuts the power if they get too full, too empty or the current is too big.",
+      "explode": {
+        "distance": 82
+      },
+      "fact": "Rated 20 A, so the 7.5 A fuse does the real protecting."
+    },
+    "Fuse_Holder*": {
+      "name": "7.5 A fuse",
+      "role": "The safety link. It melts if a wire shorts, before anything can overheat.",
+      "explode": {
+        "distance": 100
+      },
+      "fact": "It sits before the charger and the switch, so a short anywhere blows it."
+    },
+    "USB-C*": {
+      "name": "USB-C charge board",
+      "role": "Boosts the charger's 5 V up to 8.4 V to fill the cells.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          -0.4
+        ],
+        "distance": 100
+      },
+      "fact": "Charges at up to 1.5 A, about 14 W."
+    },
+    "KCD1*": {
+      "name": "Power switch",
+      "role": "The on/off rocker in the belly. All running power passes through it.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0.3
+        ],
+        "distance": 72
+      },
+      "fact": "Charging does not go through it, so he charges switched on or off."
+    },
+    "Hub_Perfboard*": {
+      "name": "Power hub board",
+      "role": "Holds the two 5 V converters and shares power and data to every board.",
+      "fact": "48 x 48 mm, with both converters side by side."
+    },
+    "Hub_Mini560_Servos*": {
+      "name": "5 V converter for the servos",
+      "role": "Turns 7.4 V into 5 V for the 14 servos only.",
+      "fact": "Eight leg servos starting together ask for about 7.6 A, more than its 5 A."
+    },
+    "Hub_Mini560_Logic*": {
+      "name": "5 V converter for the brain",
+      "role": "Turns 7.4 V into 5 V for the screen board, camera and sensors.",
+      "fact": "Kept apart from the servos, so a hard-working leg cannot reset his brain."
+    },
+    "Hub_Cap_1000uF_Servos": {
+      "name": "1000 uF capacitor (servos)",
+      "role": "A small energy buffer that smooths the servo supply.",
+      "fact": "Lies on its side to fit under the lid."
+    },
+    "Hub_Cap_1000uF_Logic": {
+      "name": "1000 uF capacitor (brain)",
+      "role": "A small energy buffer that smooths the brain's supply.",
+      "fact": "Lies on its side to fit under the lid."
+    },
+    "AMS1117*": {
+      "name": "3.3 V sensor regulator",
+      "role": "Makes 3.3 V for the seven laser sensors and the gesture sensor.",
+      "fact": "About 140 mA for seven lasers and the gesture sensor."
+    },
+    "MPR121*": {
+      "name": "Touch board",
+      "role": "Feels a pat on the back or head through foil pads.",
+      "fact": "Five touch pads: two on his back, two on his rump and one on his head."
+    },
+    "Magnets_Back*": {
+      "name": "Back magnets",
+      "colour": "#9E9E9E",
+      "metalness": 0.5,
+      "role": "Two 8 x 3 mm magnets, north face out, for a back mount.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0
+        ],
+        "distance": 185
+      },
+      "fact": "N52 discs, 8 x 3 mm, under a 0.6 mm printed skin."
+    },
+    "Magnet_Cap_Back*": {
+      "name": "Back magnet cup",
+      "colour": "#F1DEC2",
+      "role": "Holds a back magnet. It goes in from the top and turns a sixth of a turn to click; its top is the dish the drone's feet sit in.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0
+        ],
+        "distance": 215
+      },
+      "fact": "A 0.3 mm bump makes the click."
+    },
+    "MPU6050*": {
+      "name": "Motion sensor",
+      "role": "Feels tilt and bumps, so Spike knows when he is picked up.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0
+        ],
+        "distance": 150
+      },
+      "fact": "Sits only 0.4 mm from the neck servo."
+    },
+    "VL53L0X_Side_Left": {
+      "name": "Side laser (left)",
+      "role": "Measures the distance to things on his left.",
+      "explode": {
+        "dir": [
+          1,
+          1.5,
+          0
+        ],
+        "distance": 175
+      }
+    },
+    "VL53L0X_Side_Right": {
+      "name": "Side laser (right)",
+      "role": "Measures the distance to things on his right.",
+      "explode": {
+        "dir": [
+          -1,
+          1.5,
+          0
+        ],
+        "distance": 175
+      }
+    },
+    "VL53L0X_DeskEdge_*": {
+      "name": "Desk-edge laser",
+      "role": "Looks down through the belly, so Spike stops before he walks off the desk.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 88
+      },
+      "fact": "Three lasers look down for the edge: two at the front, one at the back."
+    },
+    "VL53L0X_Obstacle_Front": {
+      "name": "Front laser",
+      "role": "Sees what is straight ahead.",
+      "explode": {
+        "dir": [
+          0,
+          0,
+          1
+        ],
+        "distance": 115
+      }
+    },
+    "VL53L0X_Obstacle_Rear": {
+      "name": "Rear laser",
+      "role": "Sees what is behind him.",
+      "explode": {
+        "dir": [
+          0,
+          0,
+          -1
+        ],
+        "distance": 115
+      }
+    },
+    "APDS*": {
+      "name": "Gesture sensor",
+      "role": "Sees a hand wave in front of his chest.",
+      "explode": {
+        "dir": [
+          0,
+          0,
+          1
+        ],
+        "distance": 135
+      },
+      "fact": "Its firmware tells a hand nearby, a wave and a swipe apart."
+    },
+    "MG90S_Tail": {
+      "name": "Tail servo",
+      "role": "Wags the tail.",
+      "fact": "Takes its orders from servo board A, on the left wall."
+    },
+    "Magnets_Belly*": {
+      "name": "Belly magnets",
+      "colour": "#9E9E9E",
+      "metalness": 0.5,
+      "role": "Two 12 x 3 mm magnets, north face out, that pull Spike onto his dock.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 105
+      },
+      "fact": "N52 discs, 12 x 3 mm, behind a 0.6 mm printed skin."
+    },
+    "Magnet_Cap_Belly*": {
+      "name": "Belly magnet cup",
+      "colour": "#B97A4F",
+      "role": "Holds a belly magnet. Push it in from underneath and turn it a sixth of a turn until it clicks. No tools.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 135
+      },
+      "fact": "A 0.3 mm bump makes the click."
+    },
+    "Dock_Pad*": {
+      "name": "Dock pad board (2 x 3 pads)",
+      "role": "Six flat contact pads under the belly: two for 5 V, two for ground, and the serial link in the middle row. Its back holds the dock-sense divider and two 1k resistors.",
+      "explode": {
+        "dir": [
+          0,
+          -1,
+          0
+        ],
+        "distance": 80
+      },
+      "fact": "Six pads, 2.54 mm apart, in two rows of three."
+    },
+    "Dock_Lead_Power*": {
+      "name": "Dock power pair",
+      "role": "Red and black 24 gauge wires from the pads, up beside the front left hip and over to the charge board. The red goes through a small ideal-diode board in its own tray, which stops a USB-C cable making the pads live; both wires end in the VIN and GND holes beside the charger's USB-C socket.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0
+        ],
+        "distance": 45
+      },
+      "fact": "It joins the charger where a USB-C cable would feed it."
+    },
+    "Dock_Lead_Signal*": {
+      "name": "Dock signal wires",
+      "role": "Three thin wires up the right wall to the head: dock sense to IO9, and the serial link to IO43 and IO44.",
+      "explode": {
+        "dir": [
+          -1,
+          0.3,
+          0
+        ],
+        "distance": 60
+      },
+      "fact": "Dock sense goes to pin IO9, so he knows he is docked."
+    },
+    "Collar*": {
+      "name": "Collar",
+      "role": "The neck stalk the head pivots on.",
+      "fact": "Every head wire passes through it with about 30 mm of slack."
+    },
+    "Collar_Tag*": {
+      "name": "Collar tag",
+      "role": "The logo tag. It swings a little, on purpose.",
+      "explode": {
+        "dir": [
+          0,
+          0,
+          1
+        ],
+        "distance": 80
+      },
+      "fact": "It swings about three times a second after every bump."
+    },
+    "Collar_Tag_Insert": {
+      "name": "Tag insert",
+      "colour": "#4A3326",
+      "role": "The logo face of the collar tag.",
+      "explode": {
+        "dir": [
+          0,
+          0,
+          1
+        ],
+        "distance": 100
+      },
+      "fact": "It swings about three times a second after every bump."
+    },
+    "Neck_Servo_Mount": {
+      "name": "Neck servo mount",
+      "role": "Holds the neck servo under the lid.",
+      "fact": "Hangs the neck servo under the lid, its shaft pointing forward."
+    },
+    "Neck_Pushrod": {
+      "name": "Neck push rod",
+      "colour": "#4A3326",
+      "role": "Links the neck servo to the head, so the head tilts one-to-one.",
+      "fact": "Two 10 mm arms and this rod make a parallelogram."
+    },
+    "MG90S_Neck": {
+      "name": "Neck servo",
+      "colour": "model",
+      "role": "Tilts the head up to 20 degrees each way.",
+      "fact": "A fast tilt needs only 0.14 kg.cm, against a 0.7 limit."
+    },
+    "Head_Front*": {
+      "name": "Head front",
+      "role": "The face. The screen sits behind its window. Its floor reaches the front of the neck stalk: that edge holds the head level at every tilt.",
+      "explode": {
+        "dir": [
+          0,
+          0.75,
+          1
+        ],
+        "distance": 250
+      },
+      "fact": "Five hooks click it on; to open the head, pull it straight forward."
+    },
+    "Head_Back*": {
+      "name": "Head back",
+      "role": "The back of the head. It slides onto the neck stalk from behind, turns on its sleeve and holds the speaker. Its floor is open over 52 mm, so the stalk and the push rod never touch it. The head front hooks onto it.",
+      "explode": {
+        "dir": [
+          0,
+          0.7,
+          -1
+        ],
+        "distance": 240
+      },
+      "fact": "Its floor opening is 52 mm wide, so nothing catches when he tilts."
+    },
+    "Guition*": {
+      "name": "Screen board (the brain)",
+      "colour": "model",
+      "role": "Spike's brain and face: a 4.3 inch screen with the main computer on its back.",
+      "explode": {
+        "dir": [
+          0,
+          0.7,
+          1
+        ],
+        "distance": 195
+      },
+      "fact": "A 480 x 272 pixel IPS touch screen, with an ESP32-S3 on its back."
+    },
+    "ESP32*": {
+      "name": "Camera board",
+      "colour": "model",
+      "role": "Runs the camera and streams what Spike sees.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0.5
+        ],
+        "distance": 205
+      },
+      "fact": "Stands upright behind the screen, in two rails."
+    },
+    "OV5640*": {
+      "name": "Camera",
+      "colour": "model",
+      "role": "The camera itself, looking out through the hole under the tuft.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0.5
+        ],
+        "distance": 235
+      },
+      "fact": "Probably the warmest part of the head while it streams."
+    },
+    "MS3625_Mic_Left*": {
+      "name": "Microphone (left)",
+      "colour": "model",
+      "role": "One of two ears that listen for his name.",
+      "explode": {
+        "dir": [
+          0.35,
+          1,
+          0
+        ],
+        "distance": 225
+      },
+      "fact": "The two mics use about 2 mA between them."
+    },
+    "MS3625_Mic_Right*": {
+      "name": "Microphone (right)",
+      "colour": "model",
+      "role": "One of two ears that listen for his name.",
+      "explode": {
+        "dir": [
+          -0.35,
+          1,
+          0
+        ],
+        "distance": 225
+      },
+      "fact": "The two mics use about 2 mA between them."
+    },
+    "Cavity_Speaker*": {
+      "name": "Speaker",
+      "colour": "model",
+      "role": "His 3 W voice, driven by the screen board.",
+      "explode": {
+        "dir": [
+          -0.5,
+          0.6,
+          -1
+        ],
+        "distance": 215
+      },
+      "fact": "3 W into 4 ohms, from the screen board's own amplifier."
+    },
+    "Screen_Clamp_*": {
+      "name": "Screen clamp",
+      "colour": "#4A3326",
+      "role": "One of four sliding clamps that hold the screen in.",
+      "explode": {
+        "dir": [
+          0,
+          0.75,
+          1
+        ],
+        "distance": 215
+      },
+      "fact": "Four clamps hold the screen without needing its mounting holes."
+    },
+    "Ear_Left*": {
+      "name": "Left ear",
+      "colour": "#B97A4F",
+      "role": "Flicks on a spring O-ring and settles back.",
+      "explode": {
+        "dir": [
+          0.6,
+          1,
+          0
+        ],
+        "distance": 270
+      },
+      "fact": "It stops at 16 degrees each way, so it never hits the tuft."
+    },
+    "Ear_Right*": {
+      "name": "Right ear",
+      "colour": "#B97A4F",
+      "role": "Flicks on a spring O-ring and settles back.",
+      "explode": {
+        "dir": [
+          -0.6,
+          1,
+          0
+        ],
+        "distance": 270
+      },
+      "fact": "It stops at 16 degrees each way, so it never hits the tuft."
+    },
+    "Ear_Tiller_*": {
+      "name": "Ear tiller",
+      "colour": "#4A3326",
+      "role": "The small sleeve each ear turns on.",
+      "explode": {
+        "distance": 250
+      },
+      "fact": "The ear's screw is its pivot."
+    },
+    "Tuft*": {
+      "name": "Forehead tuft",
+      "colour": "#B97A4F",
+      "role": "The fur tuft that hides the camera lens.",
+      "explode": {
+        "dir": [
+          0,
+          0.8,
+          1
+        ],
+        "distance": 295
+      },
+      "fact": "His signature: the camera lens hides right under it."
+    },
+    "Port_Door_Head": {
+      "name": "Port door",
+      "colour": "#4A3326",
+      "role": "Covers the screen board's USB-C socket.",
+      "explode": {
+        "dir": [
+          -1,
+          1,
+          0
+        ],
+        "distance": 255
+      }
+    },
+    "Port_Blank_Head": {
+      "name": "Port blank",
+      "colour": "#4A3326",
+      "role": "A blank cover for the other side of the head.",
+      "explode": {
+        "dir": [
+          1,
+          1,
+          0
+        ],
+        "distance": 255
+      }
+    },
+    "Cap_Neck": {
+      "name": "Neck cap",
+      "colour": "#F1DEC2",
+      "role": "Covers the head's pivot screw.",
+      "explode": {
+        "dir": [
+          0,
+          0.7,
+          -1
+        ],
+        "distance": 270
+      }
+    },
+    "Thigh_*_Cover": {
+      "name": "Thigh, inner cover",
+      "role": "The inner half of a thigh. The knee servo lives inside.",
+      "explode": {
+        "distance": 120
+      }
+    },
+    "Thigh_*_Outer": {
+      "name": "Thigh, outer half",
+      "colour": "#F1DEC2",
+      "role": "The outer half of a thigh.",
+      "explode": {
+        "distance": 155
+      }
+    },
+    "Shin_*_Cover": {
+      "name": "Shin, inner cover",
+      "role": "The inner half of a shin. The wheel servo lives inside.",
+      "explode": {
+        "distance": 132
+      }
+    },
+    "Shin_*_Outer": {
+      "name": "Shin, outer half",
+      "colour": "#F1DEC2",
+      "role": "The outer half of a shin.",
+      "explode": {
+        "distance": 168
+      }
+    },
+    "Wheel_*": {
+      "name": "Wheel",
+      "role": "Driven by a continuous-rotation servo, so Spike can skate along.",
+      "explode": {
+        "distance": 190
+      },
+      "fact": "Moving, its servo draws 120 to 250 mA."
+    },
+    "Cap_Hip_*": {
+      "name": "Hip cap",
+      "colour": "#4A3326",
+      "role": "Covers the hip horn screw.",
+      "explode": {
+        "distance": 180
+      },
+      "fact": "One of 13 caps that hide the servo horn screws."
+    },
+    "Cap_Knee_*": {
+      "name": "Knee cap",
+      "colour": "#4A3326",
+      "role": "Covers the knee horn screw.",
+      "explode": {
+        "distance": 195
+      },
+      "fact": "One of 13 caps that hide the servo horn screws."
+    },
+    "Cap_Wheel_*": {
+      "name": "Wheel cap",
+      "colour": "#4A3326",
+      "role": "Covers the wheel horn screw.",
+      "explode": {
+        "distance": 212
+      },
+      "fact": "One of 13 caps that hide the servo horn screws."
+    },
+    "MG90S_Knee_*": {
+      "name": "Knee servo",
+      "colour": "model",
+      "role": "Bends the knee.",
+      "explode": {
+        "distance": 136
+      },
+      "fact": "An MG90S servo. It works from 4.8 to 6 V."
+    },
+    "MG90S-360_Wheel_*": {
+      "name": "Wheel servo (360)",
+      "colour": "model",
+      "role": "Spins the wheel all the way round.",
+      "explode": {
+        "distance": 150
+      },
+      "fact": "Moving, it draws 120 to 250 mA."
+    },
+    "Tail_Root": {
+      "name": "Tail root",
+      "colour": "#B97A4F",
+      "role": "Joins the tail to its servo."
+    },
+    "Tail": {
+      "name": "Tail",
+      "role": "Wags when Spike is happy.",
+      "explode": {
+        "distance": 140
+      }
+    },
+    "Cap_Tail": {
+      "name": "Tail cap",
+      "colour": "#4A3326",
+      "role": "Covers the tail horn screw.",
+      "explode": {
+        "distance": 160
+      },
+      "fact": "One of 13 caps that hide the servo horn screws."
+    },
+    "Ideal_Diode*": {
+      "name": "Ideal-diode board",
+      "role": "A Pololu ideal-diode board in clear heat-shrink. It lets the dock's 5 V into the charger but never lets a USB-C cable push power back out to the belly pads, and it loses almost nothing doing it.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0
+        ],
+        "distance": 55
+      },
+      "fact": "Even so: never plug in a cable while he sits on a powered dock."
+    },
+    "Diode_Cradle*": {
+      "name": "Diode tray",
+      "role": "A small printed tray that keys onto the second wire clip and holds the ideal-diode board off the charger, with air round it.",
+      "explode": {
+        "dir": [
+          0,
+          1,
+          0
+        ],
+        "distance": 50
+      },
+      "fact": "Holds the diode board off the charger, with air around it."
+    }
+  },
+  "defaultCamera": "three-quarter",
+  "cameras": [
+    {
+      "id": "three-quarter",
+      "label": "3/4",
+      "dir": [
+        1,
+        0.55,
+        1.3
+      ],
+      "zoom": 1
+    },
+    {
+      "id": "front",
+      "label": "Front",
+      "dir": [
+        0,
+        0.18,
+        1
+      ],
+      "zoom": 1
+    },
+    {
+      "id": "side",
+      "label": "Side",
+      "dir": [
+        1,
+        0.15,
+        0
+      ],
+      "zoom": 1
+    },
+    {
+      "id": "rear",
+      "label": "Back",
+      "dir": [
+        -0.9,
+        0.6,
+        -1.3
+      ],
+      "zoom": 1
+    },
+    {
+      "id": "belly",
+      "label": "Belly",
+      "dir": [
+        0.5,
+        -1,
+        0.7
+      ],
+      "zoom": 1
+    }
+  ],
+  "build": [
+    {
+      "title": "The tub and its lasers",
+      "caption": "The tub is Spike's lower body. Clean every slot and pre-thread the screw holes first. Five laser boards sit in it: three look down for the desk edge, one forward and one back.",
+      "parts": [
+        "Torso_Bottom*",
+        "VL53L0X_DeskEdge_*",
+        "VL53L0X_Obstacle_*"
+      ]
+    },
+    {
+      "title": "Hip servos",
+      "caption": "Four hip servos slide in from outside, tabs on the outside of the wall. Centre them first and never turn a shaft by hand.",
+      "parts": [
+        "MG90S_Hip_*"
+      ]
+    },
+    {
+      "title": "Dock pad board and belly magnets",
+      "caption": "The six-pad board sits in the belly window, its three thin wires in the groove on the right. Each belly magnet goes north face down on the N in its cup, and the cup twists in from underneath until it clicks.",
+      "parts": [
+        "Dock_Pad*",
+        "Dock_Lead_Signal*",
+        "Magnets_Belly*",
+        "Magnet_Cap_Belly*"
+      ],
+      "camera": "belly"
+    },
+    {
+      "title": "Servo driver boards",
+      "caption": "Board A goes on the left wall and board B, with its A0 pad bridged, on the right. Swapping them makes both answer at the same address.",
+      "parts": [
+        "PCA9685_*"
+      ]
+    },
+    {
+      "title": "Protection board and fuse",
+      "caption": "The protection board sits 1.5 mm up on four pads, with the 24 AWG dock power pair in its groove under it. The fuse lies on the switch body on a foam block.",
+      "parts": [
+        "BMS*",
+        "Fuse_Holder*"
+      ]
+    },
+    {
+      "title": "USB-C charge board and the dock pair",
+      "caption": "Tape the charge board on its ledge so the socket lines up with the rump slot. The red and black dock pair runs from the pads, up beside the front left hip, through two wire clips and onto the charger's VIN and GND holes beside its USB-C socket. The red passes through the ideal-diode board, which clips into a small printed tray on the second wire clip.",
+      "parts": [
+        "USB-C*",
+        "Dock_Lead_Power*",
+        "Diode_Cradle*",
+        "Ideal_Diode*"
+      ],
+      "camera": "rear"
+    },
+    {
+      "title": "Power switch",
+      "caption": "The rocker clips into the belly with its wires already soldered. It should beep through only when it is ON.",
+      "parts": [
+        "KCD1*"
+      ],
+      "camera": "belly"
+    },
+    {
+      "title": "Battery, door and ballast",
+      "caption": "The cell holder fits on the door with the clamp. Under each rear hip, five slices of flat steel stand on edge and a flat cover presses in over them. Keep the cells out until first power-on.",
+      "parts": [
+        "Battery_Pack*",
+        "Battery_Clamp*",
+        "Battery_Door*",
+        "Ballast_Steel_*",
+        "Ballast_Cover_*"
+      ],
+      "camera": "belly"
+    },
+    {
+      "title": "Side panels",
+      "caption": "The panels clip on with no screws. Press both ends together so a hook cannot snap.",
+      "parts": [
+        "Side_Panel_*"
+      ]
+    },
+    {
+      "title": "Power hub and sensors",
+      "caption": "The hub with its two 5 V converters, the touch board, the motion sensor, the two side lasers and the sensor regulator go under the lid. Lay the capacitors on their sides.",
+      "parts": [
+        "Hub_*",
+        "AMS1117*",
+        "MPR121*",
+        "MPU6050*",
+        "VL53L0X_Side_*"
+      ]
+    },
+    {
+      "title": "Neck servo and push rod",
+      "caption": "The neck servo hangs on its mount with the push rod's lower eye 10 mm from its centre. That makes the head tilt one-to-one.",
+      "parts": [
+        "MG90S_Neck",
+        "Neck_Servo_Mount",
+        "Neck_Pushrod"
+      ]
+    },
+    {
+      "title": "Tail servo and back magnets",
+      "caption": "The tail servo screws in under the tail socket. Each back magnet goes north face down on the N in its cup, and the cup twists into the lid from the top until it clicks.",
+      "parts": [
+        "MG90S_Tail",
+        "Magnets_Back*",
+        "Magnet_Cap_Back*"
+      ]
+    },
+    {
+      "title": "The lid",
+      "caption": "In real life the lid is built upside down beside the tub and only closes in the close-up. It is shown in place here so the head has something to sit on.",
+      "parts": [
+        "Torso_Lid*"
+      ]
+    },
+    {
+      "title": "Collar",
+      "caption": "Feed every head lead through the collar first, with 30 mm of slack, then screw it to the lid.",
+      "parts": [
+        "Collar_v3*"
+      ]
+    },
+    {
+      "title": "Front left leg",
+      "caption": "Each leg is a hip, a knee and a 360 wheel servo. Never cut or shorten a servo lead.",
+      "parts": [
+        "group:leg-fl"
+      ]
+    },
+    {
+      "title": "Front right leg",
+      "caption": "The right legs are mirror images of the left ones. Bend each knee halfway to check the lead slides freely.",
+      "parts": [
+        "group:leg-fr"
+      ]
+    },
+    {
+      "title": "Back left leg",
+      "caption": "Lay the leads into the tub notches from above, then fit the hip screw and its cap.",
+      "parts": [
+        "group:leg-bl"
+      ]
+    },
+    {
+      "title": "Back right leg",
+      "caption": "With all four legs on, every lead should still beep end to end on the meter.",
+      "parts": [
+        "group:leg-br"
+      ]
+    },
+    {
+      "title": "Tail",
+      "caption": "Fit the tail to its root first, then the root onto the servo.",
+      "parts": [
+        "Tail",
+        "Tail_Root",
+        "Cap_Tail"
+      ],
+      "camera": "rear"
+    },
+    {
+      "title": "Gesture sensor, chest and rump bands",
+      "caption": "The gesture sensor sits in its chest pocket, then the bands snap on. The rump band is the one with the USB-C opening.",
+      "parts": [
+        "APDS*",
+        "Band_*"
+      ]
+    },
+    {
+      "title": "Head back and speaker",
+      "caption": "The speaker sits in the head back's fences first. With the lid on, the head back slides onto the stalk from behind, through its open floor slot: the crank pin goes into the push rod's top eye, the pivot hole onto the sleeve. Pivot screw from behind, neck cap in, push-rod screw from the front.",
+      "parts": [
+        "Head_Back*",
+        "Cap_Neck",
+        "Cavity_Speaker*"
+      ],
+      "camera": "rear"
+    },
+    {
+      "title": "Screen and clamps",
+      "caption": "Built into the head front on the bench, long before it goes on. The screen goes in face down, held by four sliding clamps. Do not over-tighten: the glass cracks if the board bends.",
+      "parts": [
+        "Guition*",
+        "Screen_Clamp_*"
+      ],
+      "camera": "rear"
+    },
+    {
+      "title": "Microphones and camera",
+      "caption": "Also in the head front, on the bench. The two round mics drop into their pockets, and the camera board stands upright in its rails behind the screen.",
+      "parts": [
+        "MS3625*",
+        "ESP32*",
+        "OV5640*"
+      ],
+      "camera": "rear"
+    },
+    {
+      "title": "Ears",
+      "caption": "Each ear turns on a small tiller and springs back on an O-ring. It stops at 16 degrees each way.",
+      "parts": [
+        "Ear_*"
+      ]
+    },
+    {
+      "title": "Head front clips on last",
+      "caption": "The head front, with the screen, mics, camera and ears already in it, goes on last: pushed straight back until the five hooks click. To open the head, only the head front comes off, pulled straight forward. Its floor edge then rests on the front of the stalk, so the head stays level when it tilts.",
+      "parts": [
+        "Head_Front*",
+        "Tuft*",
+        "Port_*"
+      ]
+    },
+    {
+      "title": "Collar tag",
+      "caption": "The tag goes on last, so it does not get knocked off. That is Spike, built.",
+      "parts": [
+        "Collar_Tag*"
+      ],
+      "camera": "front"
+    }
+  ],
+  "energy": {
+    "intro": "Follow the power from the wall socket to every part that moves, thinks, sees or speaks.",
+    "ghostOpacity": 0.07,
+    "liftDir": [
+      0,
+      1,
+      0
+    ],
+    "liftDistance": 85,
+    "points": {
+      "wall": {
+        "at": [
+          0,
+          18,
+          -175
+        ],
+        "label": "Wall charger"
+      },
+      "dock": {
+        "at": [
+          0,
+          -95,
+          38
+        ],
+        "label": "Desk dock: 2 x 3 spring pins"
+      }
+    },
+    "stages": [
+      {
+        "title": "The wall charger",
+        "badge": "5 V, 2 A",
+        "text": "Any 5 V USB charger plugs into the USB-C socket in Spike's rump (a 5 V 3 A one charges fastest), or he lies on the desk dock. He can charge switched on or off; for a long stay, switch him off.",
+        "parts": [
+          "Band_Rump"
+        ],
+        "path": [
+          "@wall",
+          "Band_Rump"
+        ],
+        "lift": [
+          0,
+          25,
+          -55
+        ],
+        "camera": "rear"
+      },
+      {
+        "title": "Or the desk dock",
+        "badge": "6 pads, ideal diode, charger",
+        "text": "On his desk dock, six pads under the belly touch a block of spring pins: two pads bring 5 V and two bring ground. A red and black pair carries it through an ideal-diode board (it loses almost nothing) to the charge board's input, the same place a USB-C cable feeds.",
+        "parts": [
+          "Dock_Pad*",
+          "Dock_Lead_Power*",
+          "Ideal_Diode*"
+        ],
+        "path": [
+          "@dock",
+          "Dock_Pad*",
+          "Dock_Lead_Power*",
+          "Ideal_Diode*",
+          "USB-C*"
+        ],
+        "lift": [
+          0,
+          -40,
+          0
+        ],
+        "camera": "belly"
+      },
+      {
+        "title": "The charge board",
+        "badge": "5 V in, up to 8.4 V out",
+        "text": "The charge board boosts the charger's 5 V up to 8.4 V. That is enough to fill two cells in series.",
+        "parts": [
+          "USB-C*"
+        ],
+        "path": [
+          "Band_Rump",
+          "USB-C*"
+        ],
+        "camera": "rear"
+      },
+      {
+        "title": "Cells and their guard",
+        "badge": "7.4 V, 3.5 Ah",
+        "text": "Two 18650 cells store about 26 Wh, enough for roughly 3 hours of mixed play. The protection board beside them cuts the power if anything goes out of range.",
+        "parts": [
+          "Battery_Pack*",
+          "BMS*"
+        ],
+        "path": [
+          "USB-C*",
+          "BMS*",
+          "Battery_Pack*"
+        ],
+        "camera": "three-quarter"
+      },
+      {
+        "title": "The fuse",
+        "badge": "7.5 A",
+        "text": "Everything leaves the battery through a 7.5 A fuse. If a wire ever shorts, the fuse melts first.",
+        "parts": [
+          "Fuse_Holder*"
+        ],
+        "path": [
+          "Battery_Pack*",
+          "BMS*",
+          "Fuse_Holder*"
+        ]
+      },
+      {
+        "title": "The power switch",
+        "badge": "6.0 to 8.4 V",
+        "text": "The rocker switch in the belly turns Spike on and off. All his running power goes through it; charging does not.",
+        "parts": [
+          "KCD1*"
+        ],
+        "path": [
+          "Fuse_Holder*",
+          "KCD1*"
+        ]
+      },
+      {
+        "title": "Two 5 V converters",
+        "badge": "7.4 V to 5 V",
+        "text": "Two small converters turn the battery's 7.4 V into a steady 5 V. One feeds only the servos and one feeds the brain, so a hard-working leg cannot reset his brain.",
+        "parts": [
+          "Hub_Mini560*",
+          "Hub_Cap*"
+        ],
+        "path": [
+          [
+            "KCD1*",
+            "Hub_Mini560_Servos*"
+          ],
+          [
+            "KCD1*",
+            "Hub_Mini560_Logic*"
+          ]
+        ]
+      },
+      {
+        "title": "Servo boards and 14 servos",
+        "badge": "5 V, about 7.6 A in a burst",
+        "text": "The servo converter feeds two driver boards, which pass the power to all 14 servos. When eight leg servos start together they pull about 7.6 A for a moment, the biggest load in Spike.",
+        "parts": [
+          "PCA9685*",
+          "MG90S*"
+        ],
+        "path": [
+          [
+            "Hub_Mini560_Servos*",
+            "PCA9685_Left*",
+            "MG90S_Hip_BackLeft"
+          ],
+          [
+            "Hub_Mini560_Servos*",
+            "PCA9685_Right*",
+            "MG90S_Hip_BackRight"
+          ],
+          [
+            "PCA9685_Left*",
+            "MG90S_Knee_FrontLeft"
+          ],
+          [
+            "PCA9685_Right*",
+            "MG90S_Knee_FrontRight"
+          ],
+          [
+            "PCA9685_Left*",
+            "MG90S_Tail"
+          ],
+          [
+            "PCA9685_Right*",
+            "MG90S_Neck"
+          ]
+        ]
+      },
+      {
+        "title": "The screen board: his brain",
+        "badge": "5 V",
+        "text": "The second converter feeds the screen board. It is Spike's brain and face, and it also powers the speaker and some small sensors.",
+        "parts": [
+          "Guition*"
+        ],
+        "path": [
+          "Hub_Mini560_Logic*",
+          "Collar_v3_4*",
+          "Guition*"
+        ]
+      },
+      {
+        "title": "The camera",
+        "badge": "5 V",
+        "text": "The camera board takes its own 5 V from the same converter. Streaming video probably makes it the warmest part of the head.",
+        "parts": [
+          "ESP32*",
+          "OV5640*"
+        ],
+        "path": [
+          "Hub_Mini560_Logic*",
+          "Collar_v3_4*",
+          "ESP32*"
+        ]
+      },
+      {
+        "title": "Sensors",
+        "badge": "3.3 V",
+        "text": "A tiny regulator makes 3.3 V for the seven laser sensors and the gesture sensor. The touch board and the two mics take 3.3 V from the screen board.",
+        "parts": [
+          "AMS1117*",
+          "VL53L0X*",
+          "APDS*",
+          "MPR121*",
+          "MS3625*"
+        ],
+        "path": [
+          [
+            "Hub_Mini560_Logic*",
+            "AMS1117*"
+          ],
+          [
+            "AMS1117*",
+            "VL53L0X_Side_Left"
+          ],
+          [
+            "AMS1117*",
+            "VL53L0X_Obstacle_Front"
+          ],
+          [
+            "AMS1117*",
+            "APDS*"
+          ],
+          [
+            "Guition*",
+            "MPR121*"
+          ],
+          [
+            "Guition*",
+            "MS3625_Mic_Left*"
+          ],
+          [
+            "Guition*",
+            "MS3625_Mic_Right*"
+          ]
+        ]
+      },
+      {
+        "title": "The speaker",
+        "badge": "3 W",
+        "text": "The screen board's own amplifier drives the 3 W speaker in the back of the head. Loud sounds take the most power; normal speech takes much less.",
+        "parts": [
+          "Cavity_Speaker*"
+        ],
+        "path": [
+          "Guition*",
+          "Cavity_Speaker*"
+        ],
+        "camera": "rear"
+      },
+      {
+        "title": "Docking sense and the rover link",
+        "badge": "pad 5 V / 2 to IO9",
+        "text": "A divider on the back of the pad board halves the dock's 5 V and sends it up a thin wire to the brain, so Spike knows he is docked. The middle row of pads is a serial link to the rover, through two 1k resistors.",
+        "parts": [
+          "Dock_Pad*",
+          "Dock_Lead_Signal*",
+          "Magnets_Belly*",
+          "Magnet_Cap_Belly*"
+        ],
+        "path": [
+          "Dock_Pad*",
+          "Dock_Lead_Signal*",
+          "Collar_v3_4*",
+          "Guition*"
+        ],
+        "lift": [
+          0,
+          -60,
+          0
+        ],
+        "camera": "belly"
+      }
+    ]
+  },
+  "scroll": {
+    "kicker": "Inside Spike",
+    "explodeAt": [
+      0.05,
+      0.3
+    ],
+    "assembleAt": [
+      0.84,
+      0.96
+    ],
+    "sweep": [
+      -26,
+      24
+    ],
+    "dim": 0.16,
+    "beatDim": 0.1,
+    "overlap": 0.22,
+    "static": {
+      "title": "Spike, taken apart",
+      "text": "Every part from his CAD, spread out. Hover or tap a part, or pick a card, to see what it does."
+    },
+    "layers": [
+      {
+        "title": "Legs out",
+        "parts": [
+          "group:leg-fl",
+          "group:leg-fr",
+          "group:leg-bl",
+          "group:leg-br",
+          "group:tail"
+        ]
+      },
+      {
+        "title": "Lid up",
+        "parts": [
+          "Torso_Lid*",
+          "Side_Panel_*",
+          "Band_*"
+        ],
+        "carry": {
+          "parts": [
+            "group:head",
+            "group:neck"
+          ],
+          "by": [
+            0,
+            150,
+            0
+          ]
+        }
+      },
+      {
+        "title": "Boards lift",
+        "parts": [
+          "group:lid",
+          "group:power",
+          "group:sensors",
+          "group:dock",
+          "group:hip-servos",
+          "group:body",
+          "Ideal_Diode*",
+          "Diode_Cradle*"
+        ]
+      },
+      {
+        "title": "Head opens",
+        "parts": [
+          "group:head",
+          "group:neck"
+        ]
+      }
+    ],
+    "beats": [
+      {
+        "at": 0,
+        "title": "Under the coat",
+        "text": "Every part here comes straight from his CAD, each in its real place. Keep scrolling and he comes apart, layer by layer."
+      },
+      {
+        "at": 0.315,
+        "title": "The brain",
+        "card": "brain",
+        "text": "A 4.3 inch touch screen with an ESP32-S3 computer on its back. It draws his face and runs his whole personality.",
+        "camera": [
+          0.55,
+          0.35,
+          1.2
+        ]
+      },
+      {
+        "at": 0.42,
+        "title": "Power",
+        "card": "power",
+        "text": "Two 18650 cells store about 26 Wh. Separate 5 V converters feed his muscles and his brain, so a busy leg can't reset his thoughts."
+      },
+      {
+        "at": 0.525,
+        "title": "Muscles",
+        "card": "servos",
+        "text": "Fourteen small servos: a hip, a knee and a wheel in every leg, plus one for his tail and one for his neck."
+      },
+      {
+        "at": 0.63,
+        "title": "Senses",
+        "card": "lasers",
+        "parts": [
+          "VL53L0X*",
+          "OV5640*",
+          "ESP32*",
+          "MS3625*",
+          "APDS*",
+          "MPU6050*",
+          "MPR121*"
+        ],
+        "text": "Seven laser sensors, a camera under his tuft, two microphones, a gesture sensor, a motion sensor and touch pads on his back and head."
+      },
+      {
+        "at": 0.735,
+        "title": "The dock",
+        "card": "dock",
+        "text": "Two magnets and six flat pads under his belly, made to snap him onto a charging dock.",
+        "camera": [
+          0.85,
+          -0.32,
+          1.15
+        ],
+        "parts": [
+          "Dock_Pad*",
+          "Magnets_Belly*",
+          "Magnet_Cap_Belly*"
+        ],
+        "focusMin": 0.32
+      },
+      {
+        "at": 0.85,
+        "title": "All together",
+        "text": "Every part back in its place: just over a kilogram of dog. The prototype is being built now."
+      }
+    ],
+    "cards": [
+      {
+        "id": "brain",
+        "title": "Screen and brain",
+        "text": "A 4.3 inch touch screen with an ESP32-S3 computer on its back. It draws his face, runs his personality, plays his voice and drives every servo.",
+        "fact": "480 x 272 pixel IPS touch screen",
+        "parts": [
+          "Guition*",
+          "Screen_Clamp_*"
+        ]
+      },
+      {
+        "id": "servos",
+        "title": "Servos and legs",
+        "text": "Each leg has a hip, a knee and a driven wheel. He drives, sits, lies down, play-bows and wags his tail; walking and give paw are in development.",
+        "fact": "14 servos, run by two servo boards",
+        "parts": [
+          "group:leg-fl",
+          "group:leg-fr",
+          "group:leg-bl",
+          "group:leg-br",
+          "MG90S_Hip_*",
+          "PCA9685*",
+          "group:tail",
+          "MG90S_Tail"
+        ]
+      },
+      {
+        "id": "power",
+        "title": "Battery and power",
+        "text": "Two 18650 cells in his belly, with a protection board, a 7.5 A fuse and a rocker switch. He charges from any 5 V USB-C charger.",
+        "fact": "About 26 Wh: roughly 3 hours of mixed play (estimate)",
+        "parts": [
+          "Battery_Pack*",
+          "Battery_Door*",
+          "Battery_Clamp*",
+          "BMS*",
+          "Fuse_*",
+          "USB-C*",
+          "KCD1*",
+          "Hub_*",
+          "AMS1117*"
+        ]
+      },
+      {
+        "id": "camera",
+        "title": "Camera",
+        "text": "An OV5640 camera on its own small board peeks out under his forehead tuft. It only sends pictures to your own laptop or phone.",
+        "fact": "Hidden under the caramel tuft on his forehead",
+        "parts": [
+          "ESP32*",
+          "OV5640*",
+          "Tuft*"
+        ]
+      },
+      {
+        "id": "voice",
+        "title": "Speaker and mics",
+        "text": "A 3 W speaker in the back of his head is his voice, driven by the screen board's own amplifier. Two microphones in his face listen for his name.",
+        "fact": "3 W, 4 ohm speaker",
+        "camera": "rear",
+        "parts": [
+          "Cavity_Speaker*",
+          "MS3625*"
+        ]
+      },
+      {
+        "id": "lasers",
+        "title": "Laser sensors",
+        "text": "Seven tiny laser rangefinders measure distance: three look down for the desk edge, one looks ahead, one behind and one to each side.",
+        "fact": "7 x VL53L0X, on their own 3.3 V supply",
+        "parts": [
+          "VL53L0X*"
+        ]
+      },
+      {
+        "id": "dock",
+        "title": "Magnetic dock",
+        "text": "Two 12 mm magnets in twist-lock cups pull him onto his dock, and six flat pads under his belly take the charge. No plug to fiddle with.",
+        "fact": "Pads: two 5 V, two ground, two serial",
+        "camera": "belly",
+        "parts": [
+          "Dock_*",
+          "Magnets_Belly*",
+          "Magnet_Cap_Belly*",
+          "Ideal_Diode*",
+          "Diode_Cradle*"
+        ]
+      },
+      {
+        "id": "head",
+        "title": "Neck and head",
+        "text": "His head hangs from a pivot just above its centre of weight, so one small servo can tilt it like a curious dog. His ears flick on springs and settle back.",
+        "fact": "Tilts up to 20 degrees each way",
+        "parts": [
+          "group:neck",
+          "Head_*",
+          "Ear_*",
+          "Cap_Neck",
+          "Port_*"
+        ]
+      }
+    ],
+    "apartLabel": "Taking apart",
+    "togetherLabel": "Back together",
+    "focusMin": 0.6
+  }
+}
