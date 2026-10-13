@@ -141,10 +141,14 @@ page (the header and footer blocks are repeated in each file) and to `sitemap.xm
 ## Edit the "Inside Spike" scroll story (beats, cards and part facts)
 
 The scroll section is the first thing under the Home hero, and it is also at the top of `inside-spike.html`.
-Both use the same component (`<exploded-view mode="scroll">`, version 1.3.0) and the same manifest, so one edit
-changes both. Since 1.3.0 the stage is full-screen, edge to edge: the caption, the progress dots, the beat's part
-card, the Parts button (all 8 cards in a drawer, or a sheet on phones) and the Cream / Chocolate switch float over
-the 3D, and the site header slides away while the stage is pinned (`site.css`, the `data-pinned` rule).
+Both use the same component (`<exploded-view mode="scroll" layout="minimal">`, version 1.4.0) and the same
+manifest, so one edit changes both. The stage is full-screen, edge to edge, and since 1.4.0 it follows iyO's
+"Details" section: Spike big and centred, no captions on screen, only a small "INSIDE SPIKE" label top left (with
+"Spike", or the part group in focus), a small Parts chip (all 8 cards in a drawer, or a sheet on phones) and the
+Cream / Chocolate switch top right. Hovering a part (or tapping it on a phone) shows a small dark card with a
+picture of that part, its name and a short line or two. The site header slides away while the stage is pinned
+(`site.css`, the `data-pinned` rule). Taking `layout="minimal"` off the tag brings back the 1.3.0 look (big
+captions bottom left, beat card, progress dots).
 All of its words live in the HUMAN manifest, never in `geometry.json` (that file is rewritten by every CAD export):
 
 - edit `preview_3d/exploded_v3_4g/manifest.json` (the source), then copy it to the site with
@@ -152,7 +156,9 @@ All of its words live in the HUMAN manifest, never in `geometry.json` (that file
 
 What to change, and where in that file:
 
-- **The captions (beats):** `scroll.beats`. Each has `at` (where it appears, from 0 = the top of the section to
+- **The captions (beats):** `scroll.beats`. With the minimal layout their words are read only by screen readers;
+  what shows is the top-left name, which is the beat's `label` (only "Senses" has one) or its card's title while
+  Spike is fully apart, and `scroll.name` ("Spike") the rest of the time. Each has `at` (where it appears, from 0 = the top of the section to
   1 = the end), a `title` and one or two short sentences of `text`. `card` names the card that opens with it,
   and `parts` (optional) the parts that light up and get framed big while he is fully apart. `camera`
   (optional) turns the view for that beat: a camera id, or a direction such as `[0.85, -0.32, 1.15]` (from a
@@ -164,10 +170,18 @@ What to change, and where in that file:
   `text` of two or three sentences, one short `fact`, and the `parts` that light up. `camera` only picks the
   angle of the small picture, which is drawn from the 3D model automatically.
 - **A part's hover details:** in `parts` (or in its group in `groups`): `name`, `role` (what it does) and
-  `fact` (one true fact). A group's `fact` is used for every part in it that has no fact of its own.
+  `fact` (one true fact). A group's `fact` is used for every part in it that has no fact of its own. The hover card
+  shows `role` and `fact` together; when they run long (past about 130 characters), give the part a `brief` (two
+  or three short lines, shortened from the role and fact, nothing new) and the card shows that instead. 19 parts
+  have one now. The picture in the card is drawn from the 3D model automatically.
+- **How the minimal layout feels:** `scroll.hoverDim` (0.42: how faint the other parts get while you hover one),
+  `scroll.beatDim` (0.28: the same while a beat frames its group), `scroll.focusMin` (0.42) and a beat's own
+  `focusMin` (the dock: 0.22) for how close a beat zooms, `scroll.spread` (0.8: the scroll story takes him apart
+  to 80 % of the Explode tab's distances, so the parts are bigger on screen) and `scroll.apartTilt` (0.2: on a
+  landscape screen the camera looks a little more level while he is apart).
 - **The order he comes apart:** `scroll.layers` (legs out, lid up, boards lift, head opens). `carry` lets the
-  head ride up with the lid so nothing passes through anything. The layer titles show in a small pill
-  ("Taking apart · Lid up"); its words are `scroll.apartLabel` and `scroll.togetherLabel`.
+  head ride up with the lid so nothing passes through anything. In the 1.3.0 layout the layer titles show in a
+  small pill ("Taking apart · Lid up"); its words are `scroll.apartLabel` and `scroll.togetherLabel`.
 - **How far the parts spread:** each group's and part's `explode` (`distance` in mm, `add` for an extra
   offset). The legs go out 140 mm and front/back legs 55 mm apart; these are shared with the Explode tab on
   `inside-spike.html`.
@@ -181,7 +195,10 @@ The page side, if ever needed: the section's attributes (`scroll-length`, 680 = 
 scroll, `stage`, `stage-labels`, `storage-key`, `parts-title`, and `max-dpr` if you ever need to cap the
 resolution) are on the `<exploded-view mode="scroll">` tag in `index.html` and `inside-spike.html`; the
 visitor's Cream / Chocolate choice is remembered under the key `spike-stage`. The poster that shows until the
-3D is ready is `assets/img/robot/spike-3d-whole.webp`, a transparent render made from the component
-(`ev.snapshot()`); re-make it after a CAD change that alters his outside. After any change, bump the `?v=` on
+3D is ready is `assets/img/robot/spike-3d-opening.webp` (1040 x 1726): a transparent render of whole Spike at the
+story's exact opening camera, cropped tight to his part boxes and without the floor shadow, so the swap to 3D
+does not move or turn him. Re-make it after a CAD change that alters his outside, or a change to the default
+camera or `scroll.sweep`, and put its new width and height on the `<img>` in both pages. (The older square
+`spike-3d-whole.webp` is no longer used by the pages but is kept.) After any change, bump the `?v=` on
 the manifest and component links in both pages so visitors get the new copy (and the `site.css?v=` when you
 touch the CSS), and update `sitemap.xml`.

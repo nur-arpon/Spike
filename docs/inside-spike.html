@@ -28,14 +28,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&amp;family=Inter:wght@400..700&amp;display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=20261014b">
+<link rel="stylesheet" href="assets/css/site.css?v=20261014c">
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
 } }
 </script>
-<script type="module" src="assets/components/exploded-view.js?v=1.3.0"></script>
+<script type="module" src="assets/components/exploded-view.js?v=1.4.0"></script>
 <style>
 exploded-view {
   --ev-font: var(--body);
@@ -61,8 +61,8 @@ exploded-view {
 <main id="main">
 <h1 class="sr-only">Inside Spike: take the robot dog apart, piece by piece</h1>
 <section class="details" aria-label="Scroll to take Spike apart and put him back together">
-  <exploded-view mode="scroll" src="assets/products/spike/manifest.json?v=v3.4g-scroll2" lazy stage="dark" stage-toggle stage-labels="Cream,Chocolate" storage-key="spike-stage" scroll-length="680" parts-title="Spike's main parts">
-    <img slot="poster" src="assets/img/robot/spike-3d-whole.webp" width="1200" height="1200" alt="Spike the robot dog in 3D, whole, before he comes apart" decoding="async" fetchpriority="high">
+  <exploded-view mode="scroll" layout="minimal" src="assets/products/spike/manifest.json?v=v3.4g-scroll3" lazy stage="dark" stage-toggle stage-labels="Cream,Chocolate" storage-key="spike-stage" scroll-length="680" parts-title="Spike's main parts">
+    <img slot="poster" src="assets/img/robot/spike-3d-opening.webp" width="1040" height="1726" alt="Spike the robot dog in 3D, whole, before he comes apart" decoding="async" fetchpriority="high">
   </exploded-view>
   <script>(function () { try { var s = localStorage.getItem('spike-stage'); if (s === 'light' || s === 'dark') document.querySelector('exploded-view[mode="scroll"]').setAttribute('stage', s); } catch (e) { /* no storage: keep the default */ } })();</script>
   <noscript><p class="container muted small" style="padding-top:20px">Turn on JavaScript to take Spike apart in 3D.</p></noscript>
@@ -75,7 +75,7 @@ exploded-view {
       <h2 class="h2" id="explore-title">Take him apart <em>your</em> way.</h2>
       <p class="lead">Pull him apart with a slider, build him one step at a time the way it happens on the bench, or follow the power from the wall socket to every part that moves, thinks and speaks.</p>
     </div>
-    <exploded-view src="assets/products/spike/manifest.json?v=v3.4g-scroll2" hide-title theme="auto" link-hash></exploded-view>
+    <exploded-view src="assets/products/spike/manifest.json?v=v3.4g-scroll3" hide-title theme="auto" link-hash></exploded-view>
     <p class="muted small inside-note">This is Spike v3.4g, exported straight from the CAD in his standing pose, so every part sits in its real place. The electronics are the CAD's own simple models, so most boards show as plain blocks. Screws, servo horns and servo leads are left out. He has not been printed yet: this is the design, not a photo.</p>
     <p class="muted small inside-note">The 3D parts (about 2.6 MB) load once for the whole page. Drag to spin, pinch or scroll to zoom, and tap a part to see what it does.</p>
     <p class="inside-cta"><a class="btn btn--primary" href="robot.html">See the finished look</a><a class="btn btn--ghost" href="updates.html">Follow the updates</a></p>

@@ -626,7 +626,7 @@ picture { display: block; }
   .hero .stage-wrap { width: min(100%, calc(100vh - 300px)); width: min(100%, calc(100svh - 300px)); justify-self: center; }
 }
 
-/* ---------- Inside Spike scroll story (exploded-view mode="scroll" 1.3.0), on Home and Inside Spike ----------
+/* ---------- Inside Spike scroll story (exploded-view mode="scroll" 1.4.0, layout="minimal"), on Home and Inside Spike ----------
    The stage is full-screen and edge to edge. While it is pinned (the component sets data-pinned) the site header
    slides away, and it comes back as the section ends. */
 .details { position: relative; }
@@ -647,6 +647,9 @@ body:has(.details exploded-view[data-pinned]) .site-header:not(.menu-open) { tra
 }
 .details exploded-view[stage="light"]:not(:defined) { background: radial-gradient(120% 100% at 62% 38%, #FFFAF2, #E8D2B6); }
 .details exploded-view:not(:defined) > img { width: min(78vh, 88vw); width: min(78svh, 88vw); height: auto; aspect-ratio: 1; object-fit: contain; }
+/* 1.4.0 layout="minimal": the poster is a tight render of the whole model, contained in the same centred box the 3D
+   fills (84 % of the width, 82 % of the height), so the swap to 3D does not move him */
+.details exploded-view[layout="minimal"]:not(:defined) > img { width: 84vw; height: 82vh; height: 82svh; aspect-ratio: auto; object-fit: contain; }
 .details-foot {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 20px;
   padding-block: 24px 8px; text-align: center;

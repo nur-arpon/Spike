@@ -4,6 +4,8 @@
  * and (1.2.0) mode="scroll": a sticky stage that the page scroll takes apart and puts back together, with part cards.
  * 1.3.0: the scroll stage is full-screen (edge to edge), framed per beat, with overlay captions, a beat card,
  * a Parts drawer and an adaptive pixel ratio.
+ * 1.4.0: layout="minimal" for the scroll stage: no captions, the model big and centred, a small top-left label,
+ * and an iyO-style hover card (part render, name, two or three short lines) by the pointer.
  * One ES module, no build step. Needs an import map that maps "three" and "three/addons/" (see README.md).
  * All product content lives in the manifest JSON; this file holds no product knowledge.
  * (c) Nur Ifran Arpon / SpaceZ.
@@ -14,7 +16,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-const VERSION = '1.3.0';
+const VERSION = '1.4.0';
 const MODES = ['explode', 'build', 'energy'];
 /** 1.2.0: one model cache for the whole page, so two views of the same product (scroll + tabs) download each GLB once.
  *  Each view clones the scene and gives it its own materials, so sharing is safe. */
@@ -260,6 +262,7 @@ const SCROLL_CSS = /* css */ `
   --ev-scroll-length: 640vh;
   --ev-panel-width: 380px;
   --ev-gutter: clamp(16px, 3.4cqi, 56px);
+  --ev-mono-font: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
   /* dark stage (chocolate) */
   --sv-hi: #3B2B21; --sv-lo: #120D0A; --sv-panel: rgba(28, 21, 16, .86); --sv-scrim: rgba(18, 13, 10, .78);
   --sv-ink: #F6EADB; --sv-ink-2: #DCC8B4; --sv-ink-3: #B39A85;
@@ -499,6 +502,87 @@ const SCROLL_CSS = /* css */ `
   .sv-dots { right: 28px; }
 }
 
+/* 1.4.0 layout="minimal": the product, big and centred, and almost no words. A small top-left label (a mono
+   kicker and the product or group name), small chips top right, a tiny chevron, and a hover card by the pointer.
+   The caption stays in the page for screen readers only. */
+.sv-label, .sv-hc, .sv-mcue { display: none; }
+:host([data-minimal]) .sv-wash, :host([data-minimal]) .sv-dots, :host([data-minimal]) .sv-bcard, :host([data-minimal]) .sv-tip { display: none; }
+:host([data-minimal]) .sv-beat {
+  position: absolute; left: 0; top: 0; right: auto; bottom: auto; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+:host([data-minimal]) .sv-poster { left: 8%; top: 9%; width: 84%; height: 82%; }
+/* the page's own img rules (height: auto, max-width) must not undo the contain fit */
+:host([data-minimal]) .sv-poster ::slotted(img) { position: absolute; left: 0; top: 0; width: 100% !important; height: 100% !important; max-width: none !important; object-fit: contain !important; }
+:host([data-minimal]) .sv-label {
+  display: grid; gap: 5px; position: absolute; z-index: 5; left: var(--ev-gutter); top: calc(16px + env(safe-area-inset-top, 0px));
+  pointer-events: none; max-width: calc(100% - 150px);
+}
+.sv-label-k {
+  font-family: var(--ev-mono-font); font-size: 10.5px; font-weight: 500; line-height: 1.2; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--sv-ink-3);
+}
+.sv-label-n {
+  font-size: 13.5px; font-weight: 600; line-height: 1.25; color: var(--sv-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: opacity .25s ease;
+}
+.sv-label-n.swap { opacity: 0; }
+:host([data-minimal]) .sv-chips { top: calc(12px + env(safe-area-inset-top, 0px)); right: 12px; gap: 6px; }
+:host([data-minimal]) .sv-chip, :host([data-minimal]) .sv-toggle { background: color-mix(in srgb, var(--sv-seg) 70%, transparent); }
+:host([data-minimal]) .sv-chip[aria-expanded="true"] { background: var(--sv-seg-on); color: var(--sv-seg-on-ink); }
+:host([data-minimal]) .sv-chip {
+  position: relative; width: 32px; min-height: 32px; height: 32px; padding: 0; justify-content: center; gap: 0;
+}
+:host([data-minimal]) .sv-chip svg { width: 15px; height: 15px; }
+:host([data-minimal]) .sv-chip #partsLbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:host([data-minimal]) .sv-toggle { padding: 2px; gap: 0; }
+:host([data-minimal]) .sv-toggle-lbl { display: none; }
+:host([data-minimal]) .sv-toggle button { min-height: 28px; padding: 0 10px; font-size: .74rem; font-weight: 600; }
+/* touch screens get a little more to aim at */
+@media (pointer: coarse) {
+  :host([data-minimal]) .sv-chip { width: 38px; min-height: 38px; height: 38px; }
+  :host([data-minimal]) .sv-toggle button { min-height: 34px; padding: 0 12px; }
+}
+:host([data-minimal]) .sv-mcue {
+  display: grid; place-items: center; position: absolute; z-index: 3; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  width: 28px; height: 28px; margin-left: -14px; color: var(--sv-ink-3); pointer-events: none; transition: opacity .3s;
+}
+.sv-mcue svg { width: 18px; height: 18px; animation: sv-bob 1.8s ease-in-out infinite; }
+.sv-mcue.gone { opacity: 0; visibility: hidden; }
+
+/* the hover card: dark glass, a small render of the part, its name and two or three short lines, corner ticks */
+:host([data-minimal]) .sv-hc {
+  display: flex; position: absolute; left: 0; top: 0; z-index: 7; width: max-content; max-width: min(300px, calc(100% - 24px));
+  gap: 12px; align-items: flex-start; padding: 12px 14px 12px 12px; border-radius: 4px;
+  background: rgba(16, 12, 10, .74); border: 1px solid rgba(255, 255, 255, .07);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15); backdrop-filter: blur(16px) saturate(1.15);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .3); color: #fff; pointer-events: none;
+  opacity: 0; visibility: hidden; transform: scale(.94); transform-origin: var(--hc-ox, 0) var(--hc-oy, 0);
+  transition: opacity .17s ease, transform .19s cubic-bezier(.2, .7, .2, 1), visibility 0s linear .19s;
+}
+:host([data-minimal]) .sv-hc.on { opacity: 1; visibility: visible; transform: none; transition: opacity .17s ease, transform .19s cubic-bezier(.2, .7, .2, 1); }
+.sv-hc .tk { position: absolute; width: 7px; height: 7px; border: 0 solid rgba(255, 255, 255, .55); }
+.sv-hc .tk.tl { left: -1px; top: -1px; border-left-width: 1px; border-top-width: 1px; }
+.sv-hc .tk.tr { right: -1px; top: -1px; border-right-width: 1px; border-top-width: 1px; }
+.sv-hc .tk.bl { left: -1px; bottom: -1px; border-left-width: 1px; border-bottom-width: 1px; }
+.sv-hc .tk.br { right: -1px; bottom: -1px; border-right-width: 1px; border-bottom-width: 1px; }
+.sv-stage canvas.sv-hc-img { position: static; inset: auto; flex: none; width: 60px; height: 60px; border-radius: 3px; background: rgba(255, 255, 255, .05); }
+.sv-hc-main { display: grid; gap: 4px; min-width: 0; max-width: 200px; padding-top: 1px; }
+.sv-hc-name { font-size: .9rem; font-weight: 600; line-height: 1.25; color: #fff; }
+.sv-hc-text {
+  margin: 0; font-size: .78rem; line-height: 1.42; color: rgba(236, 228, 220, .66);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden;
+}
+@container (min-width: 600px) {
+  :host([data-minimal]) .sv-chips { top: calc(18px + env(safe-area-inset-top, 0px)); right: var(--ev-gutter); }
+  :host([data-minimal]) .sv-label { top: calc(20px + env(safe-area-inset-top, 0px)); }
+}
+@container (min-width: 1200px) {
+  :host([data-minimal]) .sv-hc { max-width: 320px; }
+  .sv-stage canvas.sv-hc-img { width: 64px; height: 64px; }
+  .sv-hc-main { max-width: 216px; }
+}
+
 /* reduced motion: no scrub. One full screen with a still, exploded model and the cards. */
 :host([data-reduced]) .sv { height: auto; }
 :host([data-reduced]) .sv-sticky { position: relative; top: 0; height: max(600px, 100vh); height: max(600px, 100svh); clip-path: none; }
@@ -506,6 +590,9 @@ const SCROLL_CSS = /* css */ `
 @media (prefers-reduced-motion: reduce) {
   .sv-beat.in > :not(.sv-cue), .sv-cue svg { animation: none; }
   .sv-card, .sv-card-body, .sv-chev, .sv-poster, .sv-toggle button, .sv-bcard, .sv-bcard.on, .sv-drawer, .sv-drawer.open, .sv-dot i { transition: none; }
+  .sv-mcue svg { animation: none; }
+  :host([data-minimal]) .sv-hc, :host([data-minimal]) .sv-hc.on { transform: none; transition: opacity .12s linear, visibility 0s linear .12s; }
+  :host([data-minimal]) .sv-hc.on { transition: opacity .12s linear; }
 }
 `;
 
@@ -611,6 +698,7 @@ export function resolveManifest(content, geometry, base = document.baseURI, geoB
     p.name = ov.name || (group?.partName ? group.partName.replace('{id}', prettyId(p.id)) : null) || prettyId(p.id);
     p.role = pick('role') || '';
     p.fact = pick('fact') || '';          // 1.2.0: one short, true fact, shown in the scroll mode's part details
+    p.brief = ov.brief || '';             // 1.4.0: optional short text for the minimal hover card (else role + fact)
     p.colour = pick('colour') ?? pick('color') ?? (p.vertexColours ? 'model' : p.cadColour) ?? '#d9cbb8';
     p.roughness = pick('roughness') ?? 0.62;
     p.metalness = pick('metalness') ?? 0.0;
@@ -706,6 +794,7 @@ export function resolveManifest(content, geometry, base = document.baseURI, geoB
       title: b.title || '',
       text: b.text || '',
       card: b.card ? String(b.card) : null,
+      label: b.label || '',                 // 1.4.0: the name the minimal label shows while this beat is live
       camera: b.camera || null,
       focusMin: b.focusMin != null ? clamp(+b.focusMin, 0.15, 1) : null,   // 1.3.0: this beat may zoom closer (small parts)
       parts: b.parts ? resolveRefs(b.parts, `scroll beat "${b.title || i + 1}"`) : null,
@@ -727,6 +816,12 @@ export function resolveManifest(content, geometry, base = document.baseURI, geoB
       apartLabel: SC.apartLabel || 'Taking apart',
       togetherLabel: SC.togetherLabel || 'Back together',
       focusMin: clamp(SC.focusMin ?? 0.55, 0.2, 1),
+      // 1.4.0
+      layout: SC.layout === 'minimal' ? 'minimal' : 'story',
+      name: SC.name || '',
+      hoverDim: SC.hoverDim != null ? clamp(+SC.hoverDim, 0.02, 1) : null,
+      apartTilt: clamp(+SC.apartTilt || 0, -0.5, 0.5),
+      spread: clamp(SC.spread != null ? +SC.spread : 1, 0.3, 2),
     };
     if (scroll.explodeAt[1] > scroll.assembleAt[0]) warnings.push('scroll: explodeAt must end before assembleAt starts');
   }
@@ -1097,7 +1192,7 @@ export class ExplodedView extends HTMLElement {
         this._makeThumbs();
         this._ready = true;
         loading.hidden = true;
-        if (this._reducedMotion() && (this._stageW || 0) >= 900) this._setDrawer(true);   // still view: the cards stay open beside it
+        if (this._reducedMotion() && (this._stageW || 0) >= 900 && !this._minimal()) this._setDrawer(true);   // still view: the cards stay open beside it
         this.$('.sv-poster').classList.add('gone');
         this._scrollDirty = true; this._sp = null; this._needs = true;
         this._loop();
@@ -1821,6 +1916,12 @@ export class ExplodedView extends HTMLElement {
         <div class="sv-bcard-main"><span class="sv-bcard-k" id="bKick">In focus</span><span class="sv-bcard-t" id="bTitle"></span>
           <p class="sv-bcard-x" id="bText"></p><p class="sv-bcard-f" id="bFact"></p></div>
       </aside>
+      <div class="sv-label" id="mLabel" aria-hidden="true"><span class="sv-label-k" id="mKick"></span><span class="sv-label-n" id="mName"></span></div>
+      <span class="sv-mcue gone" id="mCue" aria-hidden="true">${ICONS.chev}</span>
+      <div class="sv-hc" id="hc" aria-hidden="true"><i class="tk tl"></i><i class="tk tr"></i><i class="tk bl"></i><i class="tk br"></i>
+        <canvas class="sv-hc-img" id="hcImg" width="128" height="128"></canvas>
+        <div class="sv-hc-main"><span class="sv-hc-name" id="hcName"></span><p class="sv-hc-text" id="hcText"></p></div></div>
+      <p class="ev-sr" id="hcLive" aria-live="polite"></p>
       <div class="sv-chips">
         <button type="button" class="sv-chip" id="partsBtn" aria-expanded="false" aria-controls="drawer-${u}">${ICONS.parts}<span id="partsLbl">Parts</span></button>
         <div class="sv-toggle" id="stageToggle" role="group" aria-label="Stage colour" hidden>
@@ -1854,6 +1955,8 @@ export class ExplodedView extends HTMLElement {
     this._reduced.addEventListener?.('change', this._onReducedScroll);
     const len = parseFloat(this.getAttribute('scroll-length'));
     if (len > 0) this.style.setProperty('--ev-scroll-length', `${len}vh`);
+    // 1.4.0: layout="minimal" (or "layout": "minimal" in the manifest's scroll block, applied when it loads)
+    if (this.getAttribute('layout') === 'minimal') this.setAttribute('data-minimal', '');
     const pl = this.getAttribute('parts-label'), pt = this.getAttribute('parts-title');
     if (pl) this.$('#partsLbl').textContent = pl;
     if (pt) { this.shadowRoot.querySelector('.sv-drawer h4').textContent = pt; this.$('#cards').setAttribute('aria-label', pt); }
@@ -1873,7 +1976,7 @@ export class ExplodedView extends HTMLElement {
     this._scrollDirty = true; this._needs = true; this._beatShown = undefined;
     requestAnimationFrame(() => {
       this._resize(); this._svChrome();
-      if (this._ready && this._reducedMotion() && (this._stageW || 0) >= 900 && !this._drawerOpen) this._setDrawer(true);
+      if (this._ready && this._reducedMotion() && (this._stageW || 0) >= 900 && !this._drawerOpen && !this._minimal()) this._setDrawer(true);
     });
   }
   /* 1.3.0: the stage grows from a rounded card to full-bleed as it pins (and shrinks back as it leaves), and the
@@ -1962,8 +2065,16 @@ export class ExplodedView extends HTMLElement {
     list.addEventListener('wheel', touched, { passive: true });
   }
 
+  _minimal() { return this.hasAttribute('data-minimal'); }
   _buildScrollCards() {
     const S = this._m.scroll;
+    const lay = this.getAttribute('layout');
+    this.toggleAttribute('data-minimal', lay === 'minimal' || (!lay && S.layout === 'minimal'));
+    if (this._minimal()) {
+      this.$('#mKick').textContent = S.kicker || '';
+      this._labelName = null; this._setLabel(S.name || this._m.title || '', true);
+      const pb = this.$('#partsBtn'); pb.title = this.$('#partsLbl').textContent;
+    }
     const list = this.$('#cards');
     list.innerHTML = '';
     this._cardEls = new Map();
@@ -2035,11 +2146,12 @@ export class ExplodedView extends HTMLElement {
     // The carried amounts are taken off the part's own move, so fully apart is always exactly its explode vector.
     S.layers.forEach((l, i) => {
       if (!l.carry) return;
-      const by = new THREE.Vector3(...l.carry.by);
+      const by = new THREE.Vector3(...l.carry.by).multiplyScalar(S.spread);
       for (const id of l.carry.parts) { const p = byId.get(id); if (p?.root && p.svLayer > i) p.svCarry.push({ i, by }); }
     });
     for (const p of this._parts) {
-      p.svRest = p.explodeVec.clone(); for (const c of p.svCarry) p.svRest.sub(c.by);
+      // 1.4.0: scroll.spread scales how far apart the scroll story takes him (the Explode tab keeps the full distances)
+      p.svRest = p.explodeVec.clone().multiplyScalar(S.spread); for (const c of p.svCarry) p.svRest.sub(c.by);
       // 1.3.0: the 8 corners of each part's box, for framing the camera on what is really there
       const b = p.box;
       p.svCorners = [];
@@ -2055,7 +2167,7 @@ export class ExplodedView extends HTMLElement {
   /** Small renders of each card's parts, made once with the same renderer (transparent background). */
   _makeThumbs() {
     const S = this._m.scroll;
-    if (!S.cards.length || !this._renderer) return;
+    if ((!S.cards.length && !this._minimal()) || !this._renderer) return;
     const r = this._renderer, cam = this._camera;
     const prevPR = r.getPixelRatio(), prevSize = r.getSize(new THREE.Vector2()), prevAspect = cam.aspect;
     const size = 128;
@@ -2088,6 +2200,31 @@ export class ExplodedView extends HTMLElement {
       this._thumbUrl.set(c.id, url);
       th.innerHTML = `<img src="${url}" alt="" width="64" height="64">`;
     }
+    // 1.4.0 minimal: a small render of every part on its own, for the hover card. Each one is copied into one
+    // atlas canvas straight after it is drawn (no PNG encoding), so this costs a few milliseconds per part.
+    if (this._minimal() && !this._partThumbs) {
+      const vis = this._parts.filter((p) => p.root && !p.hidden);
+      const cols = 10, rows = Math.ceil(vis.length / cols);
+      const atlas = document.createElement('canvas');
+      atlas.width = cols * size; atlas.height = Math.max(1, rows) * size;
+      const g = atlas.getContext('2d');
+      this._partThumbs = new Map(); this._thumbAtlas = atlas;
+      const t0 = performance.now();
+      vis.forEach((q, i) => {
+        for (const p of this._parts) p.root.visible = p === q;
+        q.root.position.set(0, 0, 0);
+        const ctr = this._toWorld(q.box.getCenter(new THREE.Vector3()));
+        const rad = Math.max(1e-6, q.box.getSize(new THREE.Vector3()).length() / 2);
+        const dir = new THREE.Vector3(...(base.dir || [1, 0.55, 1.4])).normalize();
+        cam.position.copy(ctr).addScaledVector(dir, (rad / half) * 0.88);
+        cam.lookAt(ctr);
+        r.render(this._scene, cam);
+        const x = (i % cols) * size, y = Math.floor(i / cols) * size;
+        g.drawImage(r.domElement, 0, 0, size, size, x, y, size, size);
+        this._partThumbs.set(q.id, { x, y, s: size });
+      });
+      this._thumbMs = Math.round(performance.now() - t0);
+    }
     for (const p of this._parts) p.root.visible = true;
     if (this._shadow) this._shadow.visible = true;
     r.setPixelRatio(prevPR); r.setSize(prevSize.x, prevSize.y, false);
@@ -2115,6 +2252,26 @@ export class ExplodedView extends HTMLElement {
     const cap = this.$('#beat');
     const wide = w >= 900;
     const L = { wide };
+    if (this._minimal()) {
+      // 1.4.0 minimal: no text column. The model is centred and fills the screen; only the parts drawer (wide) or
+      // sheet (phone) takes room, and then the model centres in what is left.
+      const dr = this._drawerOpen ? this.shadowRoot.querySelector('.sv-drawer') : null;
+      const x1 = wide && dr ? Math.max(w * 0.4, dr.offsetLeft - 12) : w;
+      const H = !wide && dr ? Math.max(h * 0.3, dr.offsetTop) : h;
+      const narrow = w < 600;
+      const top = narrow ? 64 : 0;             // a phone keeps the label and chips row clear when whole
+      L.whole = [x1 * 0.08, Math.max(H * 0.09, top), x1 * 0.92, H * 0.91];
+      L.apart = narrow ? [x1 * 0.02, Math.max(H * 0.07, 56), x1 * 0.98, H * 0.96] : [x1 * 0.05, H * 0.05, x1 * 0.95, H * 0.95];
+      L.focus = narrow ? [x1 * 0.06, Math.max(H * 0.12, 70), x1 * 0.94, H * 0.9] : [x1 * 0.1, H * 0.1, x1 * 0.9, H * 0.9];
+      this._svL = L;
+      const po = this.$('.sv-poster');           // the poster is a tight render of the whole model: contain it in the same rect
+      if (po) {
+        const [a, b, c, d] = L.whole;
+        Object.assign(po.style, { left: `${Math.round(a)}px`, top: `${Math.round(b)}px`, width: `${Math.round(c - a)}px`, height: `${Math.round(d - b)}px` });
+      }
+      this._needs = true;
+      return;
+    }
     if (wide) {
       const capR = cap ? cap.offsetLeft + cap.offsetWidth : w * 0.34;
       // with the parts drawer open, the model slides left to stay clear of it
@@ -2213,7 +2370,15 @@ export class ExplodedView extends HTMLElement {
       if (moved > 8 || !quick) return;
       if (this._drawerOpen && this._stageW < 900) { this._setDrawer(false); return; }   // a tap above the sheet closes it
       this._svPinCard = null;
-      this._svPin(this._pick(e));
+      const hit = this._pick(e);
+      // 1.4.0 minimal: a mouse already sees the card on hover, so a click only reports the part; a tap pins the
+      // card by the finger, and a tap anywhere else closes it
+      if (this._minimal() && e.pointerType === 'mouse') {
+        if (this._svPinPart) this._svPin(null);
+        if (hit) this._emit('partselect', { id: hit.id, name: hit.name, role: hit.role, fact: hit.fact });
+        return;
+      }
+      this._svPin(hit, e);
     });
     canvas.addEventListener('pointermove', (e) => {
       if (e.pointerType !== 'mouse' || e.buttons) return;
@@ -2230,14 +2395,16 @@ export class ExplodedView extends HTMLElement {
     if (this._svPinPart) return;                 // a tapped part keeps its docked card
     if (p && e) this._showTip(p, false, e); else this._hideTip();
   }
-  _svPin(p) {
+  _svPin(p, e) {
     this._svPinPart = p || null;
     this._pinAt = performance.now();
-    if (p) this._showTip(p, true); else this._hideTip();
+    this._pinSp = this._spTarget;
+    if (p) this._showTip(p, !this._minimal(), e); else this._hideTip();
     this._svRefresh();
     if (p) this._emit('partselect', { id: p.id, name: p.name, role: p.role, fact: p.fact });
   }
   _showTip(p, docked, e) {
+    if (this._minimal()) { if (e) this._showHC(p, e); return; }
     const tip = this.$('#tip');
     if (this._tipFor !== p.id) {
       this._tipFor = p.id;
@@ -2254,7 +2421,56 @@ export class ExplodedView extends HTMLElement {
     if (y + h > rect.height - 10) y = e.clientY - rect.top - h - 14;
     tip.style.transform = `translate(${Math.round(Math.max(10, x))}px, ${Math.round(Math.max(10, y))}px)`;
   }
+  /* 1.4.0 minimal: the hover card. Beside the pointer (or the finger), flipped to whichever side has room, and
+     always fully on the stage. The part's own small render is drawn into the card's canvas. */
+  _showHC(p, e) {
+    const hc = this.$('#hc');
+    if (!hc) return;
+    if (this._hcFor !== p.id) {
+      this._hcFor = p.id;
+      this.$('#hcName').textContent = p.name;
+      const text = p.brief || [p.role, p.fact].filter(Boolean).join(' ');
+      this.$('#hcText').textContent = text;
+      this.$('#hcText').hidden = !text;
+      this._drawPartThumb(p);
+      this.$('#hcLive').textContent = `${p.name}. ${text}`;
+    }
+    const rect = this.$('.sv-stage').getBoundingClientRect();
+    const touch = e.pointerType && e.pointerType !== 'mouse';
+    const w = hc.offsetWidth, h = hc.offsetHeight, m = 12;
+    const px = e.clientX - rect.left, py = e.clientY - rect.top;
+    let x, y, ox, oy;
+    if (touch) {
+      // above the finger if there is room (so the finger does not cover it), else below; centred on it
+      x = px - w / 2; y = py - h - 28; oy = 'bottom';
+      if (y < m + 44) { y = py + 28; oy = 'top'; }
+      ox = 'center';
+    } else {
+      x = px + 22; y = py + 14; ox = 'left'; oy = 'top';
+      if (x + w > rect.width - m) { x = px - w - 22; ox = 'right'; }
+      if (y + h > rect.height - m) { y = py - h - 14; oy = 'bottom'; }
+    }
+    x = clamp(x, m, Math.max(m, rect.width - w - m)); y = clamp(y, m, Math.max(m, rect.height - h - m));
+    hc.style.left = `${Math.round(x)}px`; hc.style.top = `${Math.round(y)}px`;
+    hc.style.setProperty('--hc-ox', ox); hc.style.setProperty('--hc-oy', oy);
+    if (!hc.classList.contains('on')) { void hc.offsetWidth; hc.classList.add('on'); }
+  }
+  _drawPartThumb(p) {
+    const cv = this.$('#hcImg');
+    const g = cv.getContext('2d');
+    g.clearRect(0, 0, cv.width, cv.height);
+    const cell = this._partThumbs?.get(p.id);
+    if (cell) { g.drawImage(this._thumbAtlas, cell.x, cell.y, cell.s, cell.s, 0, 0, cv.width, cv.height); return; }
+    // no render of its own: use its group card's picture
+    const c = this._partCard?.get(p.id), url = c && this._thumbUrl?.get(c.id);
+    if (!url) return;
+    const img = new Image();
+    img.onload = () => { if (this._hcFor === p.id) g.drawImage(img, 0, 0, cv.width, cv.height); };
+    img.src = url;
+  }
   _hideTip() {
+    const hc = this.$('#hc');
+    if (hc) { hc.classList.remove('on'); this._hcFor = null; }
     const tip = this.$('#tip');
     if (!tip) return;
     tip.classList.remove('docked');
@@ -2287,7 +2503,26 @@ export class ExplodedView extends HTMLElement {
       this._emit('beatchange', { index: i, title: show.title || '' });
     }
     const live = !reduced && i >= 0 && e > 0.985;      // a beat only lights its parts while he is fully apart
-    if (live !== this._beatLive) { this._beatLive = live; this._svRefresh(); this._setBeatCard(live ? this._beatCard : null); }
+    if (live !== this._beatLive) {
+      this._beatLive = live; this._svRefresh();
+      if (this._minimal()) {
+        // 1.4.0: the small label names the product, or the group in focus while a beat is live
+        const b = this._beatObj, c = this._beatCard;
+        const focus = live && b && (b.label || ((b.parts?.length || c) ? (c?.title || b.title) : ''));
+        this._setLabel(focus || S.name || this._m.title || '');
+      } else this._setBeatCard(live ? this._beatCard : null);
+    }
+  }
+  /* 1.4.0 minimal: the top-left name, swapped with a quick fade */
+  _setLabel(name, instant) {
+    if (name === this._labelName) return;
+    this._labelName = name;
+    const el = this.$('#mName');
+    if (!el) return;
+    clearTimeout(this._labelT);
+    if (instant || this._reducedMotion()) { el.textContent = name; el.classList.remove('swap'); return; }
+    el.classList.add('swap');
+    this._labelT = setTimeout(() => { el.textContent = name; el.classList.remove('swap'); }, 220);
   }
   /* the compact card for the beat's part group, beside the parts in focus */
   _setBeatCard(c) {
@@ -2357,10 +2592,31 @@ export class ExplodedView extends HTMLElement {
       if (need > d) d = need;
     }
     out = out || {};
+    let sx = 0, sy = 0;
+    if (this._minimal()) {
+      // 1.4.0 minimal: the fit above is safe but leaves perspective slack on one side. Measure the real projected
+      // extent, centre it in R and close in until it touches R, so the model is truly centred and as big as asked.
+      for (let it = 0; it < 3; it++) {
+        let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity;
+        for (let i = 0; i < n; i++) {
+          const q = pts[i];
+          const dx = q.x - c.x, dy = q.y - c.y, dz = q.z - c.z;
+          const dep = d - (dx * f.x + dy * f.y + dz * f.z);
+          if (dep <= 1e-6) continue;
+          const u = (dx * rt.x + dy * rt.y + dz * rt.z) / (dep * tanH), v = (dx * up.x + dy * up.y + dz * up.z) / (dep * tanV);
+          if (u < u0) u0 = u; if (u > u1) u1 = u; if (v < v0) v0 = v; if (v > v1) v1 = v;
+        }
+        if (!(u1 > u0) || !(v1 > v0)) break;
+        sx = (u0 + u1) / 2; sy = (v0 + v1) / 2;
+        const k = Math.max((u1 - u0) / (2 * hx), (v1 - v0) / (2 * hy));
+        if (Math.abs(1 - k) < 0.003) break;
+        d *= k;
+      }
+    }
     (out.t || (out.t = new THREE.Vector3())).copy(c);
     (out.dir || (out.dir = new THREE.Vector3())).copy(f);
     out.d = Math.max(d, this._radius * 0.2);
-    out.cx = (R[0] + R[2]) / 2; out.cy = (R[1] + R[3]) / 2;
+    out.cx = (R[0] + R[2]) / 2 - sx * w / 2; out.cy = (R[1] + R[3]) / 2 + sy * h / 2;
     return out;
   }
 
@@ -2401,7 +2657,17 @@ export class ExplodedView extends HTMLElement {
       this.$('.sv-rail i').style.transform = `scaleY(${f.toFixed(4)})`;
     }
     const cueOn = !reduced && p < 0.02;
-    if (cueOn !== this._cueOn) { this._cueOn = cueOn; this.$('#cue').classList.toggle('gone', !cueOn); }
+    if (cueOn !== this._cueOn) { this._cueOn = cueOn; this.$('#cue').classList.toggle('gone', !cueOn); this.$('#mCue').classList.toggle('gone', !cueOn); }
+    if (this._minimal()) {
+      // a tapped part's card closes once the page scrolls on (the part has moved away from it)
+      if (this._svPinPart && Math.abs((this._spTarget ?? 0) - (this._pinSp ?? 0)) > 0.004) this._svPin(null);
+      // the mouse stays still while the scroll moves the parts under it: look again what is under it
+      const lm = this._lastMove, now = performance.now();
+      if (lm && !this._svPinPart && Math.abs(p - (this._repickSp ?? p)) > 1e-4 && now - (this._repickAt || 0) > 90) {
+        this._repickAt = now; this._repickSp = p;
+        this._svHover(this._pick(lm), lm);
+      } else if (lm && this._repickSp == null) this._repickSp = p;
+    }
     // which layer is coming off right now (a small pill above the caption)
     let lt = '';
     if (!reduced && S.layers.length && e > 0.002 && e < 0.995) {
@@ -2424,6 +2690,9 @@ export class ExplodedView extends HTMLElement {
     // and swing round toward his side, where the explode is taller than it is wide
     const tall = (this._stageW || 1) / (this._stageH || 1) < 0.8;
     if (tall) { dir.y += 0.3 * kf; dir.normalize(); }
+    // 1.4.0: on a wide stage, look a little more level while apart (scroll.apartTilt), so the spread is less tall
+    // and fills more of a landscape screen
+    else if (S.apartTilt && (this._stageW || 1) > (this._stageH || 1)) { dir.y -= S.apartTilt * kf; dir.normalize(); }
     dir.applyAxisAngle(Y_AXIS, az + (tall ? 0.5 * kf : 0));
     if (!this._svL) this._measureCaption();
     const L = this._svL;
@@ -2499,7 +2768,7 @@ export class ExplodedView extends HTMLElement {
     const k = reduced || dt <= 0 ? 1 : 1 - Math.exp(-dt * 12);
     const set = this._svSet || new Set(), level = this._svLevel;
     const any = set.size > 0;
-    const dimTo = level === 'beat' ? S.beatDim : S.dim;
+    const dimTo = level === 'beat' ? S.beatDim : level === 'part' && S.hoverDim != null ? S.hoverDim : S.dim;
     const glow = this._glowColour();
     const step = (cur, to) => (Math.abs(to - cur) < 1e-3 ? to : cur + (to - cur) * k);
     for (const part of this._parts) {

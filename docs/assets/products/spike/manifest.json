@@ -283,7 +283,8 @@
       "explode": {
         "dir": "none"
       },
-      "fact": "The heavy parts sit low: his centre of weight is about 11 cm above the desk."
+      "fact": "The heavy parts sit low: his centre of weight is about 11 cm above the desk.",
+      "brief": "The lower body. The heavy parts sit low, so his centre of weight is about 11 cm above the desk."
     },
     "Torso_Lid*": {
       "name": "Lid (upper body)",
@@ -292,7 +293,8 @@
       "explode": {
         "distance": 150
       },
-      "fact": "The lid is built upside down on the bench, then closed over the tub."
+      "fact": "The lid is built upside down on the bench, then closed over the tub.",
+      "brief": "The top half of the body. Sensors, the power hub and two servos hang under it."
     },
     "Side_Panel_*": {
       "name": "Side panel",
@@ -339,7 +341,8 @@
         ],
         "distance": 115
       },
-      "fact": "Board A sits on the left wall; board B, on the right, has its A0 pad bridged."
+      "fact": "Board A sits on the left wall; board B, on the right, has its A0 pad bridged.",
+      "brief": "Tells the left legs and the tail where to point. Address 0x40, on the left wall."
     },
     "PCA9685_Right*": {
       "name": "Servo driver board B (right)",
@@ -424,7 +427,8 @@
         ],
         "distance": 112
       },
-      "fact": "Keeps the give-paw pose (in development) 8.7 mm inside its balance."
+      "fact": "Keeps the give-paw pose (in development) 8.7 mm inside its balance.",
+      "brief": "Five slices of flat steel, about 24 g a side. They keep Spike steady, and the dock's rear magnets grip them."
     },
     "BMS*": {
       "name": "Battery protection board",
@@ -432,7 +436,8 @@
       "explode": {
         "distance": 82
       },
-      "fact": "Rated 20 A, so the 7.5 A fuse does the real protecting."
+      "fact": "Rated 20 A, so the 7.5 A fuse does the real protecting.",
+      "brief": "Cuts the power if the cells get too full, too empty or the current is too big. Rated 20 A."
     },
     "Fuse_Holder*": {
       "name": "7.5 A fuse",
@@ -440,7 +445,8 @@
       "explode": {
         "distance": 100
       },
-      "fact": "It sits before the charger and the switch, so a short anywhere blows it."
+      "fact": "It sits before the charger and the switch, so a short anywhere blows it.",
+      "brief": "The safety link. It melts if a wire shorts, before anything can overheat."
     },
     "USB-C*": {
       "name": "USB-C charge board",
@@ -466,7 +472,8 @@
         ],
         "distance": 72
       },
-      "fact": "Charging does not go through it, so he charges switched on or off."
+      "fact": "Charging does not go through it, so he charges switched on or off.",
+      "brief": "The on/off rocker in the belly. Charging does not go through it, so he charges on or off."
     },
     "Hub_Perfboard*": {
       "name": "Power hub board",
@@ -481,7 +488,8 @@
     "Hub_Mini560_Logic*": {
       "name": "5 V converter for the brain",
       "role": "Turns 7.4 V into 5 V for the screen board, camera and sensors.",
-      "fact": "Kept apart from the servos, so a hard-working leg cannot reset his brain."
+      "fact": "Kept apart from the servos, so a hard-working leg cannot reset his brain.",
+      "brief": "Turns 7.4 V into 5 V for the screen board, camera and sensors, apart from the servos."
     },
     "Hub_Cap_1000uF_Servos": {
       "name": "1000 uF capacitor (servos)",
@@ -530,7 +538,8 @@
         ],
         "distance": 215
       },
-      "fact": "A 0.3 mm bump makes the click."
+      "fact": "A 0.3 mm bump makes the click.",
+      "brief": "Holds a back magnet. It turns a sixth of a turn to click; its top is the dish the drone's feet sit in."
     },
     "MPU6050*": {
       "name": "Motion sensor",
@@ -580,7 +589,8 @@
         ],
         "distance": 88
       },
-      "fact": "Three lasers look down for the edge: two at the front, one at the back."
+      "fact": "Three lasers look down for the edge: two at the front, one at the back.",
+      "brief": "Looks down through the belly, so Spike stops before he walks off the desk. One of three."
     },
     "VL53L0X_Obstacle_Front": {
       "name": "Front laser",
@@ -651,7 +661,8 @@
         ],
         "distance": 135
       },
-      "fact": "A 0.3 mm bump makes the click."
+      "fact": "A 0.3 mm bump makes the click.",
+      "brief": "Holds a belly magnet. Push it in from underneath and turn it a sixth of a turn until it clicks."
     },
     "Dock_Pad*": {
       "name": "Dock pad board (2 x 3 pads)",
@@ -664,7 +675,8 @@
         ],
         "distance": 80
       },
-      "fact": "Six pads, 2.54 mm apart, in two rows of three."
+      "fact": "Six pads, 2.54 mm apart, in two rows of three.",
+      "brief": "Six flat contact pads under the belly: two for 5 V, two for ground and two for the serial link."
     },
     "Dock_Lead_Power*": {
       "name": "Dock power pair",
@@ -677,7 +689,8 @@
         ],
         "distance": 45
       },
-      "fact": "It joins the charger where a USB-C cable would feed it."
+      "fact": "It joins the charger where a USB-C cable would feed it.",
+      "brief": "Red and black wires from the dock pads to the charge board, through a small ideal-diode board."
     },
     "Dock_Lead_Signal*": {
       "name": "Dock signal wires",
@@ -690,7 +703,8 @@
         ],
         "distance": 60
       },
-      "fact": "Dock sense goes to pin IO9, so he knows he is docked."
+      "fact": "Dock sense goes to pin IO9, so he knows he is docked.",
+      "brief": "Three thin wires up to the head: dock sense to IO9, so he knows he is docked, and the serial link."
     },
     "Collar*": {
       "name": "Collar",
@@ -752,7 +766,8 @@
         ],
         "distance": 250
       },
-      "fact": "Five hooks click it on; to open the head, pull it straight forward."
+      "fact": "Five hooks click it on; to open the head, pull it straight forward.",
+      "brief": "The face. The screen sits behind its window, and five hooks click it on."
     },
     "Head_Back*": {
       "name": "Head back",
@@ -765,7 +780,8 @@
         ],
         "distance": 240
       },
-      "fact": "Its floor opening is 52 mm wide, so nothing catches when he tilts."
+      "fact": "Its floor opening is 52 mm wide, so nothing catches when he tilts.",
+      "brief": "The back of the head. It holds the speaker and slides onto the neck stalk from behind."
     },
     "Guition*": {
       "name": "Screen board (the brain)",
@@ -779,7 +795,8 @@
         ],
         "distance": 195
       },
-      "fact": "A 480 x 272 pixel IPS touch screen, with an ESP32-S3 on its back."
+      "fact": "A 480 x 272 pixel IPS touch screen, with an ESP32-S3 on its back.",
+      "brief": "Spike's brain and face: a 4.3 inch, 480 x 272 touch screen with an ESP32-S3 on its back."
     },
     "ESP32*": {
       "name": "Camera board",
@@ -1070,7 +1087,8 @@
         ],
         "distance": 55
       },
-      "fact": "Even so: never plug in a cable while he sits on a powered dock."
+      "fact": "Even so: never plug in a cable while he sits on a powered dock.",
+      "brief": "Lets the dock's 5 V into the charger, but never lets a USB-C cable make the belly pads live."
     },
     "Diode_Cradle*": {
       "name": "Diode tray",
@@ -1083,7 +1101,8 @@
         ],
         "distance": 50
       },
-      "fact": "Holds the diode board off the charger, with air around it."
+      "fact": "Holds the diode board off the charger, with air around it.",
+      "brief": "A small printed tray that holds the ideal-diode board off the charger, with air round it."
     }
   },
   "defaultCamera": "three-quarter",
@@ -1663,7 +1682,7 @@
       24
     ],
     "dim": 0.16,
-    "beatDim": 0.1,
+    "beatDim": 0.28,
     "overlap": 0.22,
     "static": {
       "title": "Spike, taken apart",
@@ -1762,7 +1781,8 @@
           "MPU6050*",
           "MPR121*"
         ],
-        "text": "Seven laser sensors, a camera under his tuft, two microphones, a gesture sensor, a motion sensor and touch pads on his back and head."
+        "text": "Seven laser sensors, a camera under his tuft, two microphones, a gesture sensor, a motion sensor and touch pads on his back and head.",
+        "label": "Senses"
       },
       {
         "at": 0.735,
@@ -1779,7 +1799,7 @@
           "Magnets_Belly*",
           "Magnet_Cap_Belly*"
         ],
-        "focusMin": 0.32
+        "focusMin": 0.22
       },
       {
         "at": 0.85,
@@ -1892,6 +1912,11 @@
     ],
     "apartLabel": "Taking apart",
     "togetherLabel": "Back together",
-    "focusMin": 0.6
+    "focusMin": 0.42,
+    "layout": "minimal",
+    "name": "Spike",
+    "hoverDim": 0.42,
+    "spread": 0.8,
+    "apartTilt": 0.2
   }
 }
