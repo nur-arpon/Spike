@@ -6,6 +6,7 @@
  * a Parts drawer and an adaptive pixel ratio.
  * 1.4.0: layout="minimal" for the scroll stage: no captions, the model big and centred, a small top-left label,
  * and an iyO-style hover card (part render, name, two or three short lines) by the pointer.
+ * 1.7.0: a full-screen button top right of the explorer stage (Fullscreen API, pinned-overlay fallback on iPhone).
  * 1.6.1: the camera-view chips and the part card follow the theme surface (they were always cream, so dark theme read white on white).
  * 1.6.0: stage="none" for the scroll stage: no fill, no clip, a transparent canvas, so the page behind (a gradient, a
  *        WebGL background) shows through. The ink follows the page's colour-scheme (light or dark) by itself.
@@ -21,7 +22,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-const VERSION = '1.6.1';
+const VERSION = '1.7.0';
 const MODES = ['explode', 'build', 'energy'];
 /** 1.2.0: one model cache for the whole page, so two views of the same product (scroll + tabs) download each GLB once.
  *  Each view clones the scene and gives it its own materials, so sharing is safe. */
@@ -249,6 +250,26 @@ const CSS = /* css */ `
   .ev-panel { width: var(--ev-panel-width); flex: none; border-left: 1px solid var(--ev-border); overflow-y: auto; padding: 22px; }
   .ev-head { padding: 16px 22px 14px; }
   .ev-card { right: auto; width: 360px; }
+}
+/* 1.7.0 full screen: a small button top right of the stage. Real fullscreen where the browser allows it,
+   otherwise (iPhone) the element pins itself over the page. Either way the host carries data-fs. */
+.ev-fs {
+  position: absolute; top: 10px; right: 10px; z-index: 5; width: 40px; height: 40px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer;
+  border: 1px solid var(--ev-border); background: color-mix(in srgb, var(--ev-surface) 88%, transparent);
+  backdrop-filter: blur(6px); color: var(--ev-text);
+}
+.ev-fs:hover { background: var(--ev-surface); }
+.ev-fs:focus-visible { outline: 3px solid var(--ev-accent-strong); outline-offset: 2px; }
+.ev-fs svg { width: 20px; height: 20px; }
+.ev-card { right: 60px; }
+:host([data-fs]) { position: fixed; inset: 0; z-index: 2147483000; width: 100vw; height: 100vh; height: 100dvh; background: var(--ev-bg); max-width: none; margin: 0; }
+:host([data-fs]) .ev { height: 100%; display: flex; flex-direction: column; border: 0; border-radius: 0; box-shadow: none; }
+:host([data-fs]) .ev-body { flex: 1 1 auto; min-height: 0; height: auto; }
+:host([data-fs]) .ev-stage { flex: 1 1 auto; height: auto; min-height: 0; }
+:host([data-fs]) .ev-panel { max-height: 42%; overflow-y: auto; }
+@container (min-width: 880px) {
+  :host([data-fs]) .ev-panel { max-height: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ev-tab, .ev-btn, .ev-bar i { transition: none; }
@@ -682,6 +703,9 @@ const ORBIT_ZOOM = [0.7, 2.4];                       // 0.7 = a little further o
 const ORBIT_HOLD = 2000;                             // ms of quiet before he glides back
 const ORBIT_GLIDE = 1000;                            // ms the glide back takes
 const ICONS = {
+  // 1.7.0 full screen in / out
+  expand: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+  shrink: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>',
   chev: '<svg class="sv-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
   down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
   prev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>',
@@ -929,6 +953,30 @@ export class ExplodedView extends HTMLElement {
     this._reduced.addEventListener?.('change', this._onReduced);
   }
 
+  /** 1.7.0: full screen on and off. Real fullscreen when the browser has it, otherwise pinned over the page. */
+  toggleFullscreen() {
+    if (this.hasAttribute('data-fs')) {
+      if (document.fullscreenElement === this) document.exitFullscreen().catch(() => this._setFs(false));
+      else this._setFs(false);
+      return;
+    }
+    if (this.requestFullscreen && document.fullscreenEnabled) {
+      this.requestFullscreen().then(() => { this._fsNative = true; this._setFs(true); }).catch(() => this._setFs(true));
+    } else this._setFs(true);
+  }
+  _setFs(on) {
+    if (!on) this._fsNative = false;
+    this.toggleAttribute('data-fs', on);
+    document.documentElement.style.overflow = on ? 'hidden' : '';
+    const b = this.$('#fsBtn');
+    if (b) {
+      b.setAttribute('aria-pressed', String(on));
+      b.setAttribute('aria-label', on ? 'Exit full screen' : 'Full screen');
+      b.title = on ? 'Exit full screen (Esc)' : 'Full screen';
+      b.innerHTML = on ? ICONS.shrink : ICONS.expand;
+    }
+    requestAnimationFrame(() => this._resize());
+  }
   _template() {
     const u = this._uid;
     const tab = (m) => `<button class="ev-tab" role="tab" id="tab-${m}-${u}" data-mode="${m}" aria-controls="pane-${m}-${u}" aria-selected="false" tabindex="-1"><span class="short">${MODE_LABELS[m][0]}</span><span class="long">${MODE_LABELS[m][1]}</span></button>`;
@@ -948,6 +996,7 @@ export class ExplodedView extends HTMLElement {
         <button class="ev-x" id="cardX" aria-label="Close part details">&times;</button>
       </div>
       <div class="ev-chips" id="chips" role="group" aria-label="Camera views"></div>
+      <button type="button" class="ev-fs" id="fsBtn" aria-pressed="false" aria-label="Full screen" title="Full screen">${ICONS.expand}</button>
       <div class="ev-loading" id="loading"><div id="loadMsg">Loading the model…</div><div class="ev-bar"><i id="bar"></i></div></div>
     </div>
     <div class="ev-panel" part="panel">
@@ -1099,6 +1148,8 @@ export class ExplodedView extends HTMLElement {
     }
   }
   disconnectedCallback() {
+    if (this._onFsChange) document.removeEventListener('fullscreenchange', this._onFsChange);
+    if (this.hasAttribute('data-fs')) document.documentElement.style.overflow = '';
     this._started = false;
     this._loadToken = null;
     cancelAnimationFrame(this._raf);
@@ -1181,6 +1232,14 @@ export class ExplodedView extends HTMLElement {
     root.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => this._act(b.dataset.act)));
     this.$('#cardX').addEventListener('click', () => this._clearSelection());
     this.addEventListener('keydown', (e) => { if (e.key === 'Escape') this._clearSelection(); });
+    // 1.7.0 full screen
+    const fsBtn = this.$('#fsBtn');
+    if (fsBtn) {
+      fsBtn.addEventListener('click', () => this.toggleFullscreen());
+      this.addEventListener('keydown', (e) => { if (e.key === 'Escape' && this.hasAttribute('data-fs') && document.fullscreenElement !== this) this._setFs(false); });
+      this._onFsChange = () => { if (document.fullscreenElement === this) this._setFs(true); else if (this._fsNative) this._setFs(false); };
+      document.addEventListener('fullscreenchange', this._onFsChange);
+    }
   }
 
   _act(a) {
