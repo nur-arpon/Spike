@@ -6,6 +6,7 @@
  * a Parts drawer and an adaptive pixel ratio.
  * 1.4.0: layout="minimal" for the scroll stage: no captions, the model big and centred, a small top-left label,
  * and an iyO-style hover card (part render, name, two or three short lines) by the pointer.
+ * 1.6.1: the camera-view chips and the part card follow the theme surface (they were always cream, so dark theme read white on white).
  * 1.6.0: stage="none" for the scroll stage: no fill, no clip, a transparent canvas, so the page behind (a gradient, a
  *        WebGL background) shows through. The ink follows the page's colour-scheme (light or dark) by itself.
  * 1.5.0: orbit (attribute) for the scroll stage: drag to spin him on top of the scroll camera, Ctrl+wheel or pinch
@@ -20,7 +21,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-const VERSION = '1.6.0';
+const VERSION = '1.6.1';
 const MODES = ['explode', 'build', 'energy'];
 /** 1.2.0: one model cache for the whole page, so two views of the same product (scroll + tabs) download each GLB once.
  *  Each view clones the scene and gives it its own materials, so sharing is safe. */
@@ -189,7 +190,7 @@ const CSS = /* css */ `
 .ev-chips::-webkit-scrollbar { display: none; }
 .ev-chip {
   pointer-events: auto; flex: none; min-height: 40px; padding: 0 14px; border-radius: 999px;
-  border: 1px solid var(--ev-border); background: rgba(255, 250, 243, .88); backdrop-filter: blur(6px);
+  border: 1px solid var(--ev-border); background: color-mix(in srgb, var(--ev-surface) 88%, transparent); backdrop-filter: blur(6px);
   font: inherit; font-size: .85rem; font-weight: 650; color: var(--ev-text); cursor: pointer; white-space: nowrap;
 }
 .ev-chip[aria-pressed="true"] { background: var(--ev-accent-strong); color: var(--ev-on-accent); border-color: var(--ev-accent-strong); }
@@ -202,7 +203,7 @@ const CSS = /* css */ `
 .ev-card {
   position: absolute; left: 10px; right: 10px; top: 10px; display: flex; gap: 10px; align-items: flex-start;
   padding: 10px 8px 10px 14px; border-radius: var(--ev-radius-small);
-  background: rgba(255, 250, 243, .95); border: 1px solid var(--ev-border); box-shadow: var(--ev-shadow); z-index: 4;
+  background: color-mix(in srgb, var(--ev-surface) 95%, transparent); border: 1px solid var(--ev-border); box-shadow: var(--ev-shadow); z-index: 4;
   max-width: 420px;
 }
 .ev-card[hidden] { display: none; }
