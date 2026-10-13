@@ -6,6 +6,8 @@
  * a Parts drawer and an adaptive pixel ratio.
  * 1.4.0: layout="minimal" for the scroll stage: no captions, the model big and centred, a small top-left label,
  * and an iyO-style hover card (part render, name, two or three short lines) by the pointer.
+ * 1.5.0: orbit (attribute) for the scroll stage: drag to spin him on top of the scroll camera, Ctrl+wheel or pinch
+ * to zoom, two fingers (or the Spin chip) on touch, arrow keys when focused; he glides back to the story angle.
  * One ES module, no build step. Needs an import map that maps "three" and "three/addons/" (see README.md).
  * All product content lives in the manifest JSON; this file holds no product knowledge.
  * (c) Nur Ifran Arpon / SpaceZ.
@@ -16,7 +18,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-const VERSION = '1.4.0';
+const VERSION = '1.5.0';
 const MODES = ['explode', 'build', 'energy'];
 /** 1.2.0: one model cache for the whole page, so two views of the same product (scroll + tabs) download each GLB once.
  *  Each view clones the scene and gives it its own materials, so sharing is safe. */
@@ -583,6 +585,33 @@ const SCROLL_CSS = /* css */ `
   .sv-hc-main { max-width: 216px; }
 }
 
+/* 1.5.0 orbit: grab cursor, a focus ring for the keyboard, the Spin chip (touch screens only) and the one-time hint */
+:host([orbit]) .sv-stage > canvas { cursor: grab; }
+:host([data-orbiting]) .sv-stage > canvas { cursor: grabbing; }
+.sv-stage > canvas:focus-visible { outline: 3px solid var(--sv-accent); outline-offset: -3px; }
+.sv-chip.sv-spin { display: none; }
+@media (any-pointer: coarse) { :host([orbit]) .sv-chip.sv-spin { display: inline-flex; } }
+.sv-chip.sv-spin[aria-pressed="true"] { background: var(--sv-seg-on); color: var(--sv-seg-on-ink); border-color: transparent; }
+:host([data-minimal]) .sv-chip.sv-spin { width: auto; padding: 0 11px 0 9px; gap: 5px; font-size: .74rem; font-weight: 650; }
+:host([data-minimal]) .sv-chip.sv-spin svg { width: 14px; height: 14px; }
+:host([data-minimal]) .sv-chip.sv-spin[aria-pressed="true"] { background: var(--sv-seg-on); color: var(--sv-seg-on-ink); }
+/* a phone: the row is full with Parts and the stage colour, so Spin sits just under it, at the right */
+@container (max-width: 479px) { :host([data-minimal]) .sv-chip.sv-spin { position: absolute; top: calc(100% + 8px); right: 0; } }
+.sv-ohint {
+  position: absolute; z-index: 6; left: 50%; bottom: calc(54px + env(safe-area-inset-bottom, 0px));
+  display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px 7px 10px; border-radius: 999px; white-space: nowrap;
+  background: rgba(16, 12, 10, .72); color: #fff; font-size: .78rem; font-weight: 600; line-height: 1;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); pointer-events: none;
+  opacity: 0; visibility: hidden; transform: translate(-50%, 6px);
+  transition: opacity .35s ease, transform .4s cubic-bezier(.2, .7, .2, 1), visibility 0s linear .4s;
+}
+.sv-ohint.on { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity .35s ease, transform .4s cubic-bezier(.2, .7, .2, 1); }
+.sv-ohint svg { width: 17px; height: 17px; flex: none; }
+@media (prefers-reduced-motion: reduce) {
+  .sv-ohint, .sv-ohint.on { transform: translate(-50%, 0); transition: opacity .2s linear, visibility 0s linear .2s; }
+  .sv-ohint.on { transition: opacity .2s linear; }
+}
+
 /* reduced motion: no scrub. One full screen with a still, exploded model and the cards. */
 :host([data-reduced]) .sv { height: auto; }
 :host([data-reduced]) .sv-sticky { position: relative; top: 0; height: max(600px, 100vh); height: max(600px, 100svh); clip-path: none; }
@@ -632,6 +661,11 @@ async function fetchJSON(url) {
 }
 
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
+// 1.5.0 orbit limits and timings
+const ORBIT_PITCH = THREE.MathUtils.degToRad(35);   // tilt either way from the story's camera
+const ORBIT_ZOOM = [0.7, 2.4];                       // 0.7 = a little further out, 2.4 = well in
+const ORBIT_HOLD = 2000;                             // ms of quiet before he glides back
+const ORBIT_GLIDE = 1000;                            // ms the glide back takes
 const ICONS = {
   chev: '<svg class="sv-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
   down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
@@ -640,6 +674,10 @@ const ICONS = {
   play: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
   pause: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>',
   parts: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>',
+  // 1.5.0 orbit: the Spin chip, and the two hint icons (a mouse; two fingertips with a turn arrow)
+  spin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>',
+  mouse: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="3" width="11" height="18" rx="5.5"/><path d="M12 6.5v3.5"/></svg>',
+  fingers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="14" r="2.6"/><circle cx="16" cy="14" r="2.6"/><path d="M5 8.5a9 9 0 0 1 14 0"/><path d="M19 5.5v3h-3"/></svg>',
 };
 
 /* ------------------------------------------------------------------------------------------------
@@ -1197,6 +1235,7 @@ export class ExplodedView extends HTMLElement {
         this._scrollDirty = true; this._sp = null; this._needs = true;
         this._loop();
         this._emit('ready', { parts: this._parts.length, warnings: m.warnings });
+        if (this._orbit) this._orbitHintCheck();
         return;
       }
       this.$('#title').textContent = m.title;
@@ -1273,6 +1312,7 @@ export class ExplodedView extends HTMLElement {
       this._controls.enabled = false;
       canvas.style.touchAction = 'pan-y';
       this._wireScrollPointer(canvas);
+      if (this._orbit) this._wireOrbit(canvas);
     } else this._wirePointer(canvas);
     const stage = this._stageEl();
     this._ro = new ResizeObserver(() => this._resize());
@@ -1922,7 +1962,9 @@ export class ExplodedView extends HTMLElement {
         <canvas class="sv-hc-img" id="hcImg" width="128" height="128"></canvas>
         <div class="sv-hc-main"><span class="sv-hc-name" id="hcName"></span><p class="sv-hc-text" id="hcText"></p></div></div>
       <p class="ev-sr" id="hcLive" aria-live="polite"></p>
+      <div class="sv-ohint" id="oHint" aria-hidden="true"></div>
       <div class="sv-chips">
+        <button type="button" class="sv-chip sv-spin" id="spinBtn" aria-pressed="false" hidden title="One finger spins him instead of scrolling">${ICONS.spin}<span>Spin</span></button>
         <button type="button" class="sv-chip" id="partsBtn" aria-expanded="false" aria-controls="drawer-${u}">${ICONS.parts}<span id="partsLbl">Parts</span></button>
         <div class="sv-toggle" id="stageToggle" role="group" aria-label="Stage colour" hidden>
           <span class="sv-toggle-lbl" aria-hidden="true">Stage</span>
@@ -1948,7 +1990,11 @@ export class ExplodedView extends HTMLElement {
 
   _attachScroll() {
     if (this._onScroll) return;
-    this._onScroll = () => { this._svChrome(); this._scrollDirty = true; this._needs = true; if (this._ready) this._loop(); };
+    this._onScroll = () => {
+      this._svChrome(); this._scrollDirty = true; this._needs = true; if (this._ready) this._loop();
+      // 1.5.0: the Spin chip turns itself off once the page is scrolled some other way
+      if (this._spin && Math.abs(window.scrollY - this._spinY) > 48) this._setSpin(false);
+    };
     window.addEventListener('scroll', this._onScroll, { passive: true });
     window.addEventListener('resize', this._onScroll, { passive: true });
     this._onReducedScroll = () => this._applyReduced();
@@ -1957,6 +2003,14 @@ export class ExplodedView extends HTMLElement {
     if (len > 0) this.style.setProperty('--ev-scroll-length', `${len}vh`);
     // 1.4.0: layout="minimal" (or "layout": "minimal" in the manifest's scroll block, applied when it loads)
     if (this.getAttribute('layout') === 'minimal') this.setAttribute('data-minimal', '');
+    // 1.5.0: orbit is read once, here (set it in the HTML)
+    this._orbit = this.hasAttribute('orbit');
+    if (this._orbit) {
+      const cv = this.shadowRoot.querySelector('.sv-stage > canvas');
+      cv.tabIndex = 0;
+      cv.setAttribute('aria-label', `${cv.getAttribute('aria-label')} Drag to spin him; Ctrl and the wheel, or a pinch, zooms. When focused, the arrow keys spin him, plus and minus zoom, and Home resets.`);
+      this.$('#spinBtn').hidden = false;
+    }
     const pl = this.getAttribute('parts-label'), pt = this.getAttribute('parts-title');
     if (pl) this.$('#partsLbl').textContent = pl;
     if (pt) { this.shadowRoot.querySelector('.sv-drawer h4').textContent = pt; this.$('#cards').setAttribute('aria-label', pt); }
@@ -1999,6 +2053,8 @@ export class ExplodedView extends HTMLElement {
       st.style.setProperty('--sv-iy', `${Math.round(gx * 0.6 * 10) / 10}px`);
       st.style.setProperty('--sv-ir', `${Math.round((1 - g) * 28)}px`);
     }
+    this._onStage = r.top <= vh * 0.25 && r.bottom >= vh * 0.75;   // 1.5.0: for the one-time orbit hint
+    if (this._orbit) this._orbitHintCheck();
     const pinned = !reduced && r.top <= vh * 0.1 && r.bottom >= vh * 0.9;
     if (pinned !== this._pinned) {
       this._pinned = pinned;
@@ -2052,6 +2108,7 @@ export class ExplodedView extends HTMLElement {
     // a tap can dock the card right under the finger; ignore the click that the same tap sends a moment later
     this.$('#tipX').addEventListener('click', () => { if (performance.now() - (this._pinAt || 0) > 450) this._svPin(null); });
     this.$('#partsBtn').addEventListener('click', () => this._setDrawer(!this._drawerOpen));
+    this.$('#spinBtn').addEventListener('click', () => this._setSpin(!this._spin));
     this.$('#drawerX').addEventListener('click', () => this._setDrawer(false, true));
     this.shadowRoot.querySelector('.sv-drawer').inert = true;
     this.addEventListener('keydown', (e) => {
@@ -2359,15 +2416,22 @@ export class ExplodedView extends HTMLElement {
   }
 
   _wireScrollPointer(canvas) {
-    let down = null;
-    canvas.addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY, t: performance.now() }; });
-    canvas.addEventListener('pointercancel', () => { down = null; });
+    let down = null, nPtr = 0;
+    canvas.addEventListener('pointerdown', (e) => {
+      nPtr++;
+      // 1.5.0: a second finger makes it a gesture, never a tap
+      down = nPtr > 1 ? null : { x: e.clientX, y: e.clientY, t: performance.now() };
+    });
+    canvas.addEventListener('pointercancel', () => { down = null; nPtr = Math.max(0, nPtr - 1); });
     canvas.addEventListener('pointerup', (e) => {
+      nPtr = Math.max(0, nPtr - 1);
       if (!down) return;
       const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
       const quick = performance.now() - down.t < 600;
       down = null;
-      if (moved > 8 || !quick) return;
+      // 1.5.0 orbit: under 5 px is a tap; a spin (or the moment after one) is not
+      if (moved > (this._orbit ? 5 : 8) || !quick) return;
+      if (this._orbit && (this._ob?.drag || performance.now() - (this._orbTapBlock || 0) < 300)) return;
       if (this._drawerOpen && this._stageW < 900) { this._setDrawer(false); return; }   // a tap above the sheet closes it
       this._svPinCard = null;
       const hit = this._pick(e);
@@ -2389,8 +2453,207 @@ export class ExplodedView extends HTMLElement {
     });
     canvas.addEventListener('pointerleave', () => { this._lastMove = null; this._svHover(null); });
   }
+  /* ---------- 1.5.0 orbit: the user spins him on top of the scroll camera ----------
+     Mouse: drag (5 px before it counts), Ctrl+wheel zooms (the plain wheel still scrolls). Touch: two fingers
+     spin and pinch zooms, one finger scrolls the page unless the Spin chip is on. Keys on the focused canvas.
+     On release a short damped momentum, then after 2 s of quiet a 1 s glide back to the story's angle.
+     Reduced motion: manual spin only, no momentum and no glide (he stays where he was put; Home resets). */
+  _orb() { return this._ob || (this._ob = { yaw: 0, pitch: 0, zoom: 1, vy: 0, vp: 0, svy: 0, svp: 0, mt: 0, last: -1e9, drag: false, glide: null }); }
+  _orbitWake() { this._needs = true; if (this._ready) this._loop(); }
+  _orbitGrab() {
+    const o = this._orb();
+    o.drag = true; o.glide = null; o.vy = o.vp = o.svy = o.svp = 0; o.mt = performance.now(); o.last = o.mt;
+    this.setAttribute('data-orbiting', '');
+    this._lastMove = null; this._svHover(null);
+    if (this._svPinPart) this._svPin(null);
+    this._orbitHintOff();
+  }
+  _orbitMove(dx, dy) {
+    const o = this._orb(), now = performance.now();
+    const k = (Math.PI * 2 * 0.8) / Math.max(320, this._stageH || 600);   // a full stage height of drag is about 290 degrees
+    const dyaw = -dx * k, dp = dy * k * 0.8;
+    o.yaw += dyaw; o.pitch = clamp(o.pitch + dp, -ORBIT_PITCH, ORBIT_PITCH);
+    const sec = Math.max(4, now - o.mt) / 1000;
+    o.svy = o.svy * 0.5 + (dyaw / sec) * 0.5; o.svp = o.svp * 0.5 + (dp / sec) * 0.5;
+    o.mt = now; o.last = now;
+    this._orbitWake();
+  }
+  _orbitRelease() {
+    const o = this._ob;
+    if (!o || !o.drag) return;
+    const now = performance.now();
+    o.drag = false; o.last = now; this._orbTapBlock = now;
+    this.removeAttribute('data-orbiting');
+    const fresh = now - o.mt < 90 && !this._reducedMotion();     // a pointer that stopped before letting go: no momentum
+    o.vy = fresh ? clamp(o.svy, -5, 5) : 0; o.vp = fresh ? clamp(o.svp, -3, 3) : 0;
+    this._orbitWake();
+  }
+  _orbitZoom(f) {
+    const o = this._orb();
+    o.glide = null; o.zoom = clamp(o.zoom * f, ORBIT_ZOOM[0], ORBIT_ZOOM[1]); o.last = performance.now();
+    this._orbitHintOff();
+    this._orbitWake();
+  }
+  _orbitReset() { const o = this._orb(); Object.assign(o, { yaw: 0, pitch: 0, zoom: 1, vy: 0, vp: 0, glide: null }); this._orbitWake(); }
+  /* momentum and the glide back; true while it moves */
+  _orbitTick(dt) {
+    const o = this._ob;
+    if (!o || o.drag) return false;
+    const reduced = this._reducedMotion(), now = performance.now();
+    let anim = false;
+    if (o.vy || o.vp) {
+      if (reduced || dt <= 0) { o.vy = o.vp = 0; }
+      else {
+        o.yaw += o.vy * dt; o.pitch = clamp(o.pitch + o.vp * dt, -ORBIT_PITCH, ORBIT_PITCH);
+        const d = Math.exp(-dt * 6); o.vy *= d; o.vp *= d;   // at most about 50 degrees of coast
+        if (Math.abs(o.vy) < 0.03 && Math.abs(o.vp) < 0.03) o.vy = o.vp = 0;
+        anim = true;   // the 2 s hold counts from letting go, so the coast is part of it
+      }
+    }
+    if (!reduced && !o.vy && !o.vp && (o.yaw || o.pitch || o.zoom !== 1)) {
+      if (!o.glide && now - o.last > ORBIT_HOLD) {
+        o.glide = { t0: now, y: Math.atan2(Math.sin(o.yaw), Math.cos(o.yaw)), p: o.pitch, z: o.zoom };   // the short way round
+      }
+      if (o.glide) {
+        const g = o.glide, k = easeInOut(clamp((now - g.t0) / ORBIT_GLIDE));
+        o.yaw = g.y * (1 - k); o.pitch = g.p * (1 - k); o.zoom = lerp(g.z, 1, k);
+        if (k >= 1) { o.yaw = 0; o.pitch = 0; o.zoom = 1; o.glide = null; }
+        anim = true;
+      }
+    }
+    // the parts move under a still mouse: look again what is under it
+    const lm = this._lastMove;
+    if (anim && lm && now - (this._orbPickAt || 0) > 90) { this._orbPickAt = now; this._svHover(this._pick(lm), lm); }
+    return anim;
+  }
+  _setSpin(on) {
+    this._spin = !!on;
+    this._spinY = window.scrollY;
+    this.$('#spinBtn')?.setAttribute('aria-pressed', String(this._spin));
+    const cv = this.shadowRoot.querySelector('.sv-stage > canvas');
+    if (cv) cv.style.touchAction = this._spin ? 'none' : 'pan-y';
+    if (this._spin) this._orbitHintOff();
+    this._emit('spinchange', { on: this._spin });
+  }
+  _wireOrbit(canvas) {
+    // mouse and pen: drag
+    let md = null;
+    canvas.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch' || e.button !== 0 || !this._ready) return;
+      md = { id: e.pointerId, x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY };
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (!md || e.pointerId !== md.id) return;
+      if (!(e.buttons & 1)) { md = null; this._orbitRelease(); return; }
+      if (!this._ob?.drag) {
+        if (Math.hypot(e.clientX - md.x, e.clientY - md.y) < 5) return;
+        this._orbitGrab();
+        try { canvas.setPointerCapture(md.id); } catch { /* the pointer is already gone */ }
+      }
+      this._orbitMove(e.clientX - md.lx, e.clientY - md.ly);
+      md.lx = e.clientX; md.ly = e.clientY;
+    });
+    const up = (e) => {
+      if (!md || e.pointerId !== md.id) return;
+      md = null;
+      if (this._ob?.drag) { this._orbitRelease(); try { canvas.releasePointerCapture(e.pointerId); } catch { /* released */ } }
+    };
+    canvas.addEventListener('pointerup', up);
+    canvas.addEventListener('pointercancel', up);
+    canvas.addEventListener('lostpointercapture', up);
+    // Ctrl+wheel (and a laptop trackpad's pinch, which arrives as one) zooms; the browser's page zoom is stopped
+    // only here, over the stage. The plain wheel is left alone, so it still scrolls the page and the explode.
+    canvas.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      if (!this._ready) return;
+      const dy = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 400 : 1);
+      this._orbitZoom(Math.exp(-clamp(dy, -200, 200) * 0.0022));
+    }, { passive: false });
+    // touch: two fingers spin (their midpoint) and pinch zooms; one finger only with the Spin chip on
+    let g = null, pend = null;
+    const mid = (t) => {
+      if (t.length >= 2) {
+        const a = t[0], b = t[1];
+        return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2, d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), n: 2 };
+      }
+      return { x: t[0].clientX, y: t[0].clientY, d: 0, n: 1 };
+    };
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) pend = this._spin ? mid(e.touches) : null;
+    }, { passive: true });
+    canvas.addEventListener('touchmove', (e) => {
+      if (!this._ready) return;
+      const n = e.touches.length;
+      if (n < 2 && !this._spin) return;
+      const m = mid(e.touches);
+      if (!g || g.n !== m.n) {
+        // a new gesture starts only while the browser has not begun to scroll (the move can still be cancelled)
+        if (!e.cancelable) return;
+        e.preventDefault();
+        if (m.n === 1) {
+          if (!pend) { pend = m; return; }
+          if (Math.hypot(m.x - pend.x, m.y - pend.y) < 5) return;   // still a tap
+        }
+        if (!this._ob?.drag) this._orbitGrab();
+        g = m;
+        return;
+      }
+      if (e.cancelable) e.preventDefault();
+      this._orbitMove(m.x - g.x, m.y - g.y);
+      if (m.n === 2 && g.d > 10 && m.d > 10) this._orbitZoom(m.d / g.d);
+      g = m;
+    }, { passive: false });
+    const tend = (e) => {
+      const n = e.touches.length;
+      if (g && n < g.n) {
+        g = null;
+        if (n === 1 && this._spin) { g = mid(e.touches); return; }   // two fingers down to one: keep spinning
+        this._orbitRelease();
+      }
+      if (!n) pend = null;
+    };
+    canvas.addEventListener('touchend', tend, { passive: true });
+    canvas.addEventListener('touchcancel', tend, { passive: true });
+    // keyboard: the arrow keys spin and tilt (the same way a drag in that direction does), + and - zoom, Home resets
+    canvas.addEventListener('keydown', (e) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || !this._ready) return;
+      const kick = { ArrowLeft: [1, 0], ArrowRight: [-1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+      const o = this._orb();
+      if (kick) {
+        o.glide = null; o.last = performance.now();
+        if (this._reducedMotion()) { o.yaw += kick[0] * 0.26; o.pitch = clamp(o.pitch + kick[1] * 0.14, -ORBIT_PITCH, ORBIT_PITCH); }
+        else { o.vy = clamp(o.vy + kick[0] * 2.4, -7, 7); o.vp = clamp(o.vp + kick[1] * 1.3, -4, 4); }
+        this._orbitHintOff();
+        this._orbitWake();
+      } else if (e.key === '+' || e.key === '=') this._orbitZoom(1.15);
+      else if (e.key === '-' || e.key === '_') this._orbitZoom(1 / 1.15);
+      else if (e.key === 'Home' || e.key === '0') this._orbitReset();
+      else return;
+      e.preventDefault();
+    });
+  }
+  /* the one-time hint: shown once the stage is on screen and ready; gone on the first spin or after 5 s */
+  _orbitHintCheck() {
+    if (this._ohState || !this._ready || !this._onStage) return;
+    const key = `${this.getAttribute('storage-key') || 'exploded-view'}-orbit-hint`;
+    let seen = false;
+    try { seen = window.localStorage.getItem(key) === '1'; } catch { /* no storage: show it this visit */ }
+    if (seen) { this._ohState = 'done'; return; }
+    try { window.localStorage.setItem(key, '1'); } catch { /* private window */ }
+    this._ohState = 'on';
+    const touch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    const el = this.$('#oHint');
+    el.innerHTML = touch ? `${ICONS.fingers}<span>Two fingers to spin</span>` : `${ICONS.mouse}<span>Drag to spin</span>`;
+    void el.offsetWidth; el.classList.add('on');
+    this._ohT = setTimeout(() => this._orbitHintOff(), 5000);
+  }
+  _orbitHintOff() {
+    if (this._ohState === 'on') { clearTimeout(this._ohT); this.$('#oHint')?.classList.remove('on'); }
+    this._ohState = 'done';
+  }
   _svHover(p, e) {
-    this.shadowRoot.querySelector('canvas').style.cursor = p ? 'pointer' : '';
+    this.shadowRoot.querySelector('canvas').style.cursor = p && !this._orbit ? 'pointer' : '';   // orbit: grab, from the CSS
     if (p !== this._svHoverPart) { this._svHoverPart = p; this._svRefresh(); }
     if (this._svPinPart) return;                 // a tapped part keeps its docked card
     if (p && e) this._showTip(p, false, e); else this._hideTip();
@@ -2749,6 +3012,22 @@ export class ExplodedView extends HTMLElement {
     if (Fs && m > 0) {
       T.lerp(Fs.t, m); D.lerp(Fs.dir, m).normalize();
       dist = lerp(A.d, Fs.d, m); cx = lerp(A.cx, Fs.cx, m); cy = lerp(A.cy, Fs.cy, m);
+    }
+    // 1.5.0 orbit: the user's spin (yaw about the vertical, a limited tilt) and zoom, on top of the story camera,
+    // about the same aim point, so he stays where the layout put him
+    if (this._ob) {
+      if (this._orbitTick(dt)) anim = true;
+      const o = this._ob;
+      if (o.yaw || o.pitch || o.zoom !== 1) {
+        if (o.yaw) D.applyAxisAngle(Y_AXIS, o.yaw);
+        if (o.pitch) {
+          const hl = Math.hypot(D.x, D.z) || 1e-6;
+          const el = clamp(Math.atan2(D.y, hl) + o.pitch, -1.3, 1.4);
+          const c = Math.cos(el) / hl;
+          D.set(D.x * c, Math.sin(el), D.z * c);
+        }
+        dist /= o.zoom;
+      }
     }
     this._camera.position.copy(T).addScaledVector(D, dist);
     this._camera.lookAt(T);

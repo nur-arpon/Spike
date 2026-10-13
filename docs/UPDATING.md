@@ -141,7 +141,7 @@ page (the header and footer blocks are repeated in each file) and to `sitemap.xm
 ## Edit the "Inside Spike" scroll story (beats, cards and part facts)
 
 The scroll section is the first thing under the Home hero, and it is also at the top of `inside-spike.html`.
-Both use the same component (`<exploded-view mode="scroll" layout="minimal">`, version 1.4.0) and the same
+Both use the same component (`<exploded-view mode="scroll" layout="minimal" orbit>`, version 1.5.0) and the same
 manifest, so one edit changes both. The stage is full-screen, edge to edge, and since 1.4.0 it follows iyO's
 "Details" section: Spike big and centred, no captions on screen, only a small "INSIDE SPIKE" label top left (with
 "Spike", or the part group in focus), a small Parts chip (all 8 cards in a drawer, or a sheet on phones) and the
@@ -149,6 +149,17 @@ Cream / Chocolate switch top right. Hovering a part (or tapping it on a phone) s
 picture of that part, its name and a short line or two. The site header slides away while the stage is pinned
 (`site.css`, the `data-pinned` rule). Taking `layout="minimal"` off the tag brings back the 1.3.0 look (big
 captions bottom left, beat card, progress dots).
+
+**Spinning Spike (orbit, since 1.5.0).** The `orbit` attribute on both tags lets visitors turn him at any point
+of the story: drag with the mouse (the plain wheel still scrolls and takes him apart; Ctrl+wheel zooms), two fingers
+on a phone (one finger still scrolls the page; pinch zooms), or the small "Spin" chip on touch screens, which makes
+one finger spin until it is tapped again or the page scrolls. With the stage focused (Tab), the arrow keys spin and
+tilt, + and - zoom, Home resets. After letting go he coasts a little, holds, and 2 s later glides back to the story's
+angle over 1 s (with reduced motion he just stays). The first visit shows a small "Drag to spin" pill once
+(remembered under `spike-stage-orbit-hint`). To turn it off, delete the word `orbit` from the tag in
+`index.html` and `inside-spike.html`. The numbers (35 degrees of tilt, 0.7x to 2.4x zoom, 2 s hold, 1 s glide) are
+the `ORBIT_*` constants near the top of the component. Screenshots: `software/app/screens/website/scroll-orbit/`.
+
 All of its words live in the HUMAN manifest, never in `geometry.json` (that file is rewritten by every CAD export):
 
 - edit `preview_3d/exploded_v3_4g/manifest.json` (the source), then copy it to the site with
@@ -202,3 +213,45 @@ camera or `scroll.sweep`, and put its new width and height on the `<img>` in bot
 `spike-3d-whole.webp` is no longer used by the pages but is kept.) After any change, bump the `?v=` on
 the manifest and component links in both pages so visitors get the new copy (and the `site.css?v=` when you
 touch the CSS), and update `sitemap.xml`.
+
+## The light field (the dusky glow and the dust behind every page)
+
+Added 2026-10-14, made stronger the same day (v2) to match the dusk of Nur's portfolio Spike page
+(`NurIfranArpon-v2/spike.html`). Three layers, all behind the content (`z-index: -1`, `pointer-events: none`):
+
+1. **The aurora** (`<canvas id="field">`, in every page): slow fbm-noise bands, a warm spotlight that follows the
+   pointer (with no pointer it rests low on the left), and darker corners. Half resolution, about 30 frames a second.
+2. **The dust** (`<canvas id="dust">`, added by the script): 2,600 fine specks at 1366 x 768 (scaled by screen area,
+   300 to 4,000) drifting on a curl-noise flow. The cursor, or a finger dragged on a phone, pushes and swirls them;
+   a fast swipe leaves a wake, then they ease back into the flow. CPU sim in typed arrays (about 0.4 ms a frame on
+   Nur's laptop); if it ever costs more than about 0.9 ms it drops a fifth of the specks at a time.
+3. **The grain** (`<div class="grain">`, in every page): paper grain in CSS.
+
+The code is `assets/js/light-field.js` (adapted from the portfolio's `assets/js/app.js`).
+
+**Every knob is a CSS variable in `site.css`** (light values in `:root`, dark ones in the dark block): `--field-glow`,
+`--field-accent`, `--field-aurora` (band strength), `--field-spot` and `--field-spot-size` (spotlight), `--field-speed`,
+`--field-vignette`, `--field-scrim`, `--grain`, `--grain-size`, `--grain-blend`, `--dust-count`, `--dust-size` (px),
+`--dust-opacity`, `--dust-color`, `--dust-push` and `--dust-radius` (px). Change a number and reload. The dark mode
+uses the portfolio's Spike colours (glow `#6B3F22`, accent `#D9956A`).
+
+**Text stays readable through a local scrim.** The script finds every bit of text that sits straight on the page
+background, blurs a mask of where it is, and fades the aurora and the dust back to the page colour behind the
+words (`--field-scrim`, .96 light / .9 dark). Everywhere else the effect stays at full strength. Measured over
+428 text samples on 8 pages at 375 and 1366, light and dark, with the spotlight on the text: every one is at or
+above WCAG AA (lowest 4.58:1 light, 4.93:1 dark). If you lower `--field-scrim` or raise `--grain`, re-check the
+small grey text (`--ink-3`, `#7A6352` in light, darkened from `#8C7462` for AA). `.section--tint` is now 55 %
+see-through so the field runs under those bands too.
+
+Rules that must stay:
+- `getContext('webgl', { alpha: true })` on both canvases. Never `alpha: false` or `powerPreference: 'low-power'`:
+  an opaque full-screen canvas turned the whole page bright green on Nur's laptop.
+- `#field` keeps `background: var(--bg)`, so with WebGL off or failing (the canvas then gets `data-off`) the page
+  looks as it did before.
+- Both loops stop while the tab is hidden and while the full-screen 3D story (`<exploded-view mode="scroll">`) is
+  pinned (`data-pinned`); `<html>` gets `data-field-paused` meanwhile. With reduced motion there is one still
+  frame (redrawn only when you scroll, so the scrim stays under the text), the dust stays still and the cursor does
+  nothing.
+- After changing `light-field.js` or `site.css`, bump the `?v=` on both links in **every** page (currently
+  `20261014-field2`).
+- Screenshots and short screen recordings of the check: `software/app/screens/website/light-field-v2/`.

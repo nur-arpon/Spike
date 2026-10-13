@@ -16,7 +16,7 @@
   --surface-2: #FAF0E2;
   --ink: #2E2019;
   --ink-2: #66503F;
-  --ink-3: #8C7462;
+  --ink-3: #7A6352; /* was #8C7462 (4.05:1 on the page, under WCAG AA); now 5.2:1, and 4.6:1 at the deepest point of the light field */
   --line: #EADBC6;
   --line-strong: #DCC6AA;
   --accent: #B97A4F;
@@ -26,6 +26,24 @@
   --btn-bg-hover: #5C412F;
   --stage-hi: #FCF5EB;
   --stage-lo: #EEDCC5;
+  /* the light field behind the pages (assets/js/light-field.js): every knob, light mode. See UPDATING.md. */
+  --field-glow: #DDA56C;     /* the aurora's warm amber */
+  --field-accent: #B97A4F;   /* the spotlight's caramel */
+  --field-aurora: .5;        /* how strong the drifting bands are (0 = none) */
+  --field-spot: .55;         /* the pointer spotlight's strength */
+  --field-spot-size: 1.25;   /* its size (1 = the portfolio's) */
+  --field-speed: 1;          /* drift speed (1 = the portfolio's) */
+  --field-vignette: .12;     /* darker corners */
+  --field-scrim: .96;        /* how much of the page colour comes back behind text (keeps it AA) */
+  --grain: .13;              /* paper grain opacity */
+  --grain-size: 180px;
+  --grain-blend: multiply;
+  --dust-count: 2600;        /* at 1366 x 768; scales with screen area, 300 to 4000 */
+  --dust-size: 1.7;          /* px */
+  --dust-opacity: .55;
+  --dust-color: #8A5A36;
+  --dust-push: 1.3;          /* how hard the cursor pushes the dust */
+  --dust-radius: 150;        /* px around the cursor */
   --ok: #3F8A5A;
   --soon: #B7742F;
   --shadow-sm: 0 1px 2px rgba(74, 51, 38, .06), 0 2px 8px rgba(74, 51, 38, .05);
@@ -74,6 +92,18 @@
     --btn-bg-hover: #F8E7D0;
     --stage-hi: #3B2B21;
     --stage-lo: #1C1410;
+    --field-glow: #6B3F22;   /* the portfolio's Spike page dusk */
+    --field-accent: #D9956A;
+    --field-aurora: .42;
+    --field-spot: .55;
+    --field-spot-size: 1.15;
+    --field-speed: 1;
+    --field-vignette: .18;
+    --field-scrim: .9;
+    --grain: .07;
+    --grain-blend: normal;
+    --dust-opacity: .4;
+    --dust-color: #F3C9A0;
     --ok: #6CC08A;
     --soon: #E3A15B;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
@@ -108,6 +138,12 @@ body {
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
+/* the light field (assets/js/light-field.js): a fixed WebGL canvas behind everything. Its own background is the page
+   colour, so the page looks right if WebGL is off or fails. It never takes the pointer. */
+#field, #dust { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; display: block; pointer-events: none; }
+#field { background: var(--bg); }
+.grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: var(--grain); mix-blend-mode: var(--grain-blend); background-size: var(--grain-size); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+@media print { #field, #dust, .grain { display: none; } }
 img, svg, video, iframe { display: block; max-width: 100%; }
 img { height: auto; }
 a { color: var(--accent-text); text-decoration-thickness: 1px; text-underline-offset: 3px; }
@@ -136,7 +172,7 @@ ul, ol { margin: 0; padding: 0; }
 
 .container { width: 100%; max-width: calc(var(--max) + var(--gutter) * 2); margin-inline: auto; padding-inline: var(--gutter); }
 .section { padding-block: var(--section); }
-.section--tint { background: var(--bg-tint); }
+.section--tint { background: color-mix(in srgb, var(--bg-tint) 55%, transparent); } /* see-through, so the light field runs under it too */
 .section--tight { padding-block: calc(var(--section) * .6); }
 
 /* ---------- type helpers ---------- */

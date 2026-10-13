@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&amp;family=Inter:wght@400..700&amp;display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=20261014c">
+<link rel="stylesheet" href="assets/css/site.css?v=20261014-field2">
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -37,6 +37,8 @@
 </script>
 </head>
 <body>
+<canvas id="field" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="container nav">
@@ -82,7 +84,7 @@
 
 <section class="details" id="inside" aria-labelledby="inside-title">
   <h2 class="sr-only" id="inside-title">Inside Spike: scroll to take him apart and put him back together</h2>
-  <exploded-view mode="scroll" layout="minimal" src="assets/products/spike/manifest.json?v=v3.4g-scroll3" lazy stage="dark" stage-toggle stage-labels="Cream,Chocolate" storage-key="spike-stage" scroll-length="680" parts-title="Spike's main parts">
+  <exploded-view mode="scroll" layout="minimal" orbit src="assets/products/spike/manifest.json?v=v3.4g-scroll3" lazy stage="dark" stage-toggle stage-labels="Cream,Chocolate" storage-key="spike-stage" scroll-length="680" parts-title="Spike's main parts">
     <img slot="poster" src="assets/img/robot/spike-3d-opening.webp" width="1040" height="1726" alt="Spike the robot dog in 3D, whole, before he comes apart" decoding="async">
   </exploded-view>
   <script>(function () { try { var s = localStorage.getItem('spike-stage'); if (s === 'light' || s === 'dark') document.querySelector('exploded-view[mode="scroll"]').setAttribute('stage', s); } catch (e) { /* no storage: keep the default */ } })();</script>
@@ -228,12 +230,13 @@
     </div>
   </div>
 </footer>
+<script src="assets/js/light-field.js?v=20261014-field2" defer></script>
 <script src="assets/js/site.js" defer></script>
 <script type="module">
 /* The 3D for the Inside Spike story loads only as it comes near the screen; the poster image shows until then. */
 const ev = document.querySelector('exploded-view[mode="scroll"]');
 if (ev) {
-  const load = () => import('./assets/components/exploded-view.js?v=1.4.0');
+  const load = () => import('./assets/components/exploded-view.js?v=1.5.0');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '300px 0px' });
     io.observe(ev);
