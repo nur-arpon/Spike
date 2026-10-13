@@ -6,8 +6,7 @@
 <title>Spike - your personal desktop companion</title>
 <meta name="description" content="Spike is a cheeky little dog who talks with you, remembers what you tell him and keeps your alarms. Free for Windows, with an Android app you can download today and a desk robot on the way.">
 <link rel="canonical" href="https://nur-arpon.github.io/Spike/">
-<meta name="theme-color" content="#FBF5EC" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#15100C" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#15100C">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
 <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
@@ -28,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&amp;family=Inter:wght@400..700&amp;display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=20261014-field2">
+<link rel="stylesheet" href="assets/css/site.css?v=20261014-dark1">
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -69,9 +68,9 @@
     </div>
     <div class="stage-wrap" data-stage>
     <div class="stage">
-      <picture class="stage-img" data-state="face"><source media="(prefers-color-scheme: dark)" srcset="assets/img/robot/hero-dark.webp"><img src="assets/img/robot/hero.webp" width="1400" height="1400" alt="Spike, a cream and caramel robot dog, his screen face smiling up at you" fetchpriority="high"></picture>
-      <picture class="stage-img is-hidden" data-state="asleep"><source media="(prefers-color-scheme: dark)" srcset="assets/img/robot/hero-asleep-dark.webp"><img src="assets/img/robot/hero-asleep.webp" width="1400" height="1400" alt="Spike asleep, his screen face showing closed eyes" loading="lazy"></picture>
-      <picture class="stage-img is-hidden" data-state="off"><source media="(prefers-color-scheme: dark)" srcset="assets/img/robot/hero-off-dark.webp"><img src="assets/img/robot/hero-off.webp" width="1400" height="1400" alt="Spike with his screen switched off: the ears, the forehead tuft and the collar tag still say dog" loading="lazy"></picture>
+      <picture class="stage-img" data-state="face"><source srcset="assets/img/robot/hero-dark.webp"><img src="assets/img/robot/hero.webp" width="1400" height="1400" alt="Spike, a cream and caramel robot dog, his screen face smiling up at you" fetchpriority="high"></picture>
+      <picture class="stage-img is-hidden" data-state="asleep"><source srcset="assets/img/robot/hero-asleep-dark.webp"><img src="assets/img/robot/hero-asleep.webp" width="1400" height="1400" alt="Spike asleep, his screen face showing closed eyes" loading="lazy"></picture>
+      <picture class="stage-img is-hidden" data-state="off"><source srcset="assets/img/robot/hero-off-dark.webp"><img src="assets/img/robot/hero-off.webp" width="1400" height="1400" alt="Spike with his screen switched off: the ears, the forehead tuft and the collar tag still say dog" loading="lazy"></picture>
     </div>
       <div class="stage-controls" role="group" aria-label="Show Spike's screen">
         <button type="button" data-show="face" aria-pressed="true">Awake</button>
@@ -84,10 +83,9 @@
 
 <section class="details" id="inside" aria-labelledby="inside-title">
   <h2 class="sr-only" id="inside-title">Inside Spike: scroll to take him apart and put him back together</h2>
-  <exploded-view mode="scroll" layout="minimal" orbit src="assets/products/spike/manifest.json?v=v3.4g-scroll3" lazy stage="dark" stage-toggle stage-labels="Cream,Chocolate" storage-key="spike-stage" scroll-length="680" parts-title="Spike's main parts">
+  <exploded-view mode="scroll" layout="minimal" orbit src="assets/products/spike/manifest.json?v=v3.4g-scroll3" lazy stage="none" scroll-length="680" parts-title="Spike's main parts">
     <img slot="poster" src="assets/img/robot/spike-3d-opening.webp" width="1040" height="1726" alt="Spike the robot dog in 3D, whole, before he comes apart" decoding="async">
   </exploded-view>
-  <script>(function () { try { var s = localStorage.getItem('spike-stage'); if (s === 'light' || s === 'dark') document.querySelector('exploded-view[mode="scroll"]').setAttribute('stage', s); } catch (e) { /* no storage: keep the default */ } })();</script>
   <noscript><p class="container muted small" style="padding-top:20px">Turn on JavaScript to take Spike apart in 3D.</p></noscript>
   <div class="container details-foot">
     <p class="muted small">This is Spike v3.4g as designed in his CAD, not a photo. The prototype is being built now.</p>
@@ -162,7 +160,7 @@
         <a class="btn btn--ghost" href="robot.html">See the robot</a>
       </div>
       <div class="split-media reveal">
-        <div class="frame frame--stage"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/img/robot/close-dark.webp"><img src="assets/img/robot/close.webp" width="1600" height="1200" alt="Close-up of Spike's head: the screen face, the forehead tuft and the collar tag" loading="lazy"></picture></div>
+        <div class="frame frame--stage"><picture><source srcset="assets/img/robot/close-dark.webp"><img src="assets/img/robot/close.webp" width="1600" height="1200" alt="Close-up of Spike's head: the screen face, the forehead tuft and the collar tag" loading="lazy"></picture></div>
       </div>
     </div>
   </div>
@@ -230,13 +228,13 @@
     </div>
   </div>
 </footer>
-<script src="assets/js/light-field.js?v=20261014-field2" defer></script>
+<script src="assets/js/light-field.js?v=20261014-dark1" defer></script>
 <script src="assets/js/site.js" defer></script>
 <script type="module">
 /* The 3D for the Inside Spike story loads only as it comes near the screen; the poster image shows until then. */
 const ev = document.querySelector('exploded-view[mode="scroll"]');
 if (ev) {
-  const load = () => import('./assets/components/exploded-view.js?v=1.5.0');
+  const load = () => import('./assets/components/exploded-view.js?v=1.6.0');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '300px 0px' });
     io.observe(ev);

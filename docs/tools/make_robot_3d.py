@@ -17,7 +17,7 @@ OVERRIDE = """
 <style id="site-override">
 :root{--ground:transparent;--surface:#FFFAF3;--ink:#4A3326;--muted:#7A6152;--line:#E6D5C0;
   --stage-hi:#FCF5EB;--stage-lo:#EEDCC5;--chip:#FFFAF3;--accent:#B97A4F;--accent-ink:#FFFFFF}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:transparent;--surface:#2A1F18;
+@media all{:root:not([data-theme="light"]){--ground:transparent;--surface:#2A1F18;
   --ink:#F3DDBF;--muted:#C2A88F;--line:#46362A;--stage-hi:#3B2B21;--stage-lo:#1C1410;--chip:#2A1F18}}
 html,body{height:100%;background:transparent}
 body{overflow:hidden}

@@ -68,7 +68,7 @@
   --body:"Instrument Sans","Segoe UI",system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
 }
-@media (prefers-color-scheme: dark){
+@media all{
   :root:not([data-theme="light"]){
     --ground:#141619; --surface:#1C1F23; --ink:#E8EAEC; --muted:#9BA2AA; --line:#2E3339;
     --stage-hi:#2B2F35; --stage-lo:#111316; --chip:#23272C; color-scheme:dark;
@@ -165,7 +165,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
 <style id="site-override">
 :root{--ground:transparent;--surface:#FFFAF3;--ink:#4A3326;--muted:#7A6152;--line:#E6D5C0;
   --stage-hi:#FCF5EB;--stage-lo:#EEDCC5;--chip:#FFFAF3;--accent:#B97A4F;--accent-ink:#FFFFFF}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:transparent;--surface:#2A1F18;
+@media all{:root:not([data-theme="light"]){--ground:transparent;--surface:#2A1F18;
   --ink:#F3DDBF;--muted:#C2A88F;--line:#46362A;--stage-hi:#3B2B21;--stage-lo:#1C1410;--chip:#2A1F18}}
 html,body{height:100%;background:transparent}
 body{overflow:hidden}

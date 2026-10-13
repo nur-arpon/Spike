@@ -12,7 +12,7 @@
      colour behind words, so the effect stays strong everywhere else.
    - aurora at half resolution and ~30 fps; dust at full resolution (pixel ratio capped) with a CPU sim in typed
      arrays that drops particles if it ever costs more than about 1 ms. Both stop while the tab is hidden and while
-     the full-screen 3D stage (<exploded-view mode="scroll">, data-pinned) covers the screen. Reduced motion: one
+     an OPAQUE full-screen 3D stage (<exploded-view mode="scroll">, data-pinned, not stage="none") covers the screen. Reduced motion: one
      still frame (redrawn only to keep the scrim under the text when you scroll), dust static, no cursor effect. */
 (function () {
   "use strict";
@@ -343,7 +343,8 @@
 
   /* ---------- pause: hidden tab, or the full-screen 3D stage pinned over the screen ---------- */
   var stages = Array.prototype.slice.call(document.querySelectorAll('exploded-view[mode="scroll"]'));
-  function covered() { for (var i = 0; i < stages.length; i++) if (stages[i].hasAttribute("data-pinned")) return true; return false; }
+  /* a transparent stage (stage="none") shows the field, so it keeps running */
+  function covered() { for (var i = 0; i < stages.length; i++) if (stages[i].hasAttribute("data-pinned") && stages[i].getAttribute("stage") !== "none") return true; return false; }
   var paused = false;
   function updatePause() {
     var p = document.hidden || covered();

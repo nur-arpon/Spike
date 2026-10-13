@@ -6,6 +6,8 @@
  * a Parts drawer and an adaptive pixel ratio.
  * 1.4.0: layout="minimal" for the scroll stage: no captions, the model big and centred, a small top-left label,
  * and an iyO-style hover card (part render, name, two or three short lines) by the pointer.
+ * 1.6.0: stage="none" for the scroll stage: no fill, no clip, a transparent canvas, so the page behind (a gradient, a
+ *        WebGL background) shows through. The ink follows the page's colour-scheme (light or dark) by itself.
  * 1.5.0: orbit (attribute) for the scroll stage: drag to spin him on top of the scroll camera, Ctrl+wheel or pinch
  * to zoom, two fingers (or the Spin chip) on touch, arrow keys when focused; he glides back to the story angle.
  * One ES module, no build step. Needs an import map that maps "three" and "three/addons/" (see README.md).
@@ -18,7 +20,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-const VERSION = '1.5.0';
+const VERSION = '1.6.0';
 const MODES = ['explode', 'build', 'energy'];
 /** 1.2.0: one model cache for the whole page, so two views of the same product (scroll + tabs) download each GLB once.
  *  Each view clones the scene and gives it its own materials, so sharing is safe. */
@@ -288,6 +290,18 @@ const SCROLL_CSS = /* css */ `
   --sv-tip-bg: rgba(46, 32, 25, .95); --sv-tip-ink: #FBF0E0; --sv-tip-ink-2: #DCC6AA; --sv-tip-accent: #F3DDBF;
   --sv-glow: #C98A5E; --sv-shadow: 0 18px 44px rgba(74, 51, 38, .2);
 }
+:host([stage="none"]) { --sv-hi: #15100C; --sv-lo: #15100C; --sv-scrim: rgba(21, 16, 12, .6); }
+/* 1.6.0 stage="none": the ink follows the page's colour-scheme (data-scheme is set from it by the script) */
+:host([stage="none"][data-scheme="light"]) {
+  --sv-hi: #FBF5EC; --sv-lo: #FBF5EC; --sv-panel: rgba(255, 250, 243, .9); --sv-scrim: rgba(251, 245, 236, .6);
+  --sv-ink: #2A1C15; --sv-ink-2: #5A4434; --sv-ink-3: #6E5646;
+  --sv-line: rgba(74, 51, 38, .16); --sv-card: rgba(255, 253, 249, .5); --sv-card-hover: rgba(255, 253, 249, .85);
+  --sv-card-active: #FFFDF9; --sv-thumb: rgba(201, 138, 94, .14);
+  --sv-accent: #8A5330; --sv-seg: rgba(255, 250, 243, .72); --sv-seg-on: #4A3326; --sv-seg-on-ink: #FBF0E0;
+  --sv-tip-bg: rgba(46, 32, 25, .95); --sv-tip-ink: #FBF0E0; --sv-tip-ink-2: #DCC6AA; --sv-tip-accent: #F3DDBF;
+  --sv-glow: #C98A5E; --sv-shadow: 0 18px 44px rgba(74, 51, 38, .2);
+}
+:host([stage="none"]) .sv-sticky { background: none; clip-path: none; }
 :host([hidden]) { display: none; }
 * { box-sizing: border-box; }
 .sv [hidden] { display: none !important; }
@@ -1277,6 +1291,7 @@ export class ExplodedView extends HTMLElement {
     if (this._renderer) return;
     const canvas = this.shadowRoot.querySelector('canvas');
     const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    r.setClearColor(0x000000, 0);   // 1.6.0: a transparent canvas, so stage="none" shows the page through it
     r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     r.outputColorSpace = THREE.SRGBColorSpace;
     r.toneMapping = THREE.NoToneMapping;
@@ -2063,6 +2078,7 @@ export class ExplodedView extends HTMLElement {
     }
   }
   _initStage() {
+    if (this.getAttribute('stage') === 'none') { this._initNoneStage(); return; }
     const key = this.getAttribute('storage-key');
     let st = null;
     if (key) { try { st = window.localStorage.getItem(key); } catch { st = null; } }
@@ -2074,7 +2090,26 @@ export class ExplodedView extends HTMLElement {
     t.querySelector('[data-stage="dark"]').textContent = labels[1] || 'Dark';
     this._setStage(st, false);
   }
+  /* 1.6.0 stage="none": no fill; read the page's colour-scheme (the CSS color-scheme property, so a page's own
+     light/dark switch counts) and keep data-scheme on the host in step with it. */
+  _initNoneStage() {
+    this.$('#stageToggle').hidden = true;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const read = () => {
+      const cs = (getComputedStyle(this).colorScheme || '').toLowerCase();
+      const dark = cs.includes('dark') && !cs.includes('light') ? true : cs.includes('light') && !cs.includes('dark') ? false : mq.matches;
+      const v = dark ? 'dark' : 'light';
+      if (this.getAttribute('data-scheme') !== v) { this.setAttribute('data-scheme', v); this._glowStage = null; this._needs = true; }
+    };
+    read();
+    if (!this._schemeBound) {
+      this._schemeBound = true;
+      (mq.addEventListener ? mq.addEventListener('change', read) : mq.addListener(read));
+      new MutationObserver(read).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
+    }
+  }
   _setStage(st, save) {
+    if (this.getAttribute('stage') === 'none') return;
     st = st === 'light' ? 'light' : 'dark';
     if (this.getAttribute('stage') !== st) this.setAttribute('stage', st);
     this.shadowRoot.querySelectorAll('#stageToggle button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.stage === st)));
@@ -2804,7 +2839,7 @@ export class ExplodedView extends HTMLElement {
   }
 
   _glowColour() {
-    const st = this.getAttribute('stage');
+    const st = this.getAttribute('stage') + (this.getAttribute('data-scheme') || '');
     if (st !== this._glowStage || !this._glowCol) {
       this._glowStage = st;
       const v = getComputedStyle(this).getPropertyValue('--sv-glow').trim() || '#d9956a';

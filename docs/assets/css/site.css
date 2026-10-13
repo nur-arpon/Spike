@@ -74,7 +74,7 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
+@media all {
   :root:not([data-theme="light"]) {
     --bg: #15100C;
     --bg-tint: #1E1611;
@@ -559,7 +559,7 @@ ul, ol { margin: 0; padding: 0; }
 .band .btn--primary:hover { background: #F8E7D0; }
 .band .btn--ghost { color: #FBF0E0; border-color: rgba(243, 221, 191, .35); }
 .band .btn--ghost:hover { background: rgba(243, 221, 191, .08); border-color: rgba(243, 221, 191, .6); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .band { background: #251A14; box-shadow: inset 0 0 0 1px #3A2A20; } }
+@media all { :root:not([data-theme="light"]) .band { background: #251A14; box-shadow: inset 0 0 0 1px #3A2A20; } }
 .band-grid { display: grid; gap: 32px; position: relative; }
 @media (min-width: 600px) { .band { padding: 64px 48px; } }
 @media (min-width: 1024px) { .band { padding: 88px 80px; } .band-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 80px; align-items: center; } }
@@ -681,6 +681,7 @@ body:has(.details exploded-view[data-pinned]) .site-header:not(.menu-open) { tra
   height: 100vh; height: 100svh; min-height: 480px;
   background: radial-gradient(120% 100% at 62% 38%, #3B2B21, #120D0A);
 }
+.details exploded-view[stage="none"]:not(:defined) { background: none; }
 .details exploded-view[stage="light"]:not(:defined) { background: radial-gradient(120% 100% at 62% 38%, #FFFAF2, #E8D2B6); }
 .details exploded-view:not(:defined) > img { width: min(78vh, 88vw); width: min(78svh, 88vw); height: auto; aspect-ratio: 1; object-fit: contain; }
 /* 1.4.0 layout="minimal": the poster is a tight render of the whole model, contained in the same centred box the 3D
