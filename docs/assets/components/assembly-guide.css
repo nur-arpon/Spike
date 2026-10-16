@@ -25,7 +25,7 @@
   --ag-display: var(--display, "Fraunces", Georgia, serif);
   --ag-radius: var(--r-md, 18px);
 }
-@media all {
+@media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --ag-warn-bg: #3A2A16; --ag-warn-line: #A8743A; --ag-stop-bg: #3B201B; --ag-stop-line: #A35A4A;
     --ag-board: #2C221B; --ag-hole: #B8A898;
