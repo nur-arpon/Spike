@@ -147,3 +147,6 @@ cad/**/Tuft_Mask*
 
 # ---- Website: docs/data holds the site's public content (not runtime data) ----
 !docs/data/
+
+# ---- Website: 3D part models for the exploded view (the models/ rule above is for local AI weights) ----
+!docs/assets/products/**/models/

@@ -17,7 +17,7 @@ OVERRIDE = """
 <style id="site-override">
 :root{--ground:transparent;--surface:#FFFAF3;--ink:#4A3326;--muted:#7A6152;--line:#E6D5C0;
   --stage-hi:#FCF5EB;--stage-lo:#EEDCC5;--chip:#FFFAF3;--accent:#B97A4F;--accent-ink:#FFFFFF}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:transparent;--surface:#2A1F18;
+@media all{:root:not([data-theme="light"]){--ground:transparent;--surface:#2A1F18;
   --ink:#F3DDBF;--muted:#C2A88F;--line:#46362A;--stage-hi:#3B2B21;--stage-lo:#1C1410;--chip:#2A1F18}}
 html,body{height:100%;background:transparent}
 body{overflow:hidden}
@@ -30,7 +30,10 @@ body{overflow:hidden}
 .optbar{bottom:12px;justify-content:center}
 .seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
 .ol{display:none}
+.inside-link{position:fixed;top:12px;right:12px;z-index:5;display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;background:var(--surface);color:var(--ink);border:1px solid var(--line);font:600 14px/1 system-ui,"Segoe UI",sans-serif;text-decoration:none;white-space:nowrap;box-shadow:0 2px 8px rgba(74,51,38,.12)}
+.inside-link:hover{border-color:var(--accent)}
 </style>
+<script>document.addEventListener("DOMContentLoaded",function(){var a=document.createElement("a");a.className="inside-link";a.href="inside-spike.html";a.target="_top";a.textContent="See inside Spike";document.body.appendChild(a)})</script>
 """
 
 html = src.read_text(encoding="utf-8")
